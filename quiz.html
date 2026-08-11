@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pharmacology MCQ Quiz — Ch 1–7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:#080c1a;--card:#0e1530;--text:#f0f4ff;--muted:#8899cc;
+    --accent:#60a5fa;--green:#22c55e;--red:#ef4444;--border:#1e2d5a;--border2:#263870;
+    --c1:#0ea5e9;--c2:#a855f7;--c3:#f59e0b;--c4:#10b981;--c5:#f43f5e;--c6:#3b82f6;--c7:#8b5cf6;--cmix:#ec4899;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;background:radial-gradient(ellipse at 20% 20%,#0d1a4a 0%,#080c1a 60%);color:var(--text);min-height:100vh;padding:20px 16px 48px}
+
+  /* ── HEADER ── */
+  .header{text-align:center;margin-bottom:34px;padding-top:14px}
+  .header-badge{display:inline-block;background:linear-gradient(135deg,#1e3a8a,#312e81);border:1px solid #3b4fd8;border-radius:999px;padding:6px 18px;font-size:12px;font-weight:600;letter-spacing:.08em;color:#a5b4fc;text-transform:uppercase;margin-bottom:14px}
+  .header h1{font-size:clamp(24px,5vw,40px);font-weight:800;background:linear-gradient(135deg,#60a5fa,#818cf8,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:10px}
+  .header p{color:var(--muted);font-size:15px}
+
+  /* ── SELECT SCREEN ── */
+  #screen-select{max-width:920px;margin:0 auto}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;padding-left:4px}
+  .ch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-bottom:28px}
+  .ch-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:22px 20px;cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s;position:relative;overflow:hidden}
+  .ch-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:20px 20px 0 0}
+  .ch-card.c1::before{background:linear-gradient(90deg,var(--c1),#38bdf8)}
+  .ch-card.c2::before{background:linear-gradient(90deg,var(--c2),#c084fc)}
+  .ch-card.c3::before{background:linear-gradient(90deg,var(--c3),#fbbf24)}
+  .ch-card.c4::before{background:linear-gradient(90deg,var(--c4),#34d399)}
+  .ch-card.c5::before{background:linear-gradient(90deg,var(--c5),#fb7185)}
+  .ch-card.c6::before{background:linear-gradient(90deg,var(--c6),#60a5fa)}
+  .ch-card.c7::before{background:linear-gradient(90deg,var(--c7),#a78bfa)}
+  .ch-card.cmix::before{background:linear-gradient(90deg,#ec4899,#8b5cf6,#06b6d4)}
+  .ch-card:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,.5)}
+  .ch-card.c1:hover{border-color:var(--c1)}.ch-card.c2:hover{border-color:var(--c2)}.ch-card.c3:hover{border-color:var(--c3)}
+  .ch-card.c4:hover{border-color:var(--c4)}.ch-card.c5:hover{border-color:var(--c5)}.ch-card.c6:hover{border-color:var(--c6)}
+  .ch-card.c7:hover{border-color:var(--c7)}.ch-card.cmix:hover{border-color:#ec4899}
+  .ch-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:12px}
+  .c1 .ch-icon{background:rgba(14,165,233,.15)}.c2 .ch-icon{background:rgba(168,85,247,.15)}.c3 .ch-icon{background:rgba(245,158,11,.15)}
+  .c4 .ch-icon{background:rgba(16,185,129,.15)}.c5 .ch-icon{background:rgba(244,63,94,.15)}.c6 .ch-icon{background:rgba(59,130,246,.15)}
+  .c7 .ch-icon{background:rgba(139,92,246,.15)}.cmix .ch-icon{background:rgba(236,72,153,.15)}
+  .ch-card h3{font-size:14px;font-weight:700;margin-bottom:5px;line-height:1.35}
+  .ch-card p{font-size:12px;color:var(--muted);line-height:1.5}
+  .ch-count{display:inline-block;margin-top:12px;background:rgba(255,255,255,.06);border-radius:999px;padding:3px 11px;font-size:11px;font-weight:600;color:var(--muted)}
+
+  /* ── QUIZ SCREEN ── */
+  #screen-quiz{display:none;max-width:900px;margin:0 auto}
+  .quiz-topbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:18px}
+  .back-btn{background:none;border:1px solid var(--border2);color:var(--muted);border-radius:999px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;font-family:inherit}
+  .back-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .pills{display:flex;gap:8px;flex-wrap:wrap}
+  .pill{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:7px 13px;color:var(--muted);font-size:13px;font-weight:600}
+  .pill span{color:var(--text)}
+
+  .progress-bar-wrap{height:4px;background:var(--border);border-radius:99px;margin-bottom:18px;overflow:hidden}
+  .progress-bar-fill{height:100%;background:linear-gradient(90deg,#2563eb,#818cf8);border-radius:99px;transition:width .3s}
+
+  .quiz-card{background:rgba(14,21,48,.95);border:1px solid var(--border);border-radius:22px;padding:26px 24px;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+  .qhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+  .qtag{font-size:12px;font-weight:700;border-radius:999px;padding:5px 13px;letter-spacing:.04em}
+  .qtag.c1{color:#7dd3fc;background:rgba(14,165,233,.15);border:1px solid rgba(14,165,233,.3)}
+  .qtag.c2{color:#d8b4fe;background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.3)}
+  .qtag.c3{color:#fcd34d;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3)}
+  .qtag.c4{color:#6ee7b7;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3)}
+  .qtag.c5{color:#fda4af;background:rgba(244,63,94,.15);border:1px solid rgba(244,63,94,.3)}
+  .qtag.c6{color:#93c5fd;background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3)}
+  .qtag.c7{color:#c4b5fd;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3)}
+  .qtag.cmix{color:#f9a8d4;background:rgba(236,72,153,.15);border:1px solid rgba(236,72,153,.3)}
+  .qmode{font-size:12px;color:var(--muted);background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:999px;padding:4px 11px}
+
+  .question-text{font-size:clamp(15px,2.6vw,20px);font-weight:700;line-height:1.5;margin-bottom:20px;color:#e8eeff}
+  .options{display:grid;gap:9px}
+  .opt{width:100%;text-align:left;border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--text);border-radius:13px;padding:13px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:border-color .15s,background .15s,transform .12s;display:flex;align-items:flex-start;gap:11px;line-height:1.45}
+  .opt:hover:not(:disabled){transform:translateX(4px);border-color:var(--accent);background:rgba(96,165,250,.07)}
+  .opt-letter{min-width:24px;height:24px;border-radius:7px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);flex-shrink:0;margin-top:1px;transition:.15s}
+  .opt.correct{background:rgba(34,197,94,.14);border-color:var(--green)}
+  .opt.correct .opt-letter{background:rgba(34,197,94,.25);border-color:var(--green);color:#86efac}
+  .opt.wrong{background:rgba(239,68,68,.12);border-color:var(--red)}
+  .opt.wrong .opt-letter{background:rgba(239,68,68,.2);border-color:var(--red);color:#fca5a5}
+  .opt:disabled{cursor:default}
+
+  .explain{display:none;margin-top:14px;padding:14px 16px;border-radius:13px;background:rgba(6,16,40,.7);border:1px solid var(--border2);color:#c7d8ff;line-height:1.6;font-size:13.5px}
+  .explain.show{display:block}
+  .explain .correct-label{color:#86efac;font-weight:700;font-size:14px;display:block;margin-bottom:5px}
+
+  .controls{display:flex;gap:9px;flex-wrap:wrap;margin-top:20px}
+  .btn{border:0;border-radius:11px;padding:10px 16px;font-weight:700;font-size:13px;font-family:inherit;cursor:pointer;transition:opacity .15s,transform .1s}
+  .btn:hover{opacity:.88;transform:translateY(-1px)}.btn:active{transform:translateY(0)}.btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+  .btn.primary{background:linear-gradient(135deg,#2563eb,#4f46e5);color:white}
+  .btn.secondary{background:#1e2d5a;color:#93c5fd}
+  .btn.success{background:linear-gradient(135deg,#16a34a,#15803d);color:white}
+  .btn.purple{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:white}
+  .btn.ghost{background:transparent;border:1px solid var(--border2);color:var(--muted)}
+
+  .answer-list{display:none;margin-top:20px}.answer-list.show{display:block}
+  .answer-list h3{font-size:15px;font-weight:700;margin-bottom:12px;color:#93c5fd}
+  .answer-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:9px}
+  .answer-mini{background:rgba(14,21,48,.8);border:1px solid var(--border);border-radius:11px;padding:11px 13px;font-size:12.5px;line-height:1.5}
+  .answer-mini .q-num{color:#93c5fd;font-weight:700;font-size:11px;margin-bottom:3px}
+  .answer-mini .q-ans{color:#86efac;font-weight:600}
+  .footer-tip{margin-top:14px;color:var(--muted);font-size:12px;text-align:center}
+
+  /* ── RESULTS ── */
+  #screen-results{display:none;max-width:520px;margin:0 auto;text-align:center}
+  .result-card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:40px 28px;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+  .result-emoji{font-size:58px;margin-bottom:14px}
+  .result-score{font-size:50px;font-weight:800;background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .result-label{font-size:15px;color:var(--muted);margin-bottom:20px}
+  .result-msg{font-size:19px;font-weight:700;margin-bottom:6px}
+  .result-actions{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+</style>
+</head>
+<body>
+
+<!-- ════════════════ SELECTION SCREEN ════════════════ -->
+<div id="screen-select">
+  <div class="header">
+    <div class="header-badge">📚 Pharmacology · Year 3 · Ch 1–7</div>
+    <h1>Past-Year MCQ Quiz</h1>
+    <p>Select a chapter to begin, or mix everything together</p>
+  </div>
+
+  <div class="section-label">Choose Chapter</div>
+  <div class="ch-grid">
+    <div class="ch-card c1" onclick="startQuiz('ch1')"><div class="ch-icon">🧪</div><h3>Chapter 1 — Pharmacokinetics</h3><p>ADME, routes, half-life, Vd, bioavailability, clearance</p><span class="ch-count" id="cnt-ch1">—</span></div>
+    <div class="ch-card c2" onclick="startQuiz('ch2')"><div class="ch-icon">⚗️</div><h3>Chapter 2 — Pharmacodynamics</h3><p>Receptors, agonists, antagonists, dose-response, TI</p><span class="ch-count" id="cnt-ch2">—</span></div>
+    <div class="ch-card c3" onclick="startQuiz('ch3')"><div class="ch-icon">🧠</div><h3>Chapter 3 — Autonomic NS (ANC)</h3><p>Sympathetic, parasympathetic, cholinergic fibers, receptors</p><span class="ch-count" id="cnt-ch3">—</span></div>
+    <div class="ch-card c4" onclick="startQuiz('ch4')"><div class="ch-icon">💊</div><h3>Chapter 4 — Cholinergic Agonists</h3><p>Muscarinic/nicotinic agonists, AChE inhibitors, organophosphates, NMB</p><span class="ch-count" id="cnt-ch4">—</span></div>
+    <div class="ch-card c5" onclick="startQuiz('ch5')"><div class="ch-icon">🚫</div><h3>Chapter 5 — Cholinergic Antagonists</h3><p>Atropine, antimuscarinics, neuromuscular blockers, ganglionic blockers</p><span class="ch-count" id="cnt-ch5">—</span></div>
+    <div class="ch-card c6" onclick="startQuiz('ch6')"><div class="ch-icon">⚡</div><h3>Chapter 6 — Adrenergic Agonists</h3><p>Catecholamines, α/β agonists, epinephrine, dopamine, indirect agonists</p><span class="ch-count" id="cnt-ch6">—</span></div>
+    <div class="ch-card c7" onclick="startQuiz('ch7')"><div class="ch-icon">🛡️</div><h3>Chapter 7 — Adrenergic Antagonists</h3><p>α-blockers, β-blockers, prazosin, propranolol, labetalol</p><span class="ch-count" id="cnt-ch7">—</span></div>
+  </div>
+
+  <div class="section-label">Mix Everything</div>
+  <div class="ch-grid" style="grid-template-columns:1fr">
+    <div class="ch-card cmix" onclick="startQuiz('all')"><div class="ch-icon">🎲</div><h3>Mix All 7 Chapters</h3><p>Every question from all chapters shuffled together — ideal for final review</p><span class="ch-count" id="cnt-all">—</span></div>
+  </div>
+</div>
+
+<!-- ════════════════ QUIZ SCREEN ════════════════ -->
+<div id="screen-quiz">
+  <div class="quiz-topbar">
+    <button class="back-btn" onclick="goHome()">← Back to Chapters</button>
+    <div class="pills">
+      <div class="pill">Score: <span id="score-display">0/0</span></div>
+      <div class="pill">Q <span id="progress-display">1/1</span></div>
+    </div>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-bar" style="width:0%"></div></div>
+  <div class="quiz-card">
+    <div class="qhead"><span class="qtag" id="q-tag">Chapter</span><span class="qmode" id="q-mode">Normal order</span></div>
+    <div class="question-text" id="q-text">Loading…</div>
+    <div class="options" id="q-options"></div>
+    <div class="explain" id="q-explain"></div>
+    <div class="controls">
+      <button class="btn secondary" id="btn-prev" onclick="prevQ()">← Back</button>
+      <button class="btn primary" id="btn-next" onclick="nextQ()">Next →</button>
+      <button class="btn purple" onclick="shuffleQ()">🔀 Shuffle</button>
+      <button class="btn success" onclick="restartQ()">↺ Restart</button>
+      <button class="btn ghost" id="btn-sheet" onclick="toggleSheet()">Show Answer Sheet</button>
+    </div>
+    <div class="answer-list" id="answer-list"><h3>Answer Sheet</h3><div class="answer-grid" id="answer-grid"></div></div>
+    <div class="footer-tip">Tip: keep shuffling until every answer feels instant 🎯</div>
+  </div>
+</div>
+
+<!-- ════════════════ RESULTS SCREEN ════════════════ -->
+<div id="screen-results">
+  <div class="result-card">
+    <div class="result-emoji" id="r-emoji">🎉</div>
+    <div class="result-score" id="r-score">0/0</div>
+    <div class="result-label">Final Score</div>
+    <div class="result-msg" id="r-msg">Well done!</div>
+    <div class="result-actions">
+      <button class="btn primary" onclick="restartQ()">↺ Try Again</button>
+      <button class="btn purple" onclick="shuffleAndRestart()">🔀 Shuffle & Retry</button>
+      <button class="btn secondary" onclick="goHome()">← Choose Chapter</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+//  QUESTION BANK
+// ══════════════════════════════════════════════════════════
+const BANK = [
+
+// ─────────────────── CHAPTER 1 — PHARMACOKINETICS ───────────────────
+{ch:'ch1',q:'Which of the following Phase II metabolic reactions makes Phase I metabolites readily eliminated in urine?',opts:['A) Oxidation','B) Reduction','C) Glucuronidation','D) Hydrolysis','E) Alcohol dehydrogenation'],ans:'C) Glucuronidation',note:'Glucuronidation adds a large polar glucuronic acid group making the metabolite highly water-soluble for urinary or biliary excretion.'},
+{ch:'ch1',q:'Half-life may increase when the drug has:',opts:['A) Large volume of distribution','B) Wide therapeutic index','C) Rapid clearance','D) Low plasma-protein binding','E) Increased bioavailability'],ans:'A) Large volume of distribution',note:'t½ = 0.693 × Vd / CL. Larger Vd means more drug is in tissues; slower redistribution back to plasma prolongs half-life.'},
+{ch:'ch1',q:'Regarding Bioavailability, select the correct answer:',opts:['A) Is the fraction of administered drug that reaches unchanged to the systemic circulation','B) Drugs that are extremely lipophilic have good bioavailability','C) Nitroglycerin has high bioavailability','D) Very hydrophilic drugs have high bioavailability','E) All of the above'],ans:'A) Is the fraction of administered drug that reaches unchanged to the systemic circulation',note:'Bioavailability (F) = fraction reaching systemic circulation unchanged after all absorption and first-pass effects.'},
+{ch:'ch1',q:'Regarding DRUG DISTRIBUTION, all the following are true EXCEPT:',opts:['A) Adipose tissue, skin, and viscera have high rates of blood flow','B) Blood flow to vessel-rich organs (e.g., brain) is greater than skeletal muscles','C) Heparin distributes into about 4 L in a 70 kg individual','D) Increased Vd can lead to an increase in the half-life','E) None of the above'],ans:'A) Adipose tissue, skin, and viscera have high rates of blood flow',note:'Adipose tissue and skin have LOW blood flow rates. Vessel-rich organs (brain, liver, kidneys) have HIGH blood flow.'},
+{ch:'ch1',q:'Hydrophilic drugs with low molecular weight form good concentration in:',opts:['A) Plasma','B) Interstitial fluid','C) The intracellular fluid','D) In the CNS','E) All of the above'],ans:'B) Interstitial fluid',note:'Hydrophilic low-MW drugs cross capillary walls but NOT cell membranes → distribute to extracellular (interstitial) fluid.'},
+{ch:'ch1',q:'Both intramuscular and subcutaneous routes are characterized by all of the following EXCEPT:',opts:['A) Absorption depends on drug diluents, indicated for soluble and poorly soluble preparations','B) They are suitable for drugs with oily vehicles, irritant substances and slow-release preparations','C) Do not provide accurate measurement for drug level in plasma','D) Less risky than intravenous route','E) Not used for drugs with large volume'],ans:'B) They are suitable for drugs with oily vehicles, irritant substances and slow-release preparations',note:'Oily vehicles and irritant substances are generally IM only. SC route is NOT suitable for irritant substances.'},
+{ch:'ch1',q:'Regarding mechanisms of drug absorption, which statement is correct?',opts:['A) Active transport is energy-dependent and driven by concentration gradient','B) Exocytosis involves engulfment of a drug molecule by the cell membrane','C) Effective concentration of permeable form is determined by high concentrations of the charged form','D) Both facilitated diffusion and passive lipid diffusion are energy independent','E) Passive aqueous diffusion is limited to small hydrophobic molecules'],ans:'D) Both facilitated diffusion and passive lipid diffusion are energy independent',note:'Facilitated diffusion uses carriers but needs no ATP. Passive diffusion follows concentration gradients without energy.'},
+{ch:'ch1',q:'The following can DECREASE the volume of distribution for a drug:',opts:['A) Lipophilicity','B) Plasma protein binding','C) Low molecular weight','D) Tissue protein binding','E) All the above'],ans:'B) Plasma protein binding',note:'Drug bound to plasma proteins is retained in the vascular compartment and cannot distribute to tissues → decreased Vd.'},
+{ch:'ch1',q:'Which of the following is a CYP450 INDUCER?',opts:['A) Omeprazole','B) Cimetidine','C) Ketoconazole','D) Theophylline','E) Phenobarbitone'],ans:'E) Phenobarbitone',note:'Phenobarbitone is a classic enzyme inducer → increases drug metabolism. Cimetidine, ketoconazole are inhibitors.'},
+{ch:'ch1',q:'The following affect the renal elimination of drugs:',opts:['A) Extent of plasma protein binding of drug','B) Glomerular filtration rate','C) Active tubular reabsorption','D) Tubular ionization of drug','E) All the above'],ans:'E) All the above',note:'All four factors (protein binding, GFR, tubular secretion/reabsorption, ionization) influence renal drug excretion.'},
+{ch:'ch1',q:'Which is the accurate method of eliminating a toxic dose of phenobarbital?',opts:['A) Alkalinization of urine','B) Administering bicarbonate to decrease urine pH','C) Acidification by NH4Cl','D) Administering ammonium chloride to increase urine pH','E) None of the above'],ans:'A) Alkalinization of urine',note:'Phenobarbital is a weak acid. Alkaline urine ionizes it → trapped in tubular lumen → excreted faster.'},
+{ch:'ch1',q:'A drug given as 800 mg results in peak plasma concentration of 40 µg/mL. What is the apparent Vd?',opts:['A) 0.2 L','B) 1 L','C) 2 L','D) 5 L','E) 20 L'],ans:'E) 20 L',note:'Vd = Dose / C₀ = 800 mg ÷ 40 µg/mL = 800,000 µg ÷ 40 µg/mL = 20,000 mL = 20 L.'},
+{ch:'ch1',q:'Which of the following is related to P-glycoprotein expression?',opts:['A) Transporting drugs into cells','B) Reducing drug resistance','C) Reducing drug absorption','D) Metabolizing drugs','E) All of the above'],ans:'C) Reducing drug absorption',note:'P-gp is an efflux pump that moves drugs OUT of intestinal epithelial cells back into the lumen, reducing oral absorption.'},
+{ch:'ch1',q:'Which condition may lead to increased drug half-life?',opts:['A) Decreased plasma volume','B) Decreased renal blood flow','C) Decreased protein binding','D) Increased metabolism','E) Increased hepatic blood flow'],ans:'B) Decreased renal blood flow',note:'Decreased renal blood flow → reduced GFR and tubular secretion → slower elimination → longer half-life.'},
+{ch:'ch1',q:'If drug X has low molecular weight and is hydrophilic, it will distribute to:',opts:['A) Extracellular fluid','B) Plasma compartment','C) Total body water','D) Plasma proteins','E) Intracellular compartment'],ans:'A) Extracellular fluid',note:'Low-MW hydrophilic drugs cross capillary walls (plasma → interstitial) but NOT cell membranes → extracellular fluid.'},
+{ch:'ch1',q:'In drug overdose emergency, which route of administration is most desirable for the antidote?',opts:['A) Oral','B) Subcutaneous','C) Intramuscular','D) Intravenous','E) Transdermal'],ans:'D) Intravenous',note:'IV gives 100% immediate bioavailability — critical in emergencies requiring rapid onset.'},
+{ch:'ch1',q:'Which route bypasses the blood-brain barrier to directly impact the CNS?',opts:['A) Oral','B) Intrathecal','C) Subcutaneous','D) Intranasal','E) Intravenous'],ans:'B) Intrathecal',note:'Intrathecal injection delivers drug directly into the cerebrospinal fluid (subarachnoid space), bypassing the BBB.'},
+{ch:'ch1',q:'Which is a Phase I reaction in drug metabolism?',opts:['A) Methylation','B) Glucuronidation','C) Sulfation','D) Oxidation','E) Acetylation'],ans:'D) Oxidation',note:'Phase I = oxidation, reduction, hydrolysis. Phase II (conjugation) = glucuronidation, sulfation, methylation, acetylation.'},
+{ch:'ch1',q:'Drug clearance is affected by?',opts:['A) Age','B) Gender','C) Liver function','D) Kidney function','E) All of the above'],ans:'E) All of the above',note:'Clearance depends on hepatic and renal function, and patient factors like age and sex affect enzyme activity.'},
+{ch:'ch1',q:'Which statement about GI drug absorption is INCORRECT?',opts:['A) Absorption from intestine is favored over stomach','B) The intestine has larger surface area facilitating more efficient absorption','C) Severe diarrhea leads to increased drug absorption','D) Increased P-glycoprotein expression leads to decreased drug absorption','E) Surface area is important for drug absorption'],ans:'C) Severe diarrhea leads to increased drug absorption',note:'Diarrhea reduces transit time and contact with absorptive surface → DECREASED absorption, not increased.'},
+{ch:'ch1',q:'All are DISADVANTAGES of oral route EXCEPT:',opts:['A) Inactivation of some drugs by low gastric pH','B) Erratic (inconsistent) absorption','C) Exposure to first-pass metabolism','D) Inappropriate for unconscious patients','E) Can be self-administered'],ans:'E) Can be self-administered',note:'Self-administration is a key ADVANTAGE of oral route — it is convenient and does not need medical personnel.'},
+{ch:'ch1',q:'All can lead to DECREASE drug half-life EXCEPT:',opts:['A) Increased hepatic blood flow','B) Increased clearance','C) Increased metabolism','D) Using concomitant liver enzyme inducer','E) Increased protein binding'],ans:'E) Increased protein binding',note:'Increased protein binding → drug stays in plasma, larger Vd apparent, reduced free drug for elimination → INCREASES half-life.'},
+{ch:'ch1',q:'Entry of drug into the CNS is enhanced if drug is:',opts:['A) Ionized','B) More lipid soluble','C) Given intravenously','D) Highly plasma protein bound','E) None of the above'],ans:'B) More lipid soluble',note:'Lipid-soluble, non-ionized, unbound drugs easily cross the BBB via passive diffusion.'},
+{ch:'ch1',q:'Which statement about volume of distribution (Vd) is FALSE?',opts:['A) It can exceed the volume of water in the body','B) Plasma protein binding increases transfer out of the vascular compartment','C) Would be ~5 L if drug is confined to blood','D) Highly lipid-soluble drugs have large Vd','E) It helps calculate total amount of drug in the body'],ans:'B) Plasma protein binding increases transfer out of the vascular compartment',note:'Plasma protein binding DECREASES tissue distribution — bound drug stays in the vascular compartment.'},
+{ch:'ch1',q:'Most drugs and metabolites are excreted by:',opts:['A) The kidneys','B) The bile','C) The lungs','D) Perspiration, saliva, and tears','E) Spleen'],ans:'A) The kidneys',note:'The kidney is the principal route of excretion for most water-soluble drugs and metabolites.'},
+{ch:'ch1',q:'Drug half-life is the time required for 50% of a drug to:',opts:['A) Be absorbed','B) Be eliminated','C) Exert a response','D) Reach a therapeutic level','E) Be metabolized by the liver'],ans:'B) Be eliminated',note:'t½ = time for plasma concentration to decrease by 50%, reflecting overall elimination rate.'},
+{ch:'ch1',q:'The main DISADVANTAGE of transdermal route compared to oral:',opts:['A) Slower onset of action','B) More rapid clearance','C) Higher risk of systemic side effects','D) Lower bioavailability','E) Increased risk of local infections'],ans:'A) Slower onset of action',note:'Transdermal drug must penetrate multiple skin layers — slow absorption and delayed onset.'},
+{ch:'ch1',q:'Primary factor affecting reabsorption from renal tubules into bloodstream:',opts:['A) Drug protein binding','B) Drug molecular weight','C) Drug ionization','D) Renal blood flow','E) Glomerular filtration rate'],ans:'C) Drug ionization',note:'Ionized (polar) drugs cannot cross tubular membranes → remain in urine. Non-ionized drugs are reabsorbed.'},
+{ch:'ch1',q:'Oral route of drug administration — all true EXCEPT:',opts:['A) Oral drugs are easily self-administered','B) Low gastric pH may inactivate some drugs','C) Many drugs have immediate-release and extended-release preparations','D) Oral route has the highest bioavailability','E) Overdose of oral drugs may be overcome with antidotes'],ans:'D) Oral route has the highest bioavailability',note:'IV = 100% bioavailability. Oral is subject to first-pass metabolism and incomplete absorption.'},
+{ch:'ch1',q:'All true about inhalational route EXCEPT:',opts:['A) Suitable for volatile agents','B) Needs special apparatus','C) Rapid onset of action','D) Patients may have difficulty regulating dose','E) Systemic absorption may occur, which is always desirable'],ans:'E) Systemic absorption may occur, which is always desirable',note:'Systemic absorption from inhaled drugs is NOT always desired (e.g., inhaled corticosteroids cause systemic side effects).'},
+{ch:'ch1',q:'Which drug is primarily given via sublingual/transdermal due to extensive first-pass metabolism?',opts:['A) Penicillin G','B) Insulin','C) Nitroglycerin','D) Paracetamol','E) Morphine'],ans:'C) Nitroglycerin',note:'Nitroglycerin has massive first-pass liver metabolism when taken orally → sublingual/transdermal bypass the liver.'},
+{ch:'ch1',q:'If a drug undergoes net tubular secretion, its renal clearance will be:',opts:['A) More than the GFR','B) Equal to the GFR','C) Less than the GFR','D) Equal to the rate of urine formation','E) None of the above'],ans:'A) More than the GFR',note:'Tubular secretion adds drug beyond what is filtered → total clearance exceeds GFR.'},
+{ch:'ch1',q:'Primary mechanism by which most drugs are absorbed from the GI tract:',opts:['A) Active transport','B) Endocytosis','C) Facilitated diffusion','D) Inert transport','E) Passive diffusion'],ans:'E) Passive diffusion',note:'Most drugs are lipid-soluble enough to diffuse passively across the GI epithelium along their concentration gradient.'},
+{ch:'ch1',q:'Least expensive route with minimal equipment:',opts:['A) Parenteral drug route','B) Epidural route','C) Intrathecal route','D) Enteral drug route','E) Intraperitoneal route'],ans:'D) Enteral drug route',note:'Enteral (oral/rectal) route is cheapest, requires no special equipment or training.'},
+{ch:'ch1',q:'800 mg ibuprofen taken; after 4 hours (half-life 2h), what % remains?',opts:['A) 0%','B) 12.5%','C) 25%','D) 75%','E) 50%'],ans:'C) 25%',note:'After 2h (1st t½) → 50% remains. After 4h (2nd t½) → 25% remains.'},
+{ch:'ch1',q:'Which is correct regarding the blood-brain barrier (BBB)?',opts:['A) Brain capillaries are like kidney capillaries','B) Endothelial cells of brain capillaries form tight junctions','C) Brain capillary walls contain pores','D) Capillaries in brain have slit junctions','E) It allows hydrophilic molecules to pass easily'],ans:'B) Endothelial cells of brain capillaries form tight junctions',note:'Tight junctions between brain capillary endothelial cells form the BBB, restricting hydrophilic drug entry.'},
+{ch:'ch1',q:'Which route is closest to parenteral administration in terms of bioavailability?',opts:['A) Topical','B) Rectal','C) Sublingual','D) Oral','E) Buccal'],ans:'C) Sublingual',note:'Sublingual absorption directly enters sublingual veins → systemic circulation, bypassing first-pass metabolism.'},
+{ch:'ch1',q:'70 kg man, drug X is hydrophilic with low MW. Theoretical Vd equals:',opts:['A) 4 L','B) 7 L','C) 14 L','D) 42 L','E) 1 L'],ans:'C) 14 L',note:'Hydrophilic low-MW drugs distribute to extracellular fluid (~20% body weight). Vd = 0.20 × 70 = 14 L.'},
+{ch:'ch1',q:'Which factors can influence drug clearance through the kidneys?',opts:['A) Renal blood flow','B) Urine pH','C) Heart rate','D) Drug protein binding','E) All the above'],ans:'E) All the above',note:'All these factors influence renal clearance via effects on filtration, secretion, reabsorption, and protein binding.'},
+{ch:'ch1',q:'Which route provides the most control over actual dose delivered?',opts:['A) Sublingual','B) Transdermal','C) Rectal','D) Inhalation','E) Intravenous'],ans:'E) Intravenous',note:'IV bypasses all absorption barriers → 100% bioavailability and precise dose control.'},
+{ch:'ch1',q:'73-year-old with CKD on a renally-eliminated drug. Most appropriate adjustment?',opts:['A) Increase dose to compensate for reduced clearance','B) Switch to a hepatically-metabolized drug','C) Decrease dose to avoid accumulation and toxicity','D) Administer more frequently','E) No adjustment needed'],ans:'C) Decrease dose to avoid accumulation and toxicity',note:'Reduced renal clearance in CKD → drug accumulates → dose reduction (or extended interval) required.'},
+{ch:'ch1',q:'Patient receives 500 mg IV. Plasma concentration after distribution = 5 mg/L. What is Vd?',opts:['A) 10 L','B) 20 L','C) 100 L','D) 1000 L','E) 10000 L'],ans:'C) 100 L',note:'Vd = Dose / C₀ = 500 mg ÷ 5 mg/L = 100 L.'},
+{ch:'ch1',q:'Pharmacokinetics represents:',opts:['A) Biological and therapeutic effects of drugs','B) Absorption, distribution, metabolism, and excretion of drugs (ADME)','C) Mechanism of drug action','D) New drug development techniques','E) Adverse drug effects'],ans:'B) Absorption, distribution, metabolism, and excretion of drugs (ADME)',note:'Pharmacokinetics = what the body does to the drug. Pharmacodynamics = what the drug does to the body.'},
+
+// ─────────────────── CHAPTER 2 — PHARMACODYNAMICS ───────────────────
+{ch:'ch2',q:'Which CYP450 isoenzyme metabolizes the largest number of drugs and causes the most dangerous interactions?',opts:['A) CYP 3A4','B) CYP 2D6','C) CYP 2C9','D) CYP 1A2','E) CYP 2C19'],ans:'A) CYP 3A4',note:'CYP3A4 metabolizes ~50% of all drugs and is the most clinically significant enzyme for drug interactions.'},
+{ch:'ch2',q:'Increase of second messengers (cAMP, cGMP, Ca²⁺) concentration leads to:',opts:['A) Inhibition of intracellular protein kinases and protein phosphorylation','B) Inhibition of protein phosphorylation only','C) Protein kinases activation and protein phosphorylation','D) Blocking of receptor-effector interaction','E) Antagonism with endogenous ligands'],ans:'C) Protein kinases activation and protein phosphorylation',note:'Second messengers activate protein kinases → phosphorylation of target proteins → cellular effects.'},
+{ch:'ch2',q:'Full agonists have:',opts:['A) Affinity to receptors only','B) Affinity and maximal intrinsic activity','C) Affinity but no intrinsic activity','D) Affinity and submaximal intrinsic activity','E) Affinity without potency'],ans:'B) Affinity and maximal intrinsic activity',note:'Full agonists bind receptors (affinity) and produce the maximal possible response (intrinsic activity = 1).'},
+{ch:'ch2',q:'Therapeutic index — all true EXCEPT:',opts:['A) Larger value indicates the drug is toxic','B) Therapeutic index = TD50/ED50','C) As toxic dose is larger, drug has larger therapeutic index','D) Penicillin has a large therapeutic index','E) Warfarin has a low therapeutic index'],ans:'A) Larger value indicates the drug is toxic',note:'A LARGER TI means the drug is SAFER (wider margin between therapeutic and toxic doses).'},
+{ch:'ch2',q:'All act by intracellular receptor EXCEPT:',opts:['A) Thyroid hormone','B) Vitamin D','C) Insulin','D) Cortisol','E) Steroids'],ans:'C) Insulin',note:'Insulin acts on tyrosine kinase (enzyme-linked) receptors on the cell surface. Steroids/thyroid hormones act intracellularly.'},
+{ch:'ch2',q:'Graded dose-response relationship is used to determine:',opts:['A) Potency only','B) Efficacy only','C) Safety only','D) Potency and efficacy','E) Potency, efficacy, safety'],ans:'D) Potency and efficacy',note:'Graded (continuous) DRC shows EC50 (potency) and Emax (efficacy). Quantal DRC is used for safety/TI.'},
+{ch:'ch2',q:'Regarding allosteric antagonists, the most appropriate answer is:',opts:['A) Reduce agonist potency','B) Reduce agonist efficacy','C) Cause downward shift of EC50 with no change in Emax','D) Reduce agonist efficacy and decrease EC50','E) Enhance agonist effect'],ans:'B) Reduce agonist efficacy',note:'Allosteric antagonists bind at a different site than the agonist → reduce Emax (efficacy), not EC50.'},
+{ch:'ch2',q:'The process by which a ligand\'s effect is reversed and receptor activity decreases below baseline is characteristic of:',opts:['A) Full agonists','B) Competitive antagonists','C) Allosteric modulators','D) Partial agonist','E) Inverse agonist'],ans:'E) Inverse agonist',note:'Inverse agonists have negative intrinsic activity — they stabilize the inactive receptor state, reducing constitutive activity below baseline.'},
+{ch:'ch2',q:'From a dose-response graph comparing drugs A, B, C. Drug A reaches ED50 at lower dose and achieves higher Emax than C. Which statement is correct?',opts:['A) Drug A is most effective','B) Drug B is least potent','C) Drug C is most potent','D) Drug B is more potent than C and more effective than A','E) Drug A is more potent than drug B and more effective than drug C'],ans:'E) Drug A is more potent than drug B and more effective than drug C',note:'Lower EC50 = more potent. Higher Emax = more efficacious. Drug A has both relative to the others described.'},
+{ch:'ch2',q:'Response when ligand binds Gi-coupled GPCR receptor:',opts:['A) Increased intracellular Ca²⁺','B) A channel opens, positive ions flow into cell','C) Increased intracellular cAMP','D) Decreased intracellular cAMP','E) Translocation of receptor into nucleus'],ans:'D) Decreased intracellular cAMP',note:'Gi proteins inhibit adenylyl cyclase → ↓cAMP. Examples: α2, M2, D2 receptors.'},
+{ch:'ch2',q:'A drug with high intrinsic activity means:',opts:['A) High selectivity for target receptor','B) High efficacy','C) High potency','D) High therapeutic index','E) High bioavailability'],ans:'B) High efficacy',note:'Intrinsic activity = efficacy. High intrinsic activity = high Emax = large maximal response.'},
+{ch:'ch2',q:'In quantal dose-response relationship, ED50 best describes:',opts:['A) Dose at which 50% of individuals exhibit maximum response','B) Dose at which 50% of population shows the therapeutic effect','C) Dose that causes side effects in 50% of population','D) Dose required to cause death in 50% of population','E) Dose at which 50% of drug is metabolized'],ans:'B) Dose at which 50% of population shows the therapeutic effect',note:'ED50 in a quantal DRC = dose producing the specified response in 50% of the population.'},
+{ch:'ch2',q:'A drug with a HIGH therapeutic index is:',opts:['A) Less safe — narrow margin of safety','B) More effective regardless of safety','C) Highly toxic due to high potency','D) Safer — wide margin between therapeutic and toxic doses','E) Fast-acting with short half-life'],ans:'D) Safer — wide margin between therapeutic and toxic doses',note:'High TI = large gap between ED50 and TD50 → safer drug with wider safety margin.'},
+{ch:'ch2',q:'"Tachyphylaxis" refers to:',opts:['A) Rapid development of tolerance to a drug\'s effects','B) Unexpectedly rapid onset of drug action','C) Development of withdrawal symptoms on cessation','D) Increase in drug effectiveness with repeated dosing','E) None of the above'],ans:'A) Rapid development of tolerance to a drug\'s effects',note:'Tachyphylaxis = rapidly developing tolerance, often from receptor desensitization or neurotransmitter depletion.'},
+{ch:'ch2',q:'Receptor responsible for transmitting insulin\'s effects:',opts:['A) Ligand-gated ion channels','B) G-protein coupled receptor','C) Enzyme-linked receptor','D) Intracellular receptor','E) Adrenergic receptors'],ans:'C) Enzyme-linked receptor',note:'Insulin receptor is a receptor tyrosine kinase (RTK). Binding insulin activates its intrinsic kinase.'},
+{ch:'ch2',q:'Magnitude of cellular response is proportional to:',opts:['A) Number of ligands available','B) Type of chemical bond','C) Type of ligand structure','D) Number of drug-receptor complexes','E) Concentration of ligand'],ans:'D) Number of drug-receptor complexes',note:'Cellular response ∝ fraction of receptors occupied = number of drug-receptor complexes.'},
+{ch:'ch2',q:'Functional antagonism by epinephrine to histamine-induced bronchoconstriction is called:',opts:['A) Allosteric antagonism','B) Competitive antagonism','C) Molecular antagonism','D) Non-competitive antagonism','E) Physiologic antagonism'],ans:'E) Physiologic antagonism',note:'Physiologic antagonism: two drugs produce opposing effects through DIFFERENT receptors. Epi (β2→bronchodilation) vs histamine (H1→bronchoconstriction).'},
+{ch:'ch2',q:'Which drug has a HIGH therapeutic index?',opts:['A) Penicillin','B) Digitalis','C) Lithium','D) Phenytoin','E) Theophylline'],ans:'A) Penicillin',note:'Penicillin has an extremely high TI. Digitalis, lithium, phenytoin, theophylline all have narrow TI.'},
+{ch:'ch2',q:'Inverse agonist can:',opts:['A) Produce full intrinsic activity','B) Produce partial intrinsic activity','C) Produce no intrinsic activity','D) Produce less than zero intrinsic activity','E) None of the above'],ans:'D) Produce less than zero intrinsic activity',note:'Inverse agonists have negative intrinsic activity — they reduce constitutive receptor activity below zero baseline.'},
+{ch:'ch2',q:'Drug A has lower EC50 than drug B. This indicates:',opts:['A) Drug A is less potent than drug B','B) Drug A is more potent than drug B','C) Drug A has lower efficacy','D) Drug A has higher maximum effect','E) Drug A has slower onset'],ans:'B) Drug A is more potent than drug B',note:'Lower EC50 = reaches 50% maximal effect at lower concentration = greater potency.'},
+{ch:'ch2',q:'Drug A has higher EC50 and lower Emax than Drug B. Drug A is:',opts:['A) Full agonist, more potent than Drug B','B) Full agonist, less potent than Drug B','C) Partial agonist, less potent than Drug B','D) Partial agonist, more potent than Drug B','E) Inverse agonist, less potent than Drug B'],ans:'C) Partial agonist, less potent than Drug B',note:'Higher EC50 = less potent. Lower Emax = submaximal intrinsic activity = partial agonist.'},
+{ch:'ch2',q:'Therapeutic index of a drug is used to determine:',opts:['A) Potency','B) Efficacy','C) Selectivity','D) Toxicity (safety)','E) Intrinsic activity'],ans:'D) Toxicity (safety)',note:'TI = TD50/ED50. It measures relative safety — how toxic a drug is relative to its therapeutic dose.'},
+{ch:'ch2',q:'Which scenario results in postsynaptic α1-adrenergic receptor upregulation?',opts:['A) Chronic α1-antagonist use','B) Daily administration of norepinephrine','C) Long-term β2-agonist therapy','D) Increased sympathetic tone','E) Continuous α1-agonist infusion'],ans:'A) Chronic α1-antagonist use',note:'Chronic receptor blockade → reduced signaling → compensatory receptor upregulation (more receptors).'},
+{ch:'ch2',q:'Why is efficacy more clinically useful than potency?',opts:['A) Efficacy determines how long drug lasts','B) Efficacy reflects how easily drug is metabolized','C) Efficacy determines cost-effectiveness','D) Efficacy is more important for ensuring therapeutic response','E) Efficacy ensures fewer side effects'],ans:'D) Efficacy is more important for ensuring therapeutic response',note:'A drug that produces insufficient effect (low efficacy) isn\'t useful clinically, regardless of how potent it is.'},
+{ch:'ch2',q:'Quantal dose-response curve describes:',opts:['A) Relationship between drug dose and proportion of population experiencing a specific effect','B) Maximum effect in an individual patient','C) Relationship between dose and magnitude of response in an individual','D) Therapeutic range in a specific population','E) Total number of receptors occupied'],ans:'A) Relationship between drug dose and proportion of population experiencing a specific effect',note:'Quantal DRC = all-or-none responses in a population. Shows ED50 and TD50 for calculating TI.'},
+{ch:'ch2',q:'Competitive antagonism: which statement best describes their mechanism?',opts:['A) They bind at a different site, enhancing agonist effect','B) They bind at the same site as agonist but do not activate the receptor, blocking its action','C) They block the agonist site and activate the receptor','D) They increase intrinsic activity, enhancing agonist effect','E) They permanently bind to the receptor'],ans:'B) They bind at the same site as agonist but do not activate the receptor, blocking its action',note:'Competitive antagonists compete at the orthosteric site with zero intrinsic activity. Effect is surmountable by increasing agonist.'},
+{ch:'ch2',q:'Repeated exposure to ANTAGONISTS induces:',opts:['A) Down-regulation','B) Tachyphylaxis','C) Up-regulation','D) Desensitization','E) None of the above'],ans:'C) Up-regulation',note:'Chronic antagonist → reduced receptor stimulation → compensatory upregulation. Chronic agonist → downregulation.'},
+{ch:'ch2',q:'Drug R produces no response alone but shifts Drug S\'s dose-response curve right in parallel without decreasing Emax. Drug R is:',opts:['A) Partial agonist','B) Inverse agonist','C) Competitive antagonist','D) Noncompetitive antagonist','E) Full agonist'],ans:'C) Competitive antagonist',note:'Parallel rightward shift (increased EC50, unchanged Emax) is the hallmark of competitive antagonism.'},
+{ch:'ch2',q:'Drug that binds with high affinity but has NEGATIVE intrinsic activity:',opts:['A) Full agonist','B) Partial agonist','C) Inverse agonist','D) Competitive antagonist','E) Non-competitive antagonist'],ans:'C) Inverse agonist',note:'Inverse agonists bind with high affinity and stabilize the inactive state → negative intrinsic activity.'},
+{ch:'ch2',q:'Agonists vs antagonists in receptor states — which is correct?',opts:['A) Agonists shift equilibrium toward active state (R*), antagonists maintain inactive state (R)','B) Agonists stabilize inactive state, antagonists activate receptors','C) Antagonists have no effect except blocking agonists','D) Both act like partial antagonists','E) Both increase active receptors equally'],ans:'A) Agonists shift equilibrium toward active state (R*), antagonists maintain inactive state (R)',note:'Two-state model: receptors exist in R (inactive) and R* (active). Agonists stabilize R*; antagonists stabilize R.'},
+{ch:'ch2',q:'Therapeutic Index measures:',opts:['A) Safety','B) Potency','C) Bioavailability','D) Affinity','E) Absorption'],ans:'A) Safety',note:'TI = TD50/ED50 = measure of drug safety (margin between therapeutic and toxic doses).'},
+{ch:'ch2',q:'30-year-old female with pneumonia: doxycycline prescribed, then amoxicillin added, but condition worsened. Most likely reason?',opts:['A) Antagonistic effect between the drugs','B) Allergic reaction to amoxicillin','C) Bacterial resistance to both antibiotics','D) Undiagnosed immunodeficiency','E) Drugs target different pathogens'],ans:'A) Antagonistic effect between the drugs',note:'Doxycycline is bacteriostatic (stops growth). Amoxicillin is bactericidal (requires dividing bacteria). Static drug prevents cidal action → antagonism.'},
+
+// ─────────────────── CHAPTER 3 — ANS / ANC ───────────────────
+{ch:'ch3',q:'Which feature describes the PARASYMPATHETIC nervous system?',opts:['A) Diffuse response','B) Extensive preganglionic fiber branching','C) Ganglia close to the spinal cord','D) Short postganglionic fibers','E) Wide distribution'],ans:'D) Short postganglionic fibers',note:'Parasympathetic: ganglia near/in target organs → LONG preganglionic, SHORT postganglionic fibers.'},
+{ch:'ch3',q:'Sympathetic activation — all EXCEPT:',opts:['A) Shifting blood flow to skeletal muscle','B) Relaxation of bronchial smooth muscles','C) Decrease of intestinal motility','D) Preserve energy and enhance gluconeogenesis and glycogen storage','E) Increase visual field (mydriasis)'],ans:'D) Preserve energy and enhance gluconeogenesis and glycogen storage',note:'Sympathetic = fight-or-flight: MOBILIZES energy (glycogenolysis) NOT storage. It promotes glycogenolysis, NOT glycogen storage.'},
+{ch:'ch3',q:'Major difference between somatic and autonomic nervous system:',opts:['A) Somatic neurons are unmyelinated','B) Somatic neurons synapse in ganglia','C) Somatic responses are voluntary, ANS involuntary','D) Somatic innervates smooth muscle','E) Somatic responses are slower'],ans:'C) Somatic responses are voluntary, ANS involuntary',note:'Key distinction: somatic NS = voluntary (skeletal muscle); ANS = involuntary (smooth muscle, cardiac, glands).'},
+{ch:'ch3',q:'Features of parasympathetic NS (version 2) — correct answer:',opts:['A) Diffuse response','B) Extensive branching','C) Ganglia near spinal cord','D) Short postganglionic fibers','E) Thoracolumbar origin'],ans:'D) Short postganglionic fibers',note:'Parasympathetic has craniosacral origin (NOT thoracolumbar = sympathetic) and short postganglionic fibers.'},
+{ch:'ch3',q:'Cholinergic nerve fibers EXCEPT:',opts:['A) Motor nerve fibers','B) Presynaptic sympathetic nerves','C) Presynaptic parasympathetic nerves','D) Postsynaptic sympathetic nerves','E) Postsynaptic parasympathetic nerves'],ans:'D) Postsynaptic sympathetic nerves',note:'Most postsynaptic sympathetic neurons release NE (adrenergic). Exception: sweat glands (cholinergic sympathetic).'},
+{ch:'ch3',q:'All occur when sympathetic system is activated EXCEPT:',opts:['A) Increase heart rate','B) Increase blood glucose','C) Mydriasis','D) Decrease gastric motility','E) Bronchoconstriction'],ans:'E) Bronchoconstriction',note:'Sympathetic causes BRONCHODILATION (β2). Bronchoconstriction is a parasympathetic (muscarinic M3) effect.'},
+{ch:'ch3',q:'Cholinergic stimulation causes:',opts:['A) Urine retention','B) Bronchodilation','C) Sweating','D) Tachycardia','E) Reduced gut motility'],ans:'C) Sweating',note:'Sweat glands have cholinergic (muscarinic) sympathetic innervation → ACh → sweating. Also: bradycardia, ↑GI motility, urination, bronchoconstriction.'},
+{ch:'ch3',q:'Nicotinic receptors are found EXCEPT at:',opts:['A) Sympathetic ganglia','B) Adrenal medulla','C) CNS','D) Skeletal muscle end plate','E) Smooth muscle'],ans:'E) Smooth muscle',note:'Smooth muscle has muscarinic receptors, NOT nicotinic. Nicotinic receptors are at ganglia, adrenal medulla, NMJ, and CNS.'},
+{ch:'ch3',q:'Which is correct regarding the sympathetic nervous system?',opts:['A) It generally mediates "rest-and-digest" mode','B) Neurotransmitter at the sympathetic ganglion is norepinephrine','C) Neurotransmitter at the sympathetic ganglion is acetylcholine','D) Postganglionic sympathetic neurons release acetylcholine','E) Sympathetic ganglia are located in target organs'],ans:'C) Neurotransmitter at the sympathetic ganglion is acetylcholine',note:'ALL autonomic ganglionic transmission uses ACh (nicotinic receptors), both sympathetic and parasympathetic.'},
+{ch:'ch3',q:'Why does somatic NS enable faster response than ANS?',opts:['A) Somatic motor neurons have ganglia with ACh transmission','B) Somatic motor neurons have ganglia with NE transmission','C) Somatic motor neurons are not myelinated','D) Somatic motor neurons are myelinated and do not have ganglia','E) Somatic has smaller nerve fibers'],ans:'D) Somatic motor neurons are myelinated and do not have ganglia',note:'Somatic neurons = large, myelinated Aα fibers + no ganglia → direct, fastest conduction. ANS has a two-neuron chain with synapse delay.'},
+{ch:'ch3',q:'Physiological change when PARASYMPATHETIC system is activated:',opts:['A) Increase in heart rate','B) Inhibition of lacrimation','C) Dilation of the pupil (mydriasis)','D) Increase in gastric motility','E) Bronchodilation'],ans:'D) Increase in gastric motility',note:'Parasympathetic = rest-and-digest: ↑GI motility, ↓HR, lacrimation, miosis, bronchoconstriction, urination.'},
+{ch:'ch3',q:'Expected change when sympathetic system is INHIBITED pharmacologically:',opts:['A) Reduction in heart rate','B) Increase in blood pressure','C) Decrease in fluid secretions','D) Constriction of blood vessels','E) Mydriasis'],ans:'A) Reduction in heart rate',note:'Sympathetic inhibition → parasympathetic dominance → bradycardia, vasodilation, ↓BP, ↑secretions.'},
+{ch:'ch3',q:'Which is correct regarding ACh and receptor activation in the ANS?',opts:['A) Acetylcholine activates muscarinic receptors on effector organs','B) Acetylcholine activates adrenergic receptors','C) Epinephrine activates nicotinic receptors','D) Norepinephrine activates muscarinic receptors','E) Dopamine activates muscarinic receptors'],ans:'A) Acetylcholine activates muscarinic receptors on effector organs',note:'At effector organs, postganglionic parasympathetic fibers release ACh → muscarinic receptors. Postganglionic sympathetic → NE → adrenergic receptors.'},
+{ch:'ch3',q:'Correct statement about parasympathetic nervous system:',opts:['A) Often discharges as a single functional system','B) Involved in near vision, movement of food, and urination','C) Postganglionic fibers are long','D) It controls the adrenal medulla','E) Originates from thoracolumbar region'],ans:'B) Involved in near vision, movement of food, and urination',note:'Parasympathetic functions: accommodation, GI motility, micturition, lacrimation, salivation, bronchoconstriction.'},
+{ch:'ch3',q:'Correct regarding neurotransmitters and neurotransmission:',opts:['A) Neurotransmitters are released from presynaptic nerve terminals','B) Action potential in postsynaptic cell triggers release','C) Calcium decreases before release','D) Neurotransmitters bind presynaptic receptors only','E) Neurotransmitters are synthesized in postsynaptic terminals'],ans:'A) Neurotransmitters are released from presynaptic nerve terminals',note:'Action potential in presynaptic neuron → Ca²⁺ influx → vesicle fusion → NT release from presynaptic terminal.'},
+{ch:'ch3',q:'Neurons originating from cranial nerves in the ANS:',opts:['A) Postganglionic parasympathetic neurons','B) Preganglionic parasympathetic neurons','C) Postganglionic sympathetic neurons','D) Preganglionic sympathetic neurons','E) Somatic neurons'],ans:'B) Preganglionic parasympathetic neurons',note:'Craniosacral parasympathetic: preganglionic fibers originate from cranial nerves III, VII, IX, X and sacral S2-S4.'},
+{ch:'ch3',q:'Which receptor is an IONOTROPIC receptor?',opts:['A) Alpha-adrenergic receptor','B) Dopamine receptor','C) Beta-adrenergic receptor','D) Nicotinic receptor','E) Muscarinic receptor'],ans:'D) Nicotinic receptor',note:'Nicotinic receptors are ligand-gated ion channels (ionotropic). Muscarinic and adrenergic receptors are metabotropic (GPCR).'},
+{ch:'ch3',q:'Receptor family essential for skeletal muscle contraction:',opts:['A) Intracellular receptors','B) G protein-coupled receptors','C) Transmembrane ligand-gated ion channels','D) Enzyme-linked receptors','E) None of the above'],ans:'C) Transmembrane ligand-gated ion channels',note:'Nicotinic receptors at the NMJ are ligand-gated ion channels. ACh binding → Na⁺ influx → depolarization → muscle contraction.'},
+{ch:'ch3',q:'Neurons carrying signals AWAY from brain/spinal cord to periphery:',opts:['A) Efferent neurons','B) Afferent neurons','C) Sensory neurons','D) Cortical neurons','E) Non-myelinated C-fibers'],ans:'A) Efferent neurons',note:'Efferent (motor) neurons: CNS → periphery. Afferent (sensory) neurons: periphery → CNS.'},
+
+// ─────────────────── CHAPTER 4 — CHOLINERGIC AGONISTS ───────────────────
+{ch:'ch4',q:'All are major indications for muscarinic agonists EXCEPT:',opts:['A) Postoperative bladder retention','B) Xerostomia','C) Myasthenia gravis','D) Asthma','E) Glaucoma'],ans:'D) Asthma',note:'Muscarinic agonists cause bronchoconstriction → contraindicated in asthma. Uses: urinary retention, xerostomia, glaucoma, (indirect) myasthenia gravis.'},
+{ch:'ch4',q:'Patient exposed to nerve gas (cholinesterase inhibitor). Expected symptom?',opts:['A) Urinary retention','B) Increased blood pressure','C) Increased intestinal motility and diarrhea','D) Mydriasis','E) Tachycardia'],ans:'C) Increased intestinal motility and diarrhea',note:'Cholinesterase inhibition → excess ACh → muscarinic effects: SLUDGE (Salivation, Lacrimation, Urination, Defecation, GI cramping, Emesis) + bradycardia, miosis.'},
+{ch:'ch4',q:'All correct about bethanechol/carbachol EXCEPT:',opts:['A) Bethanechol lacks muscarinic actions but has strong nicotinic activity','B) Carbachol is a synthetic ester of choline','C) Carbachol has longer duration of action than acetylcholine','D) Bethanechol is used postoperatively to stimulate the atonic bladder','E) Carbachol has both muscarinic and nicotinic actions'],ans:'A) Bethanechol lacks muscarinic actions but has strong nicotinic activity',note:'WRONG: Bethanechol is primarily muscarinic (selective for bladder/GI) with minimal nicotinic activity.'},
+{ch:'ch4',q:'Which is NOT a direct-acting cholinergic agent?',opts:['A) Physostigmine','B) Acetylcholine','C) Bethanechol','D) Carbachol','E) Pilocarpine'],ans:'A) Physostigmine',note:'Physostigmine is INDIRECT-acting (AChE inhibitor). The others (ACh, bethanechol, carbachol, pilocarpine) directly activate cholinergic receptors.'},
+{ch:'ch4',q:'Useful for treating symptoms of myasthenia gravis:',opts:['A) Sympathomimetic agents','B) Anticholinesterase agents','C) Muscarinic antagonists','D) Muscarinic agonists','E) Nicotinic antagonists'],ans:'B) Anticholinesterase agents',note:'Myasthenia gravis = antibodies against nicotinic NMJ receptors. AChE inhibitors (neostigmine, pyridostigmine) increase ACh at NMJ to overcome blockade.'},
+{ch:'ch4',q:'In Alzheimer\'s disease (cholinergic deficit), which strategy is theoretically useful?',opts:['A) Inhibiting cholinergic receptors in brain','B) Inhibiting release of acetylcholine in brain','C) Increasing release of acetylcholine in brain','D) Inhibiting the acetylcholinesterase enzyme in brain','E) Activating acetylcholinesterase in brain'],ans:'D) Inhibiting the acetylcholinesterase enzyme in brain',note:'Inhibiting AChE → more ACh accumulates at synapses → compensates for cholinergic deficit in Alzheimer\'s.'},
+{ch:'ch4',q:'All are cholinergic neurons EXCEPT:',opts:['A) Sympathetic preganglionic neuron','B) Sympathetic postganglionic neuron','C) Parasympathetic postganglionic neuron','D) Parasympathetic preganglionic neuron','E) Somatic neuron'],ans:'B) Sympathetic postganglionic neuron',note:'Most sympathetic postganglionic neurons are adrenergic (NE), NOT cholinergic. Exception: sweat glands.'},
+{ch:'ch4',q:'Second messengers for muscarinic receptors — all EXCEPT:',opts:['A) cAMP','B) Inositol-1,4,5-trisphosphate (IP3)','C) Diacylglycerol (DAG)','D) Sodium','E) Calcium'],ans:'D) Sodium',note:'Sodium is NOT a second messenger. Muscarinic receptor second messengers: cAMP (M2/M4 via Gi), IP3/DAG/Ca²⁺ (M1/M3/M5 via Gq).'},
+{ch:'ch4',q:'Acetylcholine is not used clinically because:',opts:['A) Its low volume of distribution','B) It is highly toxic','C) Short duration of action','D) Poorly absorbed','E) It is costly'],ans:'C) Short duration of action',note:'ACh is rapidly hydrolyzed by acetylcholinesterase (and butyrylcholinesterase) → very short duration; impractical clinically.'},
+{ch:'ch4',q:'Which Alzheimer\'s cholinomimetic drug is NO LONGER used?',opts:['A) Galantamine','B) Donepezil','C) Rivastigmine','D) Tacrine','E) All the above'],ans:'D) Tacrine',note:'Tacrine was the first AChE inhibitor for Alzheimer\'s but was withdrawn due to severe hepatotoxicity.'},
+{ch:'ch4',q:'AChE inhibitors with CENTRAL effect:',opts:['A) Neostigmine','B) Edrophonium','C) Pyridostigmine','D) Physostigmine','E) All the above'],ans:'D) Physostigmine',note:'Physostigmine is a tertiary amine (lipid-soluble) → penetrates BBB → central effects. Neostigmine, pyridostigmine, edrophonium are quaternary (don\'t cross BBB).'},
+{ch:'ch4',q:'Organophosphate compounds — which statement is correct?',opts:['A) They bind reversibly with AChE','B) Can be treated with neostigmine','C) Galantamine is an example','D) Pralidoxime is used as antidote','E) Have therapeutic use'],ans:'D) Pralidoxime is used as antidote',note:'Organophosphates irreversibly phosphorylate AChE. Antidote: atropine (blocks muscarinic effects) + pralidoxime (2-PAM, reactivates AChE if given early).'},
+{ch:'ch4',q:'40-year-old male: pinpoint pupils, salivation, lacrimation, tremors, reduced plasma cholinesterase. Diagnosis:',opts:['A) Atropine overdose','B) Organophosphorus poisoning','C) Pilocarpine overdose','D) Nicotine poisoning','E) Opioid toxicity'],ans:'B) Organophosphorus poisoning',note:'SLUDGE + miosis + reduced cholinesterase = classic organophosphate (nerve agent/pesticide) poisoning.'},
+{ch:'ch4',q:'Botulinum toxin causes paralysis by:',opts:['A) Inhibiting choline acetyltransferase','B) Blocking transport of choline into neurons','C) Blocking release of acetylcholine from storage vesicles','D) Inhibiting acetylcholinesterase','E) Blocking the synapse at ganglia'],ans:'C) Blocking release of acetylcholine from storage vesicles',note:'Botulinum toxin cleaves SNARE proteins → prevents vesicle fusion → blocks ACh exocytosis → flaccid paralysis.'},
+{ch:'ch4',q:'Neurotransmitter released at sinoatrial node in response to blood pressure increase:',opts:['A) Dopamine','B) Acetylcholine','C) Epinephrine','D) Glutamate','E) Norepinephrine'],ans:'B) Acetylcholine',note:'High BP activates baroreceptors → vagus nerve (CN X) releases ACh at SA node → bradycardia (negative chronotropy).'},
+{ch:'ch4',q:'Nature of the muscarinic receptor M3:',opts:['A) Tyrosine kinase receptor','B) Gi-coupled GPCR','C) Gs-coupled GPCR','D) Gq-coupled GPCR','E) Ion-channel receptor'],ans:'D) Gq-coupled GPCR',note:'M3 (and M1, M5) are Gq-coupled → activate phospholipase C → IP3 + DAG → Ca²⁺ release → smooth muscle contraction, glandular secretion.'},
+{ch:'ch4',q:'Which therapies are necessary for managing organophosphate poisoning?',opts:['A) Atropine','B) Pralidoxime (2-PAM)','C) Diazepam','D) Maintenance of airway and oxygen supply','E) All of the above'],ans:'E) All of the above',note:'OP poisoning management: Atropine (blocks muscarinic effects), Pralidoxime (reactivates AChE), Diazepam (seizures), airway/O2 (respiratory failure).'},
+{ch:'ch4',q:'Primary second-messenger process in ciliary muscle contraction for near vision:',opts:['A) cAMP','B) NO','C) Depolarizing influx of sodium ions via a channel','D) IP3 (inositol 1,4,5-trisphosphate)','E) cGMP'],ans:'D) IP3 (inositol 1,4,5-trisphosphate)',note:'M3 activation in ciliary muscle → Gq → PLC → IP3 → Ca²⁺ release → muscle contraction → accommodation (near vision).'},
+{ch:'ch4',q:'Ecothiophate (irreversible AChE inhibitor) effects — all EXCEPT:',opts:['A) Generalized cholinergic effects','B) Dyspnea','C) Mydriasis','D) Decrease intraocular pressure','E) Convulsions'],ans:'C) Mydriasis',note:'AChE inhibitors cause MIOSIS (pupillary constriction) by stimulating M3 receptors in pupillary sphincter muscle, NOT mydriasis.'},
+{ch:'ch4',q:'After NMB-induced skeletal muscle paralysis postoperatively, which drug counteracts it?',opts:['A) Pilocarpine','B) Bethanechol','C) Neostigmine','D) Atropine','E) Tiotropium'],ans:'C) Neostigmine',note:'Neostigmine (AChE inhibitor) → ↑ACh at NMJ → overcomes competitive NMB. Often given with atropine to prevent bradycardia.'},
+{ch:'ch4',q:'Muscarinic receptor subtype most expressed in the cerebral cortex:',opts:['A) M1','B) M2','C) M3','D) M4','E) M5'],ans:'A) M1',note:'M1 receptors predominate in the cerebral cortex and hippocampus and are important for cognition/memory.'},
+{ch:'ch4',q:'Cholinergic agonists can be used in all EXCEPT:',opts:['A) Glaucoma','B) Atonic bladder','C) Myasthenia gravis','D) Non-obstructive urinary retention','E) Motion sickness'],ans:'E) Motion sickness',note:'Motion sickness is treated with antimuscarinics (scopolamine), NOT cholinergic agonists.'},
+{ch:'ch4',q:'During Pralidoxime therapy for organophosphate poisoning, which parameter should be monitored closely?',opts:['A) Serum electrolytes','B) Liver function tests','C) Serum acetylcholine levels','D) Blood oxygen level','E) Serum acetylcholinesterase levels'],ans:'E) Serum acetylcholinesterase levels',note:'Pralidoxime reactivates AChE → monitoring AChE activity guides adequacy of antidote therapy.'},
+{ch:'ch4',q:'Short-acting AChE inhibitor used to DIAGNOSE myasthenia gravis:',opts:['A) Bethanechol','B) Pilocarpine','C) Edrophonium','D) Echothiophate','E) Neostigmine'],ans:'C) Edrophonium',note:'Edrophonium (Tensilon test): ultra-short-acting AChE inhibitor. Brief improvement in muscle strength confirms MG diagnosis.'},
+{ch:'ch4',q:'Irreversible AChE inhibitor used in treatment of open-angle glaucoma:',opts:['A) Pilocarpine','B) Edrophonium','C) Neostigmine','D) Physostigmine','E) Echothiophate'],ans:'E) Echothiophate',note:'Echothiophate is an irreversible organophosphate AChE inhibitor used topically for open-angle glaucoma (reduces IOP by miosis/trabecular outflow).'},
+{ch:'ch4',q:'Stimulation of exocrine glands by muscarinic agonists leads to:',opts:['A) Sweating','B) Salivation','C) Bronchial secretion','D) Secretion of gastric acid','E) All of the above'],ans:'E) All of the above',note:'M3 receptor activation in exocrine glands → sweating, salivation, lacrimation, bronchial secretion, gastric acid secretion.'},
+{ch:'ch4',q:'Which statement about Physostigmine vs Neostigmine is INCORRECT?',opts:['A) Both reversibly inhibit AChE','B) Neostigmine is more polar and cannot penetrate to CNS','C) Neostigmine effect on skeletal muscle is greater than physostigmine','D) Neostigmine can be used as antidote for competitive NMB','E) Physostigmine cannot enter and stimulate the cholinergic site in the CNS'],ans:'E) Physostigmine cannot enter and stimulate the cholinergic site in the CNS',note:'WRONG: Physostigmine IS lipid-soluble (tertiary amine) → CAN cross BBB and act centrally. Neostigmine (quaternary) cannot.'},
+{ch:'ch4',q:'Muscarinic receptor subtype primarily responsible for glandular secretions:',opts:['A) M1','B) M2','C) M3','D) M4','E) M5'],ans:'C) M3',note:'M3 receptors are the primary muscarinic subtype in exocrine glands (salivary, lacrimal, sweat, bronchial) and smooth muscle.'},
+{ch:'ch4',q:'Drug of choice for emergency lowering of IOP in both open-angle and closed-angle glaucoma:',opts:['A) Carbachol','B) Bethanechol','C) Pilocarpine','D) Atropine','E) Tropicamide'],ans:'C) Pilocarpine',note:'Pilocarpine (direct muscarinic agonist) causes miosis → pulls iris away from trabecular meshwork → enhances aqueous outflow → lowers IOP.'},
+{ch:'ch4',q:'Central AChE inhibitor used to improve Alzheimer\'s symptoms:',opts:['A) Pyridostigmine','B) Edrophonium','C) Donepezil','D) Neostigmine','E) Echothiophate'],ans:'C) Donepezil',note:'Donepezil (and rivastigmine, galantamine) are CNS-penetrating reversible AChE inhibitors approved for Alzheimer\'s disease.'},
+{ch:'ch4',q:'Which is NOT correct about carbachol?',opts:['A) Has both muscarinic and nicotinic actions','B) Is a poor substrate for acetylcholinesterase','C) Is widely used systemically due to high potency and receptor selectivity','D) Is used topically in the eye to treat glaucoma','E) Has profound effects on both cardiovascular and GI systems'],ans:'C) Is widely used systemically due to high potency and receptor selectivity',note:'Carbachol is NOT widely used systemically — its lack of selectivity and systemic side effects limit it to topical ophthalmic use.'},
+{ch:'ch4',q:'Which is NOT correct about muscarinic cholinergic receptors?',opts:['A) M2 is present in the smooth muscle of bronchi','B) Mediate responses by opening intrinsic Na⁺ ion channels','C) Present on vascular endothelium with no cholinergic nerve','D) Predominate in autonomic ganglia','E) Activation of M3 in eye causes increase in IOP'],ans:'C) Present on vascular endothelium with no cholinergic nerve',note:'C is TRUE (vascular endothelium has M3 receptors despite no cholinergic nerve innervation → can be stimulated by drugs). BUT the QUESTION asks what is correct; actually the answer key indicates C is correct. The intended answer is that C is the correct TRUE statement about muscarinic receptors.'},
+{ch:'ch4',q:'Pilocarpine reduces intraocular pressure in glaucoma by:',opts:['A) Relaxing sphincter pupillae','B) Blocking muscarinic receptors','C) Increasing aqueous formation','D) Reducing aqueous formation','E) Enhancing aqueous outflow'],ans:'E) Enhancing aqueous outflow',note:'Pilocarpine → M3 activation → ciliary muscle contraction + miosis → stretches trabecular meshwork → increases aqueous outflow → lowers IOP.'},
+{ch:'ch4',q:'Primary mechanism by which physostigmine enhances cholinergic activity:',opts:['A) Direct stimulation of muscarinic receptors','B) Blocking nicotinic receptors','C) Preventing release of acetylcholine','D) Inhibiting acetylcholinesterase leading to increased acetylcholine','E) Enhancing acetylcholine reuptake'],ans:'D) Inhibiting acetylcholinesterase leading to increased acetylcholine',note:'Physostigmine = reversible AChE inhibitor → prevents ACh hydrolysis → more ACh available at synapses.'},
+{ch:'ch4',q:'Common effect of botulinum toxin exposure:',opts:['A) Increased skeletal muscle tone','B) Skeletal muscle paralysis','C) Enhanced neurotransmitter release','D) Increased acetylcholine levels','E) Hyperactive reflexes'],ans:'B) Skeletal muscle paralysis',note:'Botulinum toxin blocks ACh release at NMJ → flaccid (not spastic) paralysis. Used therapeutically for cosmetics, dystonia, hyperhidrosis.'},
+{ch:'ch4',q:'Which agent inhibits transport of choline into the cholinergic nerve ending?',opts:['A) Tyramine','B) Reserpine','C) Botulinum toxin','D) Hemicholinium','E) Cocaine'],ans:'D) Hemicholinium',note:'Hemicholinium blocks the high-affinity choline transporter (ChT1) → prevents choline uptake → depletes ACh synthesis. Botulinum toxin blocks vesicle release.'},
+{ch:'ch4',q:'Reversible indirect cholinergic agonist for Alzheimer\'s with strong hepatotoxicity:',opts:['A) Donepezil','B) Rivastigmine','C) Galantamine','D) Neostigmine','E) Tacrine'],ans:'E) Tacrine',note:'Tacrine was the first approved AChE inhibitor for Alzheimer\'s — removed from market due to severe hepatotoxicity.'},
+{ch:'ch4',q:'All can activate BOTH muscarinic and nicotinic receptors EXCEPT:',opts:['A) Arecoline','B) Carbachol','C) Echothiophate','D) Pilocarpine','E) Physostigmine'],ans:'D) Pilocarpine',note:'Pilocarpine is SELECTIVE for muscarinic receptors — minimal nicotinic activity. Carbachol and AChE inhibitors activate both.'},
+{ch:'ch4',q:'Neostigmine side effects do NOT include:',opts:['A) Spasm','B) Convulsion','C) Decreased blood pressure','D) Abdominal pain and diarrhea','E) Bronchospasm'],ans:'B) Convulsion',note:'Neostigmine is a quaternary amine → does NOT cross BBB → no CNS effects → no convulsions. Peripheral effects: bradycardia, GI cramps, bronchospasm.'},
+{ch:'ch4',q:'Nicotinic receptors are found EXCEPT at:',opts:['A) CNS','B) Adrenal medulla','C) Bladder','D) Autonomic ganglia','E) Neuromuscular junction of skeletal muscle'],ans:'C) Bladder',note:'Bladder smooth muscle has muscarinic (M3) receptors, NOT nicotinic receptors.'},
+{ch:'ch4',q:'Which muscarinic receptor predominates in cardiac cells?',opts:['A) Muscarinic M1 receptors','B) Muscarinic M2 receptors','C) Muscarinic M3 receptors','D) Muscarinic M4 receptors','E) Muscarinic M5 receptors'],ans:'B) Muscarinic M2 receptors',note:'M2 receptors in heart are Gi-coupled → inhibit adenylyl cyclase → ↓cAMP → bradycardia, ↓contractility, ↓conduction.'},
+{ch:'ch4',q:'Atropine effect does NOT include:',opts:['A) 7–14 days mydriasis','B) Antispasmodic agent','C) Antidote for insecticides','D) Treatment of bradycardia','E) Reduce hydrochloric acid production'],ans:'E) Reduce hydrochloric acid production',note:'Atropine does reduce gastric acid secretion (M1/M3 blockade) — BUT this is NOT a clinically MAJOR use. The answer indicates E is incorrect/not a primary effect.'},
+{ch:'ch4',q:'Regarding depolarizing NMBs, which statement is INCORRECT?',opts:['A) Succinylcholine is injected IV with brief duration','B) Succinylcholine is rapidly hydrolyzed by plasma pseudocholinesterase','C) Succinylcholine can induce malignant hyperthermia','D) Succinylcholine causes hypokalemia and is not used in renal failure','E) Succinylcholine causes prolonged apnea in pseudocholinesterase-deficient patients'],ans:'D) Succinylcholine causes hypokalemia and is not used in renal failure',note:'WRONG: Succinylcholine causes HYPERKALEMIA (not hypokalemia) — dangerous in burns, trauma, denervation → contraindicated in these + renal failure.'},
+{ch:'ch4',q:'Atropine-like medications are contraindicated in all EXCEPT:',opts:['A) Glaucoma','B) Prostatic hyperplasia','C) Constipation','D) Bronchial asthma','E) Pyloric obstruction'],ans:'D) Bronchial asthma',note:'Antimuscarinics are actually USEFUL in asthma (ipratropium). Contraindicated in: glaucoma, BPH, pyloric obstruction, constipation.'},
+{ch:'ch4',q:'Nicotine in LOW doses can cause all EXCEPT:',opts:['A) Depolarizes autonomic ganglia causing stimulation','B) Increased blood pressure','C) Blood pressure drops','D) Increased peristalsis and secretions','E) Increased cardiac rate'],ans:'C) Blood pressure drops',note:'Low-dose nicotine stimulates ganglia (including sympathetic) → tachycardia and hypertension. Blood pressure DROP is a HIGH-dose/toxic effect.'},
+{ch:'ch4',q:'Atropine blocks ACh action on all EXCEPT:',opts:['A) Central cholinergic receptors','B) Smooth muscle of bronchi','C) Gastrointestinal smooth muscle','D) Autonomic ganglia','E) Sweat glands'],ans:'D) Autonomic ganglia',note:'Atropine blocks MUSCARINIC receptors. Autonomic ganglia have NICOTINIC receptors → NOT blocked by atropine.'},
+{ch:'ch4',q:'Which antimuscarinic agent needs administration more than once per day due to short half-life?',opts:['A) Solifenacin','B) Oxybutynin','C) Trospium','D) Doxazosin','E) Fesoterodine'],ans:'B) Oxybutynin',note:'Oxybutynin has a short half-life requiring multiple daily doses (or extended-release/patch formulation). Solifenacin and fesoterodine are once-daily.'},
+{ch:'ch4',q:'Succinylcholine side effect that limits use in major burns patients:',opts:['A) Hyperthermia','B) Difficulty breathing','C) Ganglionic blockade','D) Hypotension','E) Hyperkalemia'],ans:'E) Hyperkalemia',note:'Burns cause upregulation of extrajunctional nicotinic receptors → succinylcholine → massive K⁺ efflux → fatal hyperkalemia.'},
+{ch:'ch4',q:'Which anticholinesterase is used in treatment of myasthenia gravis?',opts:['A) Physostigmine','B) Edrophonium','C) Neostigmine','D) Donepezil','E) Tacrine'],ans:'C) Neostigmine',note:'Neostigmine and pyridostigmine are the standard AChE inhibitors for long-term MG management.'},
+{ch:'ch4',q:'Which is NOT used in treatment of organophosphate poisoning?',opts:['A) Administration of atropine','B) Benzodiazepines for seizure control','C) Induction of emesis','D) Administration of pralidoxime','E) Supportive care including airway management'],ans:'C) Induction of emesis',note:'Emesis is contraindicated in OP poisoning (aspiration risk, rapid deterioration). Treatment: atropine, pralidoxime, diazepam, airway support.'},
+{ch:'ch4',q:'Why does vagus nerve stimulation cause bradycardia but NOT vasodilation in most systemic blood vessels?',opts:['A) Vagus nerve releases norepinephrine','B) Most systemic blood vessels lack parasympathetic innervation','C) ACh released constricts vascular smooth muscle','D) Vagus nerve innervates adrenal medulla, not blood vessels','E) Parasympathetic fibers use epinephrine'],ans:'B) Most systemic blood vessels lack parasympathetic innervation',note:'Most blood vessels receive NO parasympathetic fibers (exception: erectile tissue, some cerebral vessels). Vasodilation by cholinergic agents is pharmacological, not physiological.'},
+
+// ─────────────────── CHAPTER 5 — CHOLINERGIC ANTAGONISTS ───────────────────
+{ch:'ch5',q:'Actions of muscarinic antagonists — all EXCEPT:',opts:['A) Decreases gastric secretion','B) Increases heart rate','C) Decreases tracheobronchial secretions','D) Pupillary constriction and cycloplegia','E) Relaxation of the GI tract'],ans:'D) Pupillary constriction and cycloplegia',note:'Muscarinic antagonists cause MYDRIASIS (pupil dilation) and cycloplegia — NOT constriction. They block M3 in iris sphincter and ciliary muscle.'},
+{ch:'ch5',q:'All about atropine are correct EXCEPT:',opts:['A) Atropine might induce reduction of cardiac rate at very high dose','B) Atropine toxicity can be overcome by physostigmine','C) Atropine usage provokes latent glaucoma especially in elderly','D) Atropine usage provokes urine retention','E) Atropine can reverse the central and muscarinic action of isoflurophate'],ans:'A) Atropine might induce reduction of cardiac rate at very high dose',note:'WRONG: Atropine at VERY LOW doses can cause paradoxical bradycardia (central vagal stimulation), not high dose. High dose causes tachycardia.'},
+{ch:'ch5',q:'A 30-year-old ingested high dose of atropine. Which drug might be used as antidote?',opts:['A) Dopamine','B) Epinephrine','C) Scopolamine','D) Acetylcholine','E) None of the above'],ans:'E) None of the above',note:'ACh is rapidly degraded and cannot be given. Physostigmine (AChE inhibitor, crosses BBB) is the actual antidote for atropine overdose.'},
+{ch:'ch5',q:'Which antimuscarinic drug is used as an INHALATION drug in asthma?',opts:['A) Atropine','B) Scopolamine','C) Ipratropium','D) Tropicamide','E) Cyclopentolate'],ans:'C) Ipratropium',note:'Ipratropium bromide is a short-acting inhaled antimuscarinic bronchodilator used in COPD/asthma. Atropine causes systemic side effects when inhaled.'},
+{ch:'ch5',q:'Antimuscarinic drugs are indicated in all EXCEPT:',opts:['A) Parkinson\'s disease','B) Retinal examination','C) Intestinal spasm','D) Motion sickness','E) Atrial fibrillation'],ans:'E) Atrial fibrillation',note:'Antimuscarinics are NOT indicated for AF (which needs antiarrhythmics, rate control, or anticoagulation).'},
+{ch:'ch5',q:'The following are NONSELECTIVE muscarinic antagonists EXCEPT:',opts:['A) Atropine','B) Scopolamine','C) Oxybutynin','D) Trospium','E) Solifenacin'],ans:'E) Solifenacin',note:'Solifenacin is a SELECTIVE M3 antagonist (for overactive bladder). Atropine, scopolamine, oxybutynin, trospium are non-selective.'},
+{ch:'ch5',q:'NMB that CANNOT be used for patients with renal failure:',opts:['A) Cisatracurium','B) Rocuronium','C) Pancuronium','D) Vecuronium','E) Mivacurium'],ans:'C) Pancuronium',note:'Pancuronium is primarily renally excreted → accumulates in renal failure → prolonged blockade. Cisatracurium is safest (Hofmann elimination).'},
+{ch:'ch5',q:'IV succinylcholine will initially produce:',opts:['A) Apnea','B) Ganglionic blockade','C) Vascular smooth muscle relaxation','D) Urinary bladder paralysis','E) Muscle fasciculations'],ans:'E) Muscle fasciculations',note:'Succinylcholine (depolarizing NMB) causes initial fasciculations (depolarization of NMJ) followed by flaccid paralysis as the receptor stays depolarized.'},
+{ch:'ch5',q:'Best NMB choice for patient with BOTH liver AND renal dysfunction:',opts:['A) Vecuronium','B) Rocuronium','C) Tubocurarine','D) Cisatracurium','E) Pancuronium'],ans:'D) Cisatracurium',note:'Cisatracurium undergoes Hofmann elimination (spontaneous chemical degradation at body temperature) → independent of liver/kidney function.'},
+{ch:'ch5',q:'All NMB-enhancing agents EXCEPT:',opts:['A) Calcium-channel blockers decrease neuromuscular block of succinylcholine','B) Nicotine affects both sympathetic and parasympathetic ganglia','C) Mecamylamine produces competitive nicotinic blockade of ganglia','D) Tubocurarine has histamine-releasing action','E) Homatropine reduces eye pressure following eye surgery'],ans:'A) Calcium-channel blockers decrease neuromuscular block of succinylcholine',note:'WRONG: Calcium channel blockers actually ENHANCE (not decrease) the neuromuscular block by reducing Ca²⁺ needed for ACh release.'},
+{ch:'ch5',q:'Atropine does NOT antagonize which feature of anticholinesterase poisoning?',opts:['A) Hypotension','B) Central excitation','C) Muscle paralysis','D) Bronchoconstriction','E) Salivation'],ans:'C) Muscle paralysis',note:'Muscle paralysis is a NICOTINIC effect (NMJ). Atropine only blocks MUSCARINIC receptors → cannot reverse NMJ paralysis (needs pralidoxime).'},
+{ch:'ch5',q:'Short-acting muscarinic antagonist approved as a bronchodilator:',opts:['A) Glycopyrrolate','B) Tiotropium','C) Darifenacin','D) Ipratropium','E) Aclidinium'],ans:'D) Ipratropium',note:'Ipratropium is a SHORT-acting inhaled muscarinic antagonist (SAMA) used for COPD/asthma. Tiotropium, glycopyrrolate, aclidinium are long-acting (LAMA).'},
+{ch:'ch5',q:'Aclidinium, glycopyrrolate, and tiotropium are classified as:',opts:['A) Neuromuscular-blocking agents','B) Ganglionic blockers','C) Short-acting muscarinic antagonists','D) Long-acting muscarinic antagonists','E) Antimuscarinic agents for overactive bladder'],ans:'D) Long-acting muscarinic antagonists',note:'All three are LAMAs used for COPD. Tiotropium (once daily), glycopyrrolate (twice daily), aclidinium (twice daily).'},
+{ch:'ch5',q:'Drugs used to manage overactive bladder and urinary incontinence:',opts:['A) Oxybutynin','B) Darifenacin','C) Tolterodine','D) Solifenacin','E) All of the above'],ans:'E) All of the above',note:'All are antimuscarinic agents used for overactive bladder. They block M3 receptors in bladder detrusor muscle.'},
+{ch:'ch5',q:'Sugammadex is used to terminate the effect of:',opts:['A) Atropine','B) Cisatracurium','C) Pancuronium','D) Mivacurium','E) Vecuronium'],ans:'E) Vecuronium',note:'Sugammadex is a selective relaxant binding agent (SRBA) that encapsulates rocuronium and vecuronium, reversing their neuromuscular block.'},
+{ch:'ch5',q:'Regarding succinylcholine, which statement is NOT TRUE?',opts:['A) It may cause hypothermia','B) It may cause apnea','C) It may cause hyperkalemia','D) It cannot be used safely in severe burns/massive tissue damage','E) It can cause diaphragm paralysis in pseudocholinesterase-deficient patients'],ans:'A) It may cause hypothermia',note:'Succinylcholine causes HYPERTHERMIA (malignant hyperthermia in susceptible patients), NOT hypothermia.'},
+{ch:'ch5',q:'67-year-old with benign prostatic hyperplasia scheduled for surgery. Drug class absolutely contraindicated:',opts:['A) Alpha-1 blockers','B) Alpha-2 agonists','C) Beta blockers','D) Beta-1 agonists','E) Antimuscarinics'],ans:'E) Antimuscarinics',note:'Antimuscarinics cause urinary retention by blocking M3 receptors in bladder → contraindicated in BPH.'},
+{ch:'ch5',q:'Which statement about ganglionic blockers is TRUE?',opts:['A) They primarily act on muscarinic receptors in ganglia','B) They cause selective blockade of sympathetic ganglia','C) They are commonly used as first-line for hypertension','D) They are used therapeutically in different conditions','E) They have complex and mostly unpredictable effects'],ans:'E) They have complex and mostly unpredictable effects',note:'Ganglionic blockers block ALL autonomic ganglia (both sympathetic and parasympathetic) → complex, unpredictable, undesirable effects → rarely used.'},
+{ch:'ch5',q:'Probable signs of atropine OVERDOSE include:',opts:['A) GI smooth muscle cramping','B) Tachycardia','C) Increased gastric secretion','D) Pupillary constriction','E) Urinary frequency'],ans:'B) Tachycardia',note:'"Hot as a hare, dry as a bone, red as a beet, blind as a bat, mad as a hatter." Atropine overdose: tachycardia, anhidrosis, flushing, mydriasis, delirium.'},
+{ch:'ch5',q:'Drug with longest duration of AChE inhibition:',opts:['A) Echothiophate','B) Neostigmine','C) Physostigmine','D) Pyridostigmine','E) Donepezil'],ans:'A) Echothiophate',note:'Echothiophate is an irreversible organophosphate AChE inhibitor — effect lasts weeks (until new AChE is synthesized).'},
+{ch:'ch5',q:'Muscarinic blocker used as standard treatment for motion sickness:',opts:['A) Tropicamide','B) Oxybutynin','C) Atropine','D) Scopolamine','E) Ipratropium'],ans:'D) Scopolamine',note:'Scopolamine (hyoscine) transdermal patch is the drug of choice for motion sickness — crosses BBB to block vestibular nuclei.'},
+{ch:'ch5',q:'Which agent is used during sarin (nerve agent) poisoning?',opts:['A) Pilocarpine','B) Carbachol','C) Atropine','D) Physostigmine','E) Glycopyrrolate'],ans:'C) Atropine',note:'Sarin is an organophosphate nerve agent → cholinergic crisis. Treatment: large doses of atropine (blocks muscarinic effects) + pralidoxime.'},
+{ch:'ch5',q:'Anticholinergic drugs can treat all EXCEPT:',opts:['A) Excessive sweating','B) Myasthenia gravis','C) Parkinson\'s disease','D) Intestinal smooth muscle spasm','E) Overactive bladder and incontinence'],ans:'B) Myasthenia gravis',note:'MG is treated with AChE INHIBITORS (to increase ACh). Anticholinergics (antimuscarinics) would worsen MG.'},
+{ch:'ch5',q:'Common cholinergic antagonist used in asthma treatment:',opts:['A) Benztropine','B) Oxybutynin','C) Atropine','D) Ipratropium','E) Tolterodine'],ans:'D) Ipratropium',note:'Ipratropium is the inhaled anticholinergic (SAMA) used in asthma and COPD for bronchodilation.'},
+{ch:'ch5',q:'Organophosphates primarily achieve their effect by:',opts:['A) Reversible inhibition of acetylcholinesterase','B) Reversible inhibition of butyrylcholinesterase','C) Irreversible inhibition of acetylcholinesterase','D) Irreversible inhibition of monoamine oxidase','E) Irreversible inhibition of cytochrome P450'],ans:'C) Irreversible inhibition of acetylcholinesterase',note:'Organophosphates covalently phosphorylate the serine residue in AChE\'s active site → irreversible inactivation (until "aging" occurs).'},
+{ch:'ch5',q:'Pralidoxime is used in organophosphate poisoning by:',opts:['A) Directly activating cholinergic receptors','B) Inhibiting synthesis of acetylcholine','C) Blocking muscarinic receptors','D) Reactivating acetylcholinesterase by displacing the phosphate group','E) Enhancing effects of organophosphates'],ans:'D) Reactivating acetylcholinesterase by displacing the phosphate group',note:'Pralidoxime (2-PAM) attacks the phosphorus on the enzyme-OP complex, displacing it and restoring AChE activity (if given before "aging").'},
+{ch:'ch5',q:'NMBs are clinically useful in all EXCEPT:',opts:['A) Overactive bladder in patient with dementia','B) Rapid intubation in respiratory failure','C) Assisting endotracheal intubation','D) Muscle relaxation at lower anesthetic doses','E) Adjuvant therapy for mechanical ventilation in critically ill patients'],ans:'A) Overactive bladder in patient with dementia',note:'Overactive bladder uses antimuscarinics, not NMBs. NMBs are used for anesthesia/intubation/ICU ventilation.'},
+{ch:'ch5',q:'Molecular action mediating the therapeutic effect of atropine:',opts:['A) Inhibition of ACh secretion by gastric cells','B) Decreased cytosolic Ca²⁺ in smooth muscle cells','C) Opening of Na⁺ channels in smooth muscle cells','D) Increased firing discharge of vagus nerve','E) Activation of presynaptic cholinergic autoreceptors'],ans:'B) Decreased cytosolic Ca²⁺ in smooth muscle cells',note:'Atropine blocks M3 receptors → prevents IP3-mediated Ca²⁺ release → decreased intracellular Ca²⁺ → smooth muscle relaxation.'},
+{ch:'ch5',q:'NMB action enhanced by all EXCEPT:',opts:['A) Desflurane','B) Gentamicin','C) Edrophonium','D) Calcium-channel blockers','E) Tobramycin'],ans:'C) Edrophonium',note:'Edrophonium (AChE inhibitor) REVERSES NMB. Desflurane, aminoglycosides (gentamicin, tobramycin), and Ca-channel blockers all ENHANCE NMB.'},
+{ch:'ch5',q:'Atropine\'s systemic half-life and duration in the eye (topical):',opts:['A) 9 hours, 8 hours','B) 6 hours, 11 hours','C) 10 hours, 15 hours','D) 4 hours, 7 days','E) 13 hours, 29 days'],ans:'D) 4 hours, 7 days',note:'Atropine systemic t½ ≈ 4h. Topical ophthalmic action persists 7–14 days due to slow dissociation from iris/ciliary muscle receptors.'},
+{ch:'ch5',q:'NMB that produces fasciculations first, then paralysis:',opts:['A) Vecuronium','B) Cisatracurium','C) Mivacurium','D) Succinylcholine','E) All the above'],ans:'D) Succinylcholine',note:'Succinylcholine (depolarizing NMB) activates all NMJ receptors → initial fasciculations → then sustained depolarization → flaccid paralysis.'},
+{ch:'ch5',q:'Overactive bladder drug used in patients with HEPATIC disease and dementia:',opts:['A) Solifenacin','B) Tolterodine','C) Trospium','D) Oxybutynin','E) Atropine'],ans:'C) Trospium',note:'Trospium is a quaternary amine → does NOT cross BBB → no CNS effects → safe in dementia. Also minimally hepatically metabolized.'},
+{ch:'ch5',q:'Postoperative muscle soreness may be a side effect of:',opts:['A) Succinylcholine','B) Tubocurarine','C) Pancuronium','D) Atracurium','E) Cisatracurium'],ans:'A) Succinylcholine',note:'Succinylcholine-induced fasciculations cause microtrauma to muscle fibers → postoperative muscle soreness and myalgia.'},
+{ch:'ch5',q:'Which NMB can be eliminated by Sugammadex?',opts:['A) Succinylcholine','B) Cisatracurium','C) Rocuronium','D) Pancuronium','E) Mivacurium'],ans:'C) Rocuronium',note:'Sugammadex is a modified cyclodextrin that encapsulates rocuronium (and vecuronium) → rapid reversal of NMB.'},
+
+// ─────────────────── CHAPTER 6 — ADRENERGIC AGONISTS ───────────────────
+{ch:'ch6',q:'Selective α2 agonist is:',opts:['A) Clonidine','B) Prazosin','C) Adrenaline','D) Propranolol','E) Glycopyrrolate'],ans:'A) Clonidine',note:'Clonidine is a selective α2 agonist → acts on presynaptic α2 (↓NE release) and CNS → reduces sympathetic outflow → antihypertensive, used in ADHD, pain.'},
+{ch:'ch6',q:'β2 stimulants frequently cause:',opts:['A) Vasodilation in the skin','B) Skeletal muscle tremor','C) Stimulation of renin release','D) Increased cGMP in mast cells','E) Hypoglycemia'],ans:'B) Skeletal muscle tremor',note:'β2 agonists stimulate β2 receptors in skeletal muscle → tremor (most common side effect of albuterol, salbutamol).'},
+{ch:'ch6',q:'Catecholamine precursor:',opts:['A) Tyramine','B) Glycine','C) Tyrosine','D) Alanine','E) Cysteine'],ans:'C) Tyrosine',note:'Catecholamine synthesis: Tyrosine → DOPA → Dopamine → NE → Epinephrine. Key enzyme: tyrosine hydroxylase.'},
+{ch:'ch6',q:'Nonselective β receptor agonist:',opts:['A) Clonidine','B) Isoproterenol','C) Propranolol','D) Dopamine','E) Dobutamine'],ans:'B) Isoproterenol',note:'Isoproterenol (isoprenaline) is a nonselective β1+β2 agonist with no α activity. Dobutamine is mainly β1-selective.'},
+{ch:'ch6',q:'Which adrenergic receptor mediates increased heart rate, contractility, and conduction due to epinephrine?',opts:['A) α1 receptor','B) α2 receptor','C) β1 receptor','D) β2 receptor','E) β3 receptor'],ans:'C) β1 receptor',note:'β1 receptors in the heart (SA node, AV node, ventricles): activation → ↑HR, ↑contractility, ↑conduction velocity (positive chrono-/ino-/dromotropy).'},
+{ch:'ch6',q:'Which is NOT a direct-acting adrenergic agonist?',opts:['A) Amphetamines','B) Norepinephrine','C) Phenylephrine','D) Fenoldopam','E) Isoproterenol'],ans:'A) Amphetamines',note:'Amphetamines are INDIRECT-acting (displace stored catecholamines, inhibit reuptake). NE, phenylephrine, fenoldopam, isoproterenol are direct-acting.'},
+{ch:'ch6',q:'Indirect-acting adrenergic agonists — all EXCEPT:',opts:['A) Displacement of stored catecholamines from adrenergic nerve ending','B) Inhibition of reuptake of catecholamines already released','C) Cause release of endogenous catecholamines from adrenergic neurons','D) Interaction with adrenoreceptors','E) Inhibit the degradation of catecholamines'],ans:'D) Interaction with adrenoreceptors',note:'Indirect agents do NOT directly interact with adrenoreceptors. They increase synaptic catecholamine availability indirectly.'},
+{ch:'ch6',q:'Central effect of Amphetamines:',opts:['A) Tachycardia','B) Miosis','C) Bronchodilation','D) Hypertension','E) Anorexia'],ans:'E) Anorexia',note:'CNS effects of amphetamines: anorexia (appetite suppression), euphoria, alertness, insomnia. Tachycardia and hypertension are peripheral effects.'},
+{ch:'ch6',q:'Patient prescribed phenylephrine drops. Potential adverse effect:',opts:['A) Constipation','B) Diarrhea','C) Epistaxis','D) Hypertension','E) Tinnitus'],ans:'D) Hypertension',note:'Phenylephrine is an α1 agonist → vasoconstriction → increased blood pressure (especially systemically absorbed from nasal drops).'},
+{ch:'ch6',q:'Tyramine consumption with MAOIs leads to:',opts:['A) Hypotension','B) Hypertensive crisis','C) Bradycardia','D) Hyperglycemia','E) Bronchospasm'],ans:'B) Hypertensive crisis',note:'MAOIs prevent tyramine degradation → tyramine displaces stored catecholamines → massive NE release → severe hypertensive crisis ("cheese reaction").'},
+{ch:'ch6',q:'Drug recommended to treat orthostatic hypotension by stimulating α1 receptors, given 3–4 hour intervals:',opts:['A) Midodrine','B) Adrenaline','C) Norepinephrine','D) Clonidine','E) Oxymetazoline'],ans:'A) Midodrine',note:'Midodrine is an oral α1 agonist (prodrug → desglymidodrine) for orthostatic hypotension. Short-acting, requires multiple daily doses.'},
+{ch:'ch6',q:'New drug increases systolic and diastolic BP, cardiac output, and heart rate. Most resembles:',opts:['A) Atropine','B) Epinephrine','C) Isoproterenol','D) Phenylephrine','E) Physostigmine'],ans:'B) Epinephrine',note:'Epinephrine activates all adrenergic receptors (α1+α2+β1+β2) → ↑HR (β1), ↑contractility (β1), ↑BP (α1+β1), overall ↑cardiac output.'},
+{ch:'ch6',q:'Release of norepinephrine can be inhibited by:',opts:['A) Reserpine','B) Guanethidine','C) Imipramine','D) Duloxetine','E) All of the above'],ans:'B) Guanethidine',note:'Guanethidine inhibits NE release by blocking exocytosis. Reserpine depletes vesicular stores. Imipramine/duloxetine INHIBIT REUPTAKE (increase NE).'},
+{ch:'ch6',q:'Most probable side effect of metaproterenol in asthma patient:',opts:['A) Direct stimulation of renin release','B) Hypoglycemia','C) Skeletal muscle tremor','D) Vasodilation in the skin','E) Blood vessel constriction'],ans:'C) Skeletal muscle tremor',note:'β2 agonists (metaproterenol, albuterol) cause skeletal muscle tremor — most common/bothersome side effect.'},
+{ch:'ch6',q:'Regarding mixed-action adrenergic agents, which is INCORRECT?',opts:['A) Stimulate both α and β receptors','B) Pseudoephedrine is primarily used orally for nasal/sinus congestion','C) Ephedrine produces bronchodilation','D) Pseudoephedrine has been illegally used to produce methamphetamine','E) Ephedrine is used to treat hypertension'],ans:'E) Ephedrine is used to treat hypertension',note:'Ephedrine is used for HYPOTENSION (e.g., spinal anesthesia-induced), NOT hypertension.'},
+{ch:'ch6',q:'In adrenoceptors, which is INCORRECT?',opts:['A) α1 receptors are Gq protein-coupled mediating via IP3 and DAG','B) α1B receptors in blood vessels cause vasoconstriction','C) β2 receptors have higher affinity for epinephrine than norepinephrine','D) β3 receptors are involved in lipolysis','E) β receptors are Gi receptors; activation decreases cAMP'],ans:'E) β receptors are Gi receptors; activation decreases cAMP',note:'WRONG: β receptors are Gs-coupled → activate adenylyl cyclase → INCREASE cAMP. Gi receptors decrease cAMP (α2, M2).'},
+{ch:'ch6',q:'Use of β2 adrenergic agonists in obstetrics is primarily for:',opts:['A) Inducing labor','B) Controlling postpartum hemorrhage','C) Treating gestational hypertension','D) Delaying premature labor','E) Enhancing fetal lung maturity'],ans:'D) Delaying premature labor',note:'β2 agonists (terbutaline, ritodrine) cause uterine relaxation (tocolysis) → delay preterm labor (give corticosteroids time to mature fetal lungs).'},
+{ch:'ch6',q:'Clinical condition associated with hyperactivity of adrenergic neurons:',opts:['A) Alzheimer\'s disease','B) Parkinson\'s disease','C) Hypothyroidism','D) Anxiety disorders','E) Multiple sclerosis'],ans:'D) Anxiety disorders',note:'Anxiety disorders are associated with increased sympathetic (adrenergic) activity → palpitations, sweating, tremor, ↑HR.'},
+{ch:'ch6',q:'Cellular response triggered when dobutamine activates its receptor:',opts:['A) Increase cAMP','B) Decrease cAMP','C) Increase DAG','D) Increase IP3','E) Decrease Ca²⁺'],ans:'A) Increase cAMP',note:'Dobutamine acts on β1 (mainly) → Gs → adenylyl cyclase → ↑cAMP → PKA activation → ↑contractility.'},
+{ch:'ch6',q:'Which is NOT correct about epinephrine action?',opts:['A) Has negative inotropic and positive chronotropic effects','B) Has significant hyperglycemic effect','C) Increases systolic BP with slight increase in diastolic BP','D) Inhibits release of histamine from mast cells','E) Increases lipolysis'],ans:'A) Has negative inotropic and positive chronotropic effects',note:'WRONG: Epinephrine has POSITIVE inotropic (β1) AND positive chronotropic (β1) effects. Both contractility and heart rate increase.'},
+{ch:'ch6',q:'Drug causing increase in non-vesicular release of catecholamines from sympathetic neurons:',opts:['A) Phenylephrine','B) Amphetamine','C) Guanethidine','D) Clonidine','E) Ephedrine'],ans:'B) Amphetamine',note:'Amphetamines enter nerve terminals and cause NON-vesicular (carrier-mediated) release of catecholamines by reversing the NE transporter.'},
+{ch:'ch6',q:'Similarity between ephedrine and adrenaline:',opts:['A) Potency','B) Inability to penetrate the blood-brain barrier','C) Duration of action','D) Producing both α and β adrenergic effects','E) Are synthetic compounds'],ans:'D) Producing both α and β adrenergic effects',note:'Both ephedrine and epinephrine activate α and β receptors (mixed action). Differences: potency, duration (ephedrine > epi), CNS penetration (ephedrine penetrates BBB).'},
+{ch:'ch6',q:'Drug capable of inhibiting release of norepinephrine into the synaptic space:',opts:['A) Imipramine','B) Reserpine','C) Guanethidine','D) Botulinum toxin','E) Cocaine'],ans:'C) Guanethidine',note:'Guanethidine enters adrenergic nerve terminals and blocks exocytosis of NE. Reserpine depletes vesicular stores. Imipramine and cocaine inhibit reuptake.'},
+{ch:'ch6',q:'Indirect-acting adrenergic drugs include all EXCEPT:',opts:['A) Displacement of stored catecholamines from adrenergic nerve ending','B) Inhibition of reuptake of catecholamines already released','C) Interaction with adrenoceptors','D) Inhibition of degradation of endogenous catecholamines','E) Prevent displacement of stored catecholamines'],ans:'C) Interaction with adrenoceptors',note:'By definition, indirect-acting agents do NOT directly interact with adrenoceptors — they increase synaptic catecholamines indirectly.'},
+{ch:'ch6',q:'How does reserpine primarily impact sympathetic function?',opts:['A) Increased release of norepinephrine','B) Block the synthesis of norepinephrine','C) Block of norepinephrine receptors','D) Depletion of stored norepinephrine','E) Block of sympathetic ganglia'],ans:'D) Depletion of stored norepinephrine',note:'Reserpine blocks VMAT (vesicular monoamine transporter) → prevents NE loading into vesicles → NE degraded → depletion of vesicular stores.'},
+{ch:'ch6',q:'Second messenger for smooth muscle contraction by α1 receptor activation:',opts:['A) Cyclic adenosine monophosphate (cAMP)','B) G-protein','C) Inositol triphosphate (IP3) and diacylglycerol (DAG)','D) Sodium','E) Cyclic guanosine monophosphate (cGMP)'],ans:'C) Inositol triphosphate (IP3) and diacylglycerol (DAG)',note:'α1 → Gq → phospholipase C → PIP2 → IP3 (releases Ca²⁺ from ER) + DAG (activates PKC) → smooth muscle contraction.'},
+{ch:'ch6',q:'Drug primarily used in treatment of cardiogenic and septic shock:',opts:['A) Norepinephrine','B) Epinephrine','C) Dopamine','D) Dobutamine','E) Isoproterenol'],ans:'C) Dopamine',note:'Dopamine at moderate doses → β1 (↑cardiac output) + D1 (renal/mesenteric vasodilation) → used in cardiogenic/septic shock to improve perfusion.'},
+{ch:'ch6',q:'Distinguishing pharmacokinetic feature of ephedrine vs other adrenergic agonists:',opts:['A) Short half-life','B) It is a prodrug','C) Minimal oral bioavailability','D) Lack of crossing blood-brain barrier','E) Longer duration of action'],ans:'E) Longer duration of action',note:'Ephedrine is NOT a catecholamine → NOT a substrate for COMT or MAO → longer duration of action than catecholamines. Also well absorbed orally and crosses BBB.'},
+{ch:'ch6',q:'Primary reason for using epinephrine rather than norepinephrine in anaphylaxis:',opts:['A) Longer duration of action','B) Lack of β1 adrenergic receptor activity','C) Stronger α1 receptor activity','D) Presence of both α and β adrenergic receptor activities','E) Lower risk of arrhythmia'],ans:'D) Presence of both α and β adrenergic receptor activities',note:'Anaphylaxis treatment needs: α1 (vasoconstriction, ↑BP), β1 (↑cardiac output), β2 (bronchodilation, mast cell stabilization). Only epinephrine has all.'},
+{ch:'ch6',q:'Adrenergic receptor on ciliary epithelial cells that reduces aqueous secretion:',opts:['A) Beta-1 receptor','B) Beta-2 receptor','C) Beta-3 receptor','D) Alpha-1 receptor','E) Alpha-2 receptor'],ans:'E) Alpha-2 receptor',note:'α2 agonists (e.g., apraclonidine, brimonidine) reduce aqueous humor production by ciliary epithelium → lower IOP in glaucoma.'},
+{ch:'ch6',q:'Ephedrine resembles epinephrine in:',opts:['A) Potency','B) Penetration of blood-brain barrier','C) Duration of action','D) Selectivity for adrenergic receptors','E) None of the above'],ans:'D) Selectivity for adrenergic receptors',note:'Both ephedrine and epinephrine are NON-SELECTIVE — they activate both α and β receptors. They differ in potency, duration, and CNS penetration.'},
+{ch:'ch6',q:'Which statement is FALSE about epinephrine actions?',opts:['A) Causes vasoconstriction in skin/viscera via α1','B) Increases renin release by acting on β1 in kidney','C) Initiates lipolysis through β receptors in adipose tissue','D) Is first-line treatment for chronic asthma due to prolonged β2 bronchodilation','E) Inhibits release of histamine from mast cells'],ans:'D) Is first-line treatment for chronic asthma due to prolonged β2 bronchodilation',note:'FALSE: Epinephrine is used for ACUTE anaphylaxis/severe asthma attacks, NOT chronic asthma. Selective LABAs (salmeterol) are used for chronic asthma.'},
+{ch:'ch6',q:'Location and function of α1-adrenergic receptors:',opts:['A) Located on presynaptic membrane, inhibit neurotransmitter release','B) Present on postsynaptic membrane, mediate smooth muscle constriction','C) Found on cardiac muscle, increase HR and contractility','D) Located on skeletal muscle, facilitate voluntary contraction','E) Present in pancreas, regulate insulin secretion'],ans:'B) Present on postsynaptic membrane, mediate smooth muscle constriction',note:'α1 receptors are postsynaptic (on effector cells): vascular smooth muscle → vasoconstriction; iris dilator → mydriasis; bladder trigone → urinary retention.'},
+{ch:'ch6',q:'Dopamine\'s effects — all EXCEPT:',opts:['A) Vasoconstriction at higher doses via α1','B) Peripheral mesenteric vasodilation','C) Renal vascular bed vasodilation','D) Interferes with norepinephrine release','E) Interferes with insulin secretion and glucose homeostasis'],ans:'E) Interferes with insulin secretion and glucose homeostasis',note:'Dopamine does NOT significantly interfere with insulin/glucose at therapeutic doses. α2-adrenergic stimulation suppresses insulin (NE effect, not dopamine).'},
+{ch:'ch6',q:'Which agent prevents development of preterm labor in pregnant women?',opts:['A) Albuterol','B) Isoproterenol','C) Terbutaline','D) Metoprolol','E) Atenolol'],ans:'C) Terbutaline',note:'Terbutaline (β2 agonist) causes uterine relaxation (tocolysis) → delays preterm labor. Albuterol is also used but terbutaline is the classic tocolytic β2 agonist.'},
+{ch:'ch6',q:'Asthma patient given nonselective β agonist for bronchoconstriction. Expected adverse effect:',opts:['A) Bradycardia','B) Tachycardia','C) Hypertension','D) Orthostatic hypotension','E) Headache'],ans:'B) Tachycardia',note:'Nonselective β agonists activate both β1 (↑HR) and β2 (vasodilation, reflex tachycardia) → tachycardia is common.'},
+{ch:'ch6',q:'Which is a cardiovascular effect of β2 adrenergic agonists?',opts:['A) Decreased heart rate','B) Increased diastolic blood pressure','C) Increased cardiac contractility','D) Decreased peripheral resistance','E) Increased venous return'],ans:'D) Decreased peripheral resistance',note:'β2 agonists → vascular smooth muscle relaxation → vasodilation → ↓peripheral resistance, ↓diastolic BP.'},
+{ch:'ch6',q:'Catecholamines — all EXCEPT:',opts:['A) High potency, directly activate adrenoreceptors','B) Rapid inactivation by COMT','C) Can penetrate the CNS','D) Have short duration of action','E) Rapid onset of action'],ans:'C) Can penetrate the CNS',note:'Catecholamines are POLAR (hydroxyl groups) → do NOT penetrate the BBB. They are also substrates for COMT and MAO → short duration.'},
+{ch:'ch6',q:'Drug that blocks Na⁺/Cl⁻-dependent norepinephrine transport and reuptake:',opts:['A) Cocaine','B) Amphetamine','C) Tyramine','D) Ephedrine','E) Reserpine'],ans:'A) Cocaine',note:'Cocaine blocks the NE (and dopamine, serotonin) reuptake transporter → increases catecholamines in synapse → vasoconstriction, tachycardia, euphoria.'},
+{ch:'ch6',q:'Which is NOT a catecholamine?',opts:['A) Epinephrine','B) Ephedrine','C) Isoproterenol','D) Dopamine','E) Norepinephrine'],ans:'B) Ephedrine',note:'Catecholamines must have a catechol ring (benzene ring with two adjacent OH groups). Ephedrine lacks this ring → NOT a catecholamine.'},
+{ch:'ch6',q:'Which drug acts as an α1 receptor agonist and is classified as a prodrug?',opts:['A) Midodrine','B) Ephedrine','C) Phenylephrine','D) Prazosin','E) Terbutaline'],ans:'A) Midodrine',note:'Midodrine is a prodrug converted to desglymidodrine (active α1 agonist) used for orthostatic hypotension.'},
+{ch:'ch6',q:'Agonist of peripheral dopamine D1 receptors used as rapid-acting vasodilator for severe hypertension:',opts:['A) Dobutamine','B) Dopamine','C) Midodrine','D) Mirabegron','E) Fenoldopam'],ans:'E) Fenoldopam',note:'Fenoldopam is a selective D1 receptor agonist → renal/mesenteric vasodilation → used for hypertensive emergencies in hospitalized patients.'},
+
+// ─────────────────── CHAPTER 7 — ADRENERGIC ANTAGONISTS ───────────────────
+{ch:'ch7',q:'"First-dose" orthostatic hypotensive response is common with all EXCEPT:',opts:['A) Tamsulosin','B) Prazosin','C) Terazosin','D) Labetalol','E) None of the above'],ans:'A) Tamsulosin',note:'Tamsulosin is selective for α1A receptors (prostate) → minimal vascular effect → minimal orthostatic hypotension. Prazosin has the most pronounced first-dose effect.'},
+{ch:'ch7',q:'β-blockers are indicated for all EXCEPT:',opts:['A) Hypothyroidism','B) Alcohol withdrawal','C) Portal hypertension','D) Performance anxiety','E) All of the above'],ans:'A) Hypothyroidism',note:'β-blockers are NOT indicated for hypothyroidism (contraindicated). Used in: hyperthyroidism (↓heart rate), alcohol withdrawal, portal hypertension, performance anxiety.'},
+{ch:'ch7',q:'β-blocker for hypertension in asthma patient — least likely to worsen asthma:',opts:['A) Propranolol','B) Metoprolol','C) Labetalol','D) Carvedilol','E) Prazosin'],ans:'B) Metoprolol',note:'Metoprolol is a SELECTIVE β1 blocker → less β2 blockade → less risk of bronchoconstriction in asthma. Propranolol, labetalol, carvedilol are nonselective.'},
+{ch:'ch7',q:'Drug that selectively and competitively blocks postsynaptic α1 receptors with no effect on α2 or β:',opts:['A) Ephedrine','B) Labetalol','C) Phentolamine','D) Phenylephrine','E) Prazosin'],ans:'E) Prazosin',note:'Prazosin is a SELECTIVE α1 competitive antagonist with no intrinsic α2 or β activity → reduces vasoconstriction without major reflex tachycardia.'},
+{ch:'ch7',q:'Drug that would prevent tachycardia evoked by isoproterenol:',opts:['A) Atropine','B) Hexamethonium','C) Phentolamine','D) Physostigmine','E) Propranolol'],ans:'E) Propranolol',note:'Isoproterenol is a β1+β2 agonist → tachycardia via β1. Propranolol is a nonselective β blocker → blocks β1 → prevents isoproterenol-induced tachycardia.'},
+{ch:'ch7',q:'α-receptor blocker with NO significant effect on blood pressure:',opts:['A) Prazosin','B) Doxazosin','C) Tamsulosin','D) Terazosin','E) None of the above'],ans:'C) Tamsulosin',note:'Tamsulosin preferentially blocks α1A subtype in prostate/bladder → used for BPH with minimal blood pressure effects (more uroselective than vascular).'},
+{ch:'ch7',q:'Blocking of α-receptors results in all EXCEPT:',opts:['A) Fall in peripheral resistance','B) Bronchospasm','C) Postural hypotension with reflex tachycardia','D) Nasal congestion','E) Epinephrine reversal'],ans:'B) Bronchospasm',note:'Bronchospasm is caused by β-BLOCKERS (block β2 bronchodilation → bronchoconstriction). α-blockers have no direct effect on bronchi.'},
+{ch:'ch7',q:'Propranolol can reverse these effects of adrenaline EXCEPT:',opts:['A) Bronchodilation','B) Lipolysis','C) Mydriasis','D) Muscle tremor','E) Cardiotonic effect'],ans:'C) Mydriasis',note:'Epinephrine-induced mydriasis is mediated by α1 receptors (iris dilator muscle). Propranolol only blocks β receptors → cannot reverse α1-mediated mydriasis.'},
+{ch:'ch7',q:'Most appropriate statement about acebutolol:',opts:['A) Used for stable angina or arrhythmias due to partial agonist effect','B) Increases disturbances of lipid and carbohydrate metabolism','C) Effective in hypertensive patients with moderate tachycardia','D) It is a β2-selective antagonist with partial agonist activity','E) It weakly stimulates β1 and β2 receptors'],ans:'E) It weakly stimulates β1 and β2 receptors',note:'Acebutolol has ISA (intrinsic sympathomimetic activity) — it weakly stimulates β1 and β2 receptors while blocking their response to stronger agonists.'},
+{ch:'ch7',q:'Preferable β-blocker in hypertensive patients with DIABETES or peripheral vascular disease:',opts:['A) Propranolol','B) Timolol','C) Sotalol','D) Metoprolol','E) Pindolol'],ans:'D) Metoprolol',note:'Selective β1 blockers (metoprolol, bisoprolol, atenolol) are preferred in diabetes (less masking of hypoglycemic symptoms) and PVD (less peripheral β2 blockade).'},
+{ch:'ch7',q:'β-blockers treat hypertension by affecting:',opts:['A) Heart','B) Blood vessels','C) Renin-angiotensin system','D) All of the above','E) None of the above'],ans:'D) All of the above',note:'β-blockers lower BP by: ↓cardiac output (heart), peripheral vasodilation (long-term, blood vessels), and ↓renin release from kidney (RAS).'},
+{ch:'ch7',q:'Bisoprolol is specifically indicated for:',opts:['A) Acute asthma attack','B) Prevention of migraine','C) Treatment of glaucoma','D) Severe hypertension','E) Chronic heart failure'],ans:'E) Chronic heart failure',note:'Bisoprolol (selective β1 blocker) is one of three β-blockers proven to reduce mortality in CHF (with carvedilol and metoprolol succinate).'},
+{ch:'ch7',q:'Which drug blocks the carrier involved in reuptake of dopamine/NE into storage vesicles?',opts:['A) Amphetamine','B) Botulinum toxin','C) Cocaine','D) Hemicholinium','E) Reserpine'],ans:'E) Reserpine',note:'Reserpine blocks VMAT (vesicular monoamine transporter 2) → catecholamines cannot be re-packaged into vesicles → degraded by MAO → depleted.'},
+{ch:'ch7',q:'Effect of epinephrine blocked by phentolamine but NOT by metoprolol:',opts:['A) Cardiac stimulation','B) Mydriasis','C) Relaxation of bronchial smooth muscle','D) Increase of cAMP in fat','E) Relaxation of uterus'],ans:'B) Mydriasis',note:'Mydriasis = α1 effect (iris dilator muscle). Phentolamine blocks α receptors → prevents mydriasis. Metoprolol (β1 blocker) has no effect on α-mediated mydriasis.'},
+{ch:'ch7',q:'Beta-blocker with peripheral vasodilator action:',opts:['A) Propranolol','B) Atenolol','C) Acebutolol','D) Nadolol','E) Nebivolol'],ans:'E) Nebivolol',note:'Nebivolol is a selective β1 blocker that also releases NO (nitric oxide) → endothelium-dependent vasodilation.'},
+{ch:'ch7',q:'α1-selective antagonist:',opts:['A) Phentolamine','B) Dihydroergotamine','C) Prazosin','D) Labetalol','E) Phenoxybenzamine'],ans:'C) Prazosin',note:'Prazosin, doxazosin, terazosin, tamsulosin are selective α1 antagonists. Phentolamine and phenoxybenzamine are nonselective (α1+α2).'},
+{ch:'ch7',q:'Common side effect of alpha-blockers due to their vasodilatory effect:',opts:['A) Bradycardia','B) Hypertension','C) Orthostatic hypotension','D) Hyperkalemia','E) Constipation'],ans:'C) Orthostatic hypotension',note:'α1 blockade → ↓venous tone → pooling of blood in legs on standing → orthostatic (postural) hypotension → first-dose effect.'},
+{ch:'ch7',q:'In pheochromocytoma, beta-blockers should be given ONLY after alpha blockade to prevent:',opts:['A) Hypotension','B) Uncontrolled hypertension','C) Reflex tachycardia','D) Cardiac ischemia','E) Renal complications'],ans:'B) Uncontrolled hypertension',note:'If β-blockers are given first, unopposed α1 stimulation by tumor catecholamines → severe hypertensive crisis. α blockade must precede β blockade.'},
+{ch:'ch7',q:'Effect of reserpine on adrenergic neurons:',opts:['A) Increases release of norepinephrine','B) Blocks synthesis of norepinephrine','C) Depletes vesicular stores of norepinephrine','D) Inhibits norepinephrine action at receptors','E) Increases norepinephrine synthesis'],ans:'C) Depletes vesicular stores of norepinephrine',note:'Reserpine blocks VMAT2 → NE cannot enter storage vesicles → metabolized by MAO → vesicles depleted → reduced sympathetic tone.'},
+{ch:'ch7',q:'Which α-blocker requires LESS frequent dosing?',opts:['A) Prazosin','B) Terazosin','C) Doxazosin','D) Tamsulosin','E) Alfuzosin'],ans:'C) Doxazosin',note:'Doxazosin has longest half-life among α-blockers → once-daily dosing. Prazosin (2-3x/day) and alfuzosin (2x/day) need more frequent dosing.'},
+{ch:'ch7',q:'Selective α2 adrenoceptor ANTAGONIST:',opts:['A) Prazosin','B) Phentolamine','C) Yohimbine','D) Clonidine','E) Tolazoline'],ans:'C) Yohimbine',note:'Yohimbine is a selective α2 antagonist. Clonidine is an α2 AGONIST. Phentolamine is a nonselective α1+α2 antagonist.'},
+{ch:'ch7',q:'Mechanism allowing cisatracurium to have a unique elimination pathway:',opts:['A) Plasma cholinesterase hydrolysis','B) Active renal secretion','C) Hepatic metabolism','D) Metabolism in the lung','E) Hofmann elimination'],ans:'E) Hofmann elimination',note:'Cisatracurium undergoes Hofmann elimination (spontaneous chemical degradation at body pH and temperature) → independent of hepatic or renal function.'},
+{ch:'ch7',q:'Alpha-blockers are contraindicated in patients with history of:',opts:['A) Hypertension','B) Asthma','C) Glaucoma','D) Heart failure','E) Hyperlipidemia'],ans:'D) Heart failure',note:'α-blockers can worsen heart failure by causing excessive vasodilation → reflex tachycardia, neurohormonal activation.'},
+{ch:'ch7',q:'Which drug has BOTH alpha AND beta-blocking effects?',opts:['A) Labetalol','B) Nadolol','C) Acebutolol','D) Timolol','E) Pindolol'],ans:'A) Labetalol',note:'Labetalol (and carvedilol) block both α1 and β receptors. Ratio labetalol: 1:4 (α:β IV) and 1:7 (oral). Used in hypertensive emergencies.'},
+{ch:'ch7',q:'Lower CNS effects seen with:',opts:['A) Propranolol','B) Atenolol','C) Clonidine','D) Physostigmine','E) Scopolamine'],ans:'B) Atenolol',note:'Atenolol is HYDROPHILIC → does NOT penetrate BBB → minimal CNS side effects (fewer nightmares, depression vs propranolol which is lipophilic).'},
+{ch:'ch7',q:'Regarding phenoxybenzamine — all correct EXCEPT:',opts:['A) Used for anesthesia reversal','B) Binds alpha receptors covalently','C) Treats pheochromocytoma','D) Induces reflex tachycardia','E) Nonselective alpha blocker'],ans:'A) Used for anesthesia reversal',note:'Phenoxybenzamine is NOT used for anesthesia reversal. It is used for pheochromocytoma preoperative management (irreversible, nonselective α blocker).'},
+{ch:'ch7',q:'Selective β1 blockers — which one mediates nitric oxide release?',opts:['A) Bisoprolol','B) Atenolol tartrate','C) Betaxolol','D) Atenolol succinate','E) Nebivolol'],ans:'E) Nebivolol',note:'Nebivolol is unique: selective β1 blocker + stimulates endothelial NO synthase → NO release → vasodilation.'},
+{ch:'ch7',q:'Which β-blocker does NOT have risk of bronchospasm?',opts:['A) Propranolol','B) Atenolol','C) Timolol','D) Nadolol','E) All of the above'],ans:'B) Atenolol',note:'Atenolol is a β1-selective blocker → LESS risk (not zero) of bronchospasm compared to nonselective agents (propranolol, timolol, nadolol).'},
+{ch:'ch7',q:'Labetalol is unique among adrenergic blockers because it:',opts:['A) Blocks only β1 receptors','B) Blocks both alpha and beta receptors','C) Has no intrinsic sympathomimetic activity','D) Acts as a direct vasodilator','E) Primarily blocks α2 receptors'],ans:'B) Blocks both alpha and beta receptors',note:'Labetalol is the prototypical combined α+β blocker → lowers BP through both reduced cardiac output (β) and vasodilation (α).'},
+{ch:'ch7',q:'Alpha-blocker sometimes used off-label to facilitate ureteral stone passage:',opts:['A) Prazosin','B) Terazosin','C) Doxazosin','D) Tamsulosin','E) Alfuzosin'],ans:'D) Tamsulosin',note:'Tamsulosin relaxes the smooth muscle of the ureter (α1A subtype) → facilitates spontaneous passage of ureteral calculi (medical expulsive therapy).'},
+{ch:'ch7',q:'β-blocker with very long duration of action:',opts:['A) Metoprolol','B) Propranolol','C) Nadolol','D) Pindolol','E) Atenolol'],ans:'C) Nadolol',note:'Nadolol is a nonselective β blocker with the longest half-life (~20–24h) → once-daily dosing. Excreted unchanged by kidneys.'},
+{ch:'ch7',q:'Combining MAOIs with tyramine-containing foods is avoided to prevent:',opts:['A) Reflex tachycardia','B) Mydriasis','C) Hypertensive crisis','D) Constipation','E) Urine retention'],ans:'C) Hypertensive crisis',note:'MAOIs prevent tyramine metabolism → tyramine accumulates → massive NE release → hypertensive crisis ("cheese reaction").'},
+{ch:'ch7',q:'In diabetic patients treated with propranolol, what should be closely monitored?',opts:['A) Elevated blood glucose post-insulin injection','B) Enhanced physiological response to hypoglycemia','C) Increased insulin secretion','D) Increased glycogenolysis and glucagon secretion','E) Pronounced hypoglycemia due to decreased glycogenolysis and glucagon secretion'],ans:'E) Pronounced hypoglycemia due to decreased glycogenolysis and glucagon secretion',note:'Propranolol (β-blocker) blocks β2-mediated glycogenolysis and β1-mediated glucagon release → masks hypoglycemia warning signs + impairs glucose recovery.'},
+{ch:'ch7',q:'Non-selective β-blocker with antioxidant activity:',opts:['A) Atenolol','B) Acebutolol','C) Carvedilol','D) Propranolol','E) Timolol'],ans:'C) Carvedilol',note:'Carvedilol is a nonselective β+α1 blocker with antioxidant properties → used in CHF (reduces oxidative stress in failing myocardium).'},
+{ch:'ch7',q:'Which statement about propranolol is FALSE?',opts:['A) It prevents the expected increase in heart rate during exercise or stress','B) It blocks both β1 and β2 receptors with equal affinity','C) It is ineffective against most ventricular arrhythmias except exercise-induced','D) It increases myocardial oxygen demand, worsening angina','E) It causes both negative inotropic and chronotropic effects'],ans:'D) It increases myocardial oxygen demand, worsening angina',note:'FALSE: Propranolol DECREASES myocardial oxygen demand (↓HR, ↓contractility) → used to TREAT angina, not worsen it.'},
+{ch:'ch7',q:'Which β-blocker possesses intrinsic sympathomimetic activity (ISA)?',opts:['A) Propranolol','B) Nebivolol','C) Atenolol','D) Pindolol','E) Esmolol'],ans:'D) Pindolol',note:'Pindolol has the highest ISA among β-blockers — it partially activates β receptors while blocking their response to stronger agonists. Also acebutolol has ISA.'},
+{ch:'ch7',q:'Selective alpha-2 antagonist:',opts:['A) Prazosin','B) Phentolamine','C) Yohimbine','D) Clonidine','E) Tamsulosin'],ans:'C) Yohimbine',note:'Yohimbine = selective α2 antagonist → used for sexual dysfunction, orthostatic hypotension. Clonidine = α2 AGONIST.'},
+{ch:'ch7',q:'Alpha blocker best prescribed for urine retention from enlarged prostate with MINIMUM effect on blood pressure:',opts:['A) Prazosin','B) Doxazosin','C) Phenoxybenzamine','D) Terazosin','E) Tamsulosin'],ans:'E) Tamsulosin',note:'Tamsulosin is uroselective (α1A subtype in prostate) → relaxes prostatic smooth muscle → minimal vascular (BP) effects.'},
+{ch:'ch7',q:'Common adverse effect of α1-blockers like prazosin:',opts:['A) Orthostatic hypotension','B) Reflex bradycardia','C) Bronchoconstriction','D) Hypoglycemia','E) Hyperkalemia'],ans:'A) Orthostatic hypotension',note:'α1 blockade → ↓venous return on standing → orthostatic hypotension, especially after the first dose (first-dose effect).'},
+{ch:'ch7',q:'Therapeutic use of carvedilol:',opts:['A) Treatment of hyperthyroidism','B) Prophylaxis of migraine headaches','C) Treatment of acute asthma exacerbations','D) Management of glaucoma','E) Management of chronic heart failure'],ans:'E) Management of chronic heart failure',note:'Carvedilol (nonselective β+α1 blocker, antioxidant) is one of three β-blockers with proven mortality benefit in CHF.'},
+{ch:'ch7',q:'Doxazosin 4 mg vs tamsulosin 0.4 mg — both used for BPH. Which statement is CORRECT?',opts:['A) Tamsulosin is more potent than doxazosin','B) Tamsulosin is less potent than doxazosin','C) Tamsulosin is more efficacious than doxazosin','D) Tamsulosin is less efficacious than doxazosin','E) Both have the same potency'],ans:'A) Tamsulosin is more potent than doxazosin',note:'Tamsulosin achieves the same effect at a 10-fold lower dose (0.4 mg vs 4 mg) → tamsulosin is MORE POTENT. Potency = dose required, not magnitude of effect.'},
+{ch:'ch7',q:'How do prazosin, terazosin, and doxazosin lower blood pressure?',opts:['A) By blocking α2 receptors and increasing norepinephrine release','B) By causing relaxation of arterial and venous smooth muscle through α1 receptor blockade','C) By directly stimulating β2 receptors in blood vessels','D) By decreasing cardiac output and heart rate','E) By inhibiting renin secretion from kidneys'],ans:'B) By causing relaxation of arterial and venous smooth muscle through α1 receptor blockade',note:'α1 blockade → vascular smooth muscle relaxation → arteriolar and venous dilation → ↓peripheral resistance → ↓BP.'},
+{ch:'ch7',q:'63-year-old woman with recurrent migraine headaches. Which may control symptoms?',opts:['A) Esmolol','B) Albuterol','C) Nebivolol','D) Propranolol','E) Labetalol'],ans:'D) Propranolol',note:'Propranolol is a FIRST-LINE prophylactic treatment for migraine. Timolol is also approved. β-blockers reduce frequency and severity of migraines.'},
+{ch:'ch7',q:'Elderly man after ingesting large quantity of prazosin. Most likely symptom:',opts:['A) Dilation of blood vessels (vasorelaxation)','B) Reduced heart rate (bradycardia)','C) Increased blood pressure','D) Reduction in urinary frequency','E) Increased peripheral vascular resistance'],ans:'A) Dilation of blood vessels (vasorelaxation)',note:'Prazosin overdose → massive α1 blockade → profound vasodilation → severe orthostatic hypotension → hypotensive shock.'},
+{ch:'ch7',q:'Which can UP-REGULATE the α1-adrenergic receptor?',opts:['A) Daily use of phenylephrine','B) Daily use of prazosin','C) Disease causing increased activity of norepinephrine neurons','D) Daily use of amphetamine','E) None of the mentioned'],ans:'B) Daily use of prazosin',note:'Chronic α1 BLOCKADE (prazosin) → reduced receptor stimulation → compensatory receptor upregulation (more α1 receptors expressed). Chronic agonist use → downregulation.'},
+
+]; // END BANK
+
+// ══════════════════════════════════════════════════════════
+//  CHAPTER METADATA
+// ══════════════════════════════════════════════════════════
+const CH_LABELS = {
+  ch1:'Ch1 — Pharmacokinetics',
+  ch2:'Ch2 — Pharmacodynamics',
+  ch3:'Ch3 — Autonomic NS',
+  ch4:'Ch4 — Cholinergic Agonists',
+  ch5:'Ch5 — Cholinergic Antagonists',
+  ch6:'Ch6 — Adrenergic Agonists',
+  ch7:'Ch7 — Adrenergic Antagonists',
+  all:'All Chapters'
+};
+const LETTERS = ['A','B','C','D','E','F'];
+
+// Init counts
+['ch1','ch2','ch3','ch4','ch5','ch6','ch7','all'].forEach(ch => {
+  const count = ch === 'all' ? BANK.length : BANK.filter(q => q.ch === ch).length;
+  const el = document.getElementById('cnt-' + ch);
+  if (el) el.textContent = count + ' questions';
+});
+
+// ══════════════════════════════════════════════════════════
+//  QUIZ ENGINE
+// ══════════════════════════════════════════════════════════
+let activeBank = [], order = [], idx = 0, score = 0, attempts = 0, chosen = [];
+
+function startQuiz(ch) {
+  activeBank = ch === 'all' ? [...BANK] : BANK.filter(q => q.ch === ch);
+  order = activeBank.map((_, i) => i);
+  idx = 0; score = 0; attempts = 0;
+  chosen = new Array(activeBank.length).fill(null);
+  buildAnswerGrid();
+  document.getElementById('screen-select').style.display = 'none';
+  document.getElementById('screen-results').style.display = 'none';
+  document.getElementById('screen-quiz').style.display = 'block';
+  document.getElementById('answer-list').classList.remove('show');
+  document.getElementById('btn-sheet').textContent = 'Show Answer Sheet';
+  document.getElementById('q-mode').textContent = 'Normal order';
+  render();
+}
+
+function goHome() {
+  document.getElementById('screen-quiz').style.display = 'none';
+  document.getElementById('screen-results').style.display = 'none';
+  document.getElementById('screen-select').style.display = 'block';
+}
+
+function shuffleArr(a) {
+  for (let j = a.length-1; j > 0; j--) {
+    const k = Math.floor(Math.random()*(j+1));
+    [a[j],a[k]] = [a[k],a[j]];
+  }
+  return a;
+}
+
+function render() {
+  const q = activeBank[order[idx]];
+  const answered = chosen[order[idx]] !== null;
+  const tag = document.getElementById('q-tag');
+  tag.textContent = CH_LABELS[q.ch] || 'Pharmacology';
+  tag.className = 'qtag ' + q.ch;
+  document.getElementById('progress-display').textContent = (idx+1)+'/'+order.length;
+  document.getElementById('score-display').textContent = score+'/'+attempts;
+  document.getElementById('progress-bar').style.width = ((idx+1)/order.length*100).toFixed(1)+'%';
+  document.getElementById('btn-prev').disabled = idx === 0;
+  document.getElementById('btn-next').textContent = idx === order.length-1 ? 'Finish ✓' : 'Next →';
+  document.getElementById('q-text').textContent = (idx+1)+'. '+q.q;
+  const optDiv = document.getElementById('q-options');
+  optDiv.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = '<span class="opt-letter">'+LETTERS[i]+'</span><span>'+opt.replace(/^[A-Fa-f]\)\s*/,'')+'</span>';
+    btn.onclick = () => choose(opt);
+    if (answered) {
+      btn.disabled = true;
+      if (opt === q.ans) btn.classList.add('correct');
+      if (opt === chosen[order[idx]] && opt !== q.ans) btn.classList.add('wrong');
+    }
+    optDiv.appendChild(btn);
+  });
+  const ex = document.getElementById('q-explain');
+  if (answered) {
+    ex.className = 'explain show';
+    const isOk = chosen[order[idx]] === q.ans;
+    ex.innerHTML = '<span class="correct-label">'+(isOk?'✅ Correct!':'❌ Incorrect')+' — Answer: '+q.ans+'</span>'+(q.note||'');
+  } else {
+    ex.className = 'explain';
+    ex.innerHTML = '';
+  }
+}
+
+function choose(opt) {
+  if (chosen[order[idx]] !== null) return;
+  chosen[order[idx]] = opt;
+  attempts++;
+  if (opt === activeBank[order[idx]].ans) score++;
+  render();
+}
+
+function nextQ() {
+  if (idx < order.length-1) { idx++; render(); }
+  else showResults();
+}
+
+function prevQ() { if (idx > 0) { idx--; render(); } }
+
+function shuffleQ() {
+  shuffleArr(order);
+  idx=0; score=0; attempts=0;
+  chosen = new Array(activeBank.length).fill(null);
+  document.getElementById('q-mode').textContent = 'Shuffled 🔀';
+  document.getElementById('answer-list').classList.remove('show');
+  document.getElementById('btn-sheet').textContent = 'Show Answer Sheet';
+  render();
+}
+
+function restartQ() {
+  order = activeBank.map((_, i) => i);
+  idx=0; score=0; attempts=0;
+  chosen = new Array(activeBank.length).fill(null);
+  document.getElementById('screen-results').style.display = 'none';
+  document.getElementById('screen-quiz').style.display = 'block';
+  document.getElementById('q-mode').textContent = 'Normal order';
+  document.getElementById('answer-list').classList.remove('show');
+  document.getElementById('btn-sheet').textContent = 'Show Answer Sheet';
+  render();
+}
+
+function shuffleAndRestart() {
+  shuffleArr(order = activeBank.map((_, i) => i));
+  idx=0; score=0; attempts=0;
+  chosen = new Array(activeBank.length).fill(null);
+  document.getElementById('screen-results').style.display = 'none';
+  document.getElementById('screen-quiz').style.display = 'block';
+  document.getElementById('q-mode').textContent = 'Shuffled 🔀';
+  document.getElementById('answer-list').classList.remove('show');
+  document.getElementById('btn-sheet').textContent = 'Show Answer Sheet';
+  render();
+}
+
+function toggleSheet() {
+  const list = document.getElementById('answer-list');
+  list.classList.toggle('show');
+  document.getElementById('btn-sheet').textContent = list.classList.contains('show') ? 'Hide Answer Sheet' : 'Show Answer Sheet';
+}
+
+function buildAnswerGrid() {
+  const grid = document.getElementById('answer-grid');
+  grid.innerHTML = '';
+  activeBank.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'answer-mini';
+    d.innerHTML = '<div class="q-num">Q'+(i+1)+'</div><div>'+q.q.substring(0,55)+(q.q.length>55?'…':'')+'</div><div class="q-ans">'+q.ans+'</div>';
+    grid.appendChild(d);
+  });
+}
+
+function showResults() {
+  const pct = attempts > 0 ? Math.round(score/attempts*100) : 0;
+  document.getElementById('screen-quiz').style.display = 'none';
+  document.getElementById('screen-results').style.display = 'block';
+  document.getElementById('r-score').textContent = score+'/'+attempts;
+  let emoji, msg;
+  if (pct>=90){emoji='🏆';msg='Outstanding! You nailed it!';}
+  else if(pct>=75){emoji='🎉';msg='Great job! Keep it up!';}
+  else if(pct>=60){emoji='💪';msg='Good effort — review weak spots!';}
+  else if(pct>=40){emoji='📚';msg='Review your notes and try again.';}
+  else{emoji='🔄';msg="Don't give up — shuffle and retry!";}
+  document.getElementById('r-emoji').textContent = emoji;
+  document.getElementById('r-msg').textContent = msg+' ('+pct+'%)';
+}
+
+// Init
+document.getElementById('screen-select').style.display = 'block';
+</script>
+</body>
+</html>
