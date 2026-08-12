@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adrenergic Pharmacology Flashcards Test</title>
+  <style>
+    :root {
+      --bg-color: #f4f6f9;
+      --card-bg: #ffffff;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --accent: #10b981;
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 680px;
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 15px;
+    }
+
+    .header h1 {
+      font-size: 1.25rem;
+      color: var(--text-main);
+    }
+
+    .progress-badge {
+      background-color: #eff6ff;
+      color: var(--primary);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .card-content {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .drug-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-align: center;
+      padding: 20px 10px;
+      background-color: #f8fafc;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .notes-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .notes-section label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    textarea {
+      width: 100%;
+      height: 90px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      resize: vertical;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    textarea:focus {
+      border-color: var(--primary);
+    }
+
+    .btn {
+      padding: 12px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn-next {
+      background-color: var(--accent);
+      color: white;
+    }
+
+    .btn-next:hover {
+      background-color: #059669;
+    }
+
+    .answer-box {
+      display: none;
+      background-color: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 20px;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .answer-box.visible {
+      display: flex;
+    }
+
+    .info-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .info-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 700;
+      color: #166534;
+    }
+
+    .info-text {
+      font-size: 0.95rem;
+      color: #14532d;
+      line-height: 1.4;
+    }
+
+    .footer-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .btn-restart {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .completion-screen {
+      display: none;
+      text-align: center;
+      flex-direction: column;
+      gap: 20px;
+      padding: 40px 10px;
+    }
+
+    .completion-screen.visible {
+      display: flex;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <div class="header">
+      <h1>Adrenergic Drug Quiz</h1>
+      <span class="progress-badge" id="progress">Card 1 / 38</span>
+    </div>
+
+    <!-- Active Card View -->
+    <div id="cardView" class="card-content">
+      <div class="drug-title" id="drugName">Drug Name</div>
+
+      <div class="notes-section">
+        <label for="userNotes">Your Answer / Notes (Type or mentally answer):</label>
+        <textarea id="userNotes" placeholder="Write mechanism, receptors, and therapeutic uses here..."></textarea>
+      </div>
+
+      <button class="btn btn-primary" id="revealBtn" onclick="revealAnswer()">Reveal Answer</button>
+
+      <!-- Answer Box -->
+      <div class="answer-box" id="answerBox">
+        <div class="info-group">
+          <span class="info-label">Receptors / Mechanism</span>
+          <p class="info-text" id="ansReceptor"></p>
+        </div>
+        <div class="info-group">
+          <span class="info-label">Therapeutic Uses</span>
+          <p class="info-text" id="ansUses"></p>
+        </div>
+        <div class="info-group">
+          <span class="info-label">Key Clinical Info</span>
+          <p class="info-text" id="ansKeyInfo"></p>
+        </div>
+      </div>
+
+      <div class="footer-actions">
+        <button class="btn-restart" onclick="restartQuiz()">Reshuffle & Restart</button>
+        <button class="btn btn-next" id="nextBtn" style="display: none;" onclick="nextCard()">Next Drug &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Completion View -->
+    <div id="completionView" class="completion-screen">
+      <h2>🎉 Self-Test Complete!</h2>
+      <p>You have reviewed all 38 drugs mentioned in the lecture.</p>
+      <button class="btn btn-primary" onclick="restartQuiz()">Restart Quiz</button>
+    </div>
+  </div>
+
+  <script>
+    const drugData = [
+      {
+        name: "Epinephrine (Adrenaline)",
+        receptors: "Direct Agonist: α1, α2, β1, β2",
+        uses: "Anaphylactic shock, acute asthma, cardiac arrest, additive to local anesthetics, intraocular surgery (mydriasis).",
+        keyInfo: "Naturally occurring catecholamine. Low doses: β effects (vasodilation) predominate. High doses: α effects (vasoconstriction) predominate. Causes hyperglycemia & lipolysis. Preferred route for anaphylaxis is IM anterior thigh."
+      },
+      {
+        name: "Norepinephrine (Noradrenaline)",
+        receptors: "Direct Agonist: α1, α2, β1 (weak β2)",
+        uses: "Treatment of shock.",
+        keyInfo: "Primary sympathetic neurotransmitter. Causes intense vasoconstriction and reflex bradycardia. Weak β2 activity makes it ineffective for asthma/anaphylaxis."
+      },
+      {
+        name: "Isoproterenol (Isoprenaline)",
+        receptors: "Direct Agonist: Non-selective β1, β2",
+        uses: "Cardiac stimulant, AV block.",
+        keyInfo: "Synthetic catecholamine. Potent bronchodilator & cardiac stimulant. Decreases peripheral resistance and diastolic blood pressure."
+      },
+      {
+        name: "Dopamine",
+        receptors: "Agonist: D1, D2 dopaminergic receptors; β1 (medium dose); α1 (high dose)",
+        uses: "Cardiogenic & septic shock, severe heart failure, hypotension, bradycardia.",
+        keyInfo: "Precursor to NE. Low doses dilate renal/splanchnic vascular beds via D1 (increases GFR & diuresis). High doses cause vasoconstriction."
+      },
+      {
+        name: "Dobutamine",
+        receptors: "Direct Agonist: Selective β1",
+        uses: "Acute heart failure, inotropic support post-cardiac surgery.",
+        keyInfo: "Synthetic catecholamine. Increases cardiac rate and output with minimal vascular effects and minimal increase in myocardial oxygen demand."
+      },
+      {
+        name: "Phenylephrine",
+        receptors: "Direct Agonist: Selective α1",
+        uses: "Nasal decongestant (oral/topical), hypotension (hospital/surgery), ophthalmic mydriasis.",
+        keyInfo: "Non-catecholamine vasoconstrictor. Increases BP and induces reflex bradycardia. Large doses cause hypertensive headache."
+      },
+      {
+        name: "Oxymetazoline",
+        receptors: "Direct Agonist: α1, α2",
+        uses: "OTC nasal decongestant spray, ophthalmic drops for eye redness.",
+        keyInfo: "Direct vasoconstrictor of nasal mucosa/conjunctiva. Limit use to max 3 days to avoid rebound congestion (rhinitis medicamentosa) & dependence."
+      },
+      {
+        name: "Midodrine (Desglymidodrine)",
+        receptors: "Direct Agonist: Selective α1 (Prodrug)",
+        uses: "Orthostatic hypotension.",
+        keyInfo: "Metabolized to active desglymidodrine. Increases arterial and venous tone. Avoid dosing within 4 hours of bedtime to prevent supine hypertension."
+      },
+      {
+        name: "Clonidine",
+        receptors: "Direct Agonist: Centrally acting presynaptic α2",
+        uses: "Hypertension, withdrawal symptoms (opiates, tobacco, benzodiazepines).",
+        keyInfo: "Decreases sympathetic outflow from CNS. Side effects: lethargy, sedation, constipation, xerostomia. Avoid abrupt cessation due to rebound hypertension."
+      },
+      {
+        name: "Albuterol",
+        receptors: "Direct Agonist: Short-acting β2 selective (SABA)",
+        uses: "Acute asthma symptoms & bronchospasm (SABA of choice).",
+        keyInfo: "Administered via MDI inhaler. Side effects include muscle tremor, restlessness, anxiety, and tachycardia at high oral doses."
+      },
+      {
+        name: "Metaproterenol",
+        receptors: "Direct Agonist: Short-acting β2 (SABA)",
+        uses: "Treatment of bronchospasm.",
+        keyInfo: "Less β2 selective than albuterol."
+      },
+      {
+        name: "Terbutaline",
+        receptors: "Direct Agonist: Short-acting β2 (SABA)",
+        uses: "Bronchospasm; Injectable off-label as uterine relaxant to suppress premature labor.",
+        keyInfo: "Inhaled form unavailable in US. Uterine relaxation use should not exceed 72 hours."
+      },
+      {
+        name: "Salmeterol",
+        receptors: "Direct Agonist: Long-acting β2 selective (LABA)",
+        uses: "Management of asthma and COPD.",
+        keyInfo: "12-hour duration. Delayed onset of action. NOT for monotherapy in asthma (increased risk of asthma-related death; must combine with corticosteroid)."
+      },
+      {
+        name: "Formoterol / Arformoterol",
+        receptors: "Direct Agonist: Long-acting β2 selective (LABA)",
+        uses: "Management of asthma and COPD.",
+        keyInfo: "12-hour duration with rapid onset. Arformoterol is the active (R,R)-enantiomer."
+      },
+      {
+        name: "Indacaterol",
+        receptors: "Direct Agonist: Long-acting β2 selective (LABA)",
+        uses: "Long-term management of COPD/asthma.",
+        keyInfo: "12-hour duration sustained bronchodilation."
+      },
+      {
+        name: "Mirabegron",
+        receptors: "Direct Agonist: Selective β3",
+        uses: "Overactive bladder.",
+        keyInfo: "Relaxes detrusor smooth muscle, increasing bladder capacity. Can elevate blood pressure (contraindicated in uncontrolled hypertension)."
+      },
+      {
+        name: "Fenoldopam",
+        receptors: "Agonist: Peripheral D1 receptors",
+        uses: "Severe hypertension in hospitalized patients.",
+        keyInfo: "Rapid-acting vasodilator of coronary, renal, and mesenteric arteries. Short elimination half-life (~10 min). R-isomer is active."
+      },
+      {
+        name: "Amphetamine",
+        receptors: "Indirect Agonist: α, β, CNS",
+        uses: "ADHD, narcolepsy, appetite control.",
+        keyInfo: "Increases nonvesicular release of dopamine and NE from nerve terminals. Increases blood pressure via vascular α1 and cardiac β1."
+      },
+      {
+        name: "Tyramine",
+        receptors: "Indirect Agonist",
+        uses: "Dietary byproduct (aged cheese, wine) - Not a therapeutic drug.",
+        keyInfo: "Displaces stored NE from vesicles. Normally degraded by gut MAO. In patients taking MAOIs, causes massive NE release and dangerous hypertensive crisis."
+      },
+      {
+        name: "Cocaine",
+        receptors: "Indirect Agonist / Local Anesthetic",
+        uses: "Local anesthesia.",
+        keyInfo: "Blocks Na+/Cl- dependent NET (norepinephrine transporter), blocking NE reuptake. Potentiates actions of epinephrine/NE."
+      },
+      {
+        name: "Ephedrine",
+        receptors: "Mixed-Action Agonist: Direct α & β + Indirect NE release",
+        uses: "Hypotension, nasal congestion, historical asthma treatment.",
+        keyInfo: "Non-catecholamine. Long duration, good oral absorption, CNS penetration. Increases alertness/prevents sleep. Ephedra herbal supplements banned."
+      },
+      {
+        name: "Pseudoephedrine",
+        receptors: "Mixed-Action Agonist: Direct α & β + Indirect NE release",
+        uses: "Nasal and sinus congestion.",
+        keyInfo: "Stereoisomer of ephedrine with fewer CNS side effects. Controlled due to illegal conversion to methamphetamine."
+      },
+      {
+        name: "Guanethidine",
+        receptors: "Adrenergic Neuron Blocker",
+        uses: "Inhibition of sympathetic neurotransmission.",
+        keyInfo: "Blocks the exocytotic release of norepinephrine from presynaptic storage vesicles."
+      },
+      {
+        name: "Reserpine",
+        receptors: "Vesicular Amine Transport Blocker",
+        uses: "Historical antihypertensive/antipsychotic.",
+        keyInfo: "Blocks vesicular monoamine transporter (VMAT), preventing dopamine/NE entry into storage vesicles, causing NE depletion."
+      },
+      {
+        name: "Imipramine",
+        receptors: "Tricyclic Antidepressant (TCA)",
+        uses: "Depression.",
+        keyInfo: "Inhibits Na+/Cl- dependent norepinephrine transporter (NET), blocking presynaptic NE reuptake."
+      },
+      {
+        name: "Duloxetine",
+        receptors: "SNRI (Serotonin-Norepinephrine Reuptake Inhibitor)",
+        uses: "Depression, anxiety, neuropathic pain.",
+        keyInfo: "Inhibits NET, increasing synaptic levels of norepinephrine."
+      },
+      {
+        name: "Prazosin",
+        receptors: "Selective α1 Antagonist (also α2B, α2C)",
+        uses: "Antihypertensive / Vasodilator.",
+        keyInfo: "Blocks post-synaptic α1 receptors, leading to vasodilation."
+      },
+      {
+        name: "Tamsulosin",
+        receptors: "Selective α1A Antagonist",
+        uses: "Benign Prostatic Hyperplasia (BPH).",
+        keyInfo: "Targets α1A receptors in prostate and urinary tract with minimal vascular (α1B) cardiovascular side effects."
+      },
+      {
+        name: "Yohimbine",
+        receptors: "Selective α2 Antagonist",
+        uses: "Research tool / historical vasodilation.",
+        keyInfo: "Blocks presynaptic α2 autoreceptors, enhancing NE release."
+      },
+      {
+        name: "Propranolol",
+        receptors: "Non-selective β Antagonist (β1, β2 blocker)",
+        uses: "Hypertension, arrhythmias, angina, tremor, migraine prophylaxis.",
+        keyInfo: "Blocks both β1 and β2 receptors."
+      },
+      {
+        name: "Betaxolol",
+        receptors: "Selective β1 Antagonist",
+        uses: "Hypertension, glaucoma.",
+        keyInfo: "Cardioselective β-blocker."
+      },
+      {
+        name: "Butoxamine",
+        receptors: "Selective β2 Antagonist",
+        uses: "Pharmacological research tool.",
+        keyInfo: "Selectively blocks β2 adrenoceptors."
+      },
+      {
+        name: "Atropine",
+        receptors: "Muscarinic Cholinergic Antagonist",
+        uses: "Bradycardia, organophosphate poisoning, mydriasis.",
+        keyInfo: "Blocks vagal parasympathetic tone on the heart. Administering atropine before NE unmasks direct β1 cardiac effect (tachycardia)."
+      },
+      {
+        name: "Digoxin",
+        receptors: "Cardiac Glycoside (Na+/K+ ATPase Inhibitor)",
+        uses: "Heart failure, atrial fibrillation.",
+        keyInfo: "Increases myocardial contractility. Epinephrine can trigger severe cardiac arrhythmias in digoxin-treated patients."
+      },
+      {
+        name: "Methamphetamine",
+        receptors: "CNS Stimulant / Indirect Sympathomimetic",
+        uses: "Controlled drug of abuse.",
+        keyInfo: "Illegally synthesized from pseudoephedrine."
+      },
+      {
+        name: "Oxytocin",
+        receptors: "Oxytocin Receptor Agonist",
+        uses: "Labor induction, postpartum hemorrhage.",
+        keyInfo: "Produces uterine contraction, opposing β2-mediated uterine smooth muscle relaxation."
+      },
+      {
+        name: "Tyrosine",
+        receptors: "Amino Acid Precursor",
+        uses: "Endogenous substrate for catecholamine synthesis.",
+        keyInfo: "Transported into adrenergic neuron; converted to DOPA by tyrosine hydroxylase (the rate-limiting step)."
+      },
+      {
+        name: "DOPA (Dihydroxyphenylalanine)",
+        receptors: "Metabolic Intermediate",
+        uses: "Precursor in dopamine & NE synthesis.",
+        keyInfo: "Formed from tyrosine; decarboxylated to dopamine by aromatic L-amino acid decarboxylase."
+      }
+    ];
+
+    let currentCards = [];
+    let currentIndex = 0;
+
+    function shuffleCards(array) {
+      let shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+
+    function initQuiz() {
+      currentCards = shuffleCards(drugData);
+      currentIndex = 0;
+      document.getElementById('cardView').style.display = 'flex';
+      document.getElementById('completionView').classList.remove('visible');
+      loadCard();
+    }
+
+    function loadCard() {
+      const card = currentCards[currentIndex];
+      document.getElementById('progress').innerText = `Card ${currentIndex + 1} / ${currentCards.length}`;
+      document.getElementById('drugName').innerText = card.name;
+      document.getElementById('userNotes').value = '';
+      
+      // Reset Answer UI
+      document.getElementById('answerBox').classList.remove('visible');
+      document.getElementById('revealBtn').style.display = 'inline-flex';
+      document.getElementById('nextBtn').style.display = 'none';
+
+      document.getElementById('ansReceptor').innerText = card.receptors;
+      document.getElementById('ansUses').innerText = card.uses;
+      document.getElementById('ansKeyInfo').innerText = card.keyInfo;
+    }
+
+    function revealAnswer() {
+      document.getElementById('answerBox').classList.add('visible');
+      document.getElementById('revealBtn').style.display = 'none';
+      document.getElementById('nextBtn').style.display = 'inline-flex';
+    }
+
+    function nextCard() {
+      if (currentIndex < currentCards.length - 1) {
+        currentIndex++;
+        loadCard();
+      } else {
+        showCompletion();
+      }
+    }
+
+    function showCompletion() {
+      document.getElementById('cardView').style.display = 'none';
+      document.getElementById('completionView').classList.add('visible');
+      document.getElementById('progress').innerText = `Finished!`;
+    }
+
+    function restartQuiz() {
+      initQuiz();
+    }
+
+    // Initialize on page load
+    window.onload = initQuiz;
+  </script>
+</body>
+</html>
