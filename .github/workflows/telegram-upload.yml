@@ -1,0 +1,26 @@
+name: Telegram upload
+
+on:
+  repository_dispatch:
+    types: [telegram_html]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: telegram-upload
+  cancel-in-progress: false
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload file and reply
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          FILE_ID: ${{ github.event.client_payload.file_id }}
+          FILE_NAME: ${{ github.event.client_payload.file_name }}
+          CHAT_ID: ${{ github.event.client_payload.chat_id }}
+          REPO: ${{ github.repository }}
+        run: python3 scripts/upload.py
