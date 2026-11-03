@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>CNS Stimulants Quiz</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --correct: #10b981;
+      --correct-bg: rgba(16, 185, 129, 0.15);
+      --wrong: #ef4444;
+      --wrong-bg: rgba(239, 68, 68, 0.15);
+      --warn: #f59e0b;
+      --warn-bg: rgba(245, 158, 11, 0.15);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+    .container {
+      width: 100%;
+      max-width: 680px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+    }
+    .progress-bar-wrap {
+      width: 100%;
+      height: 6px;
+      background: #334155;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width 0.3s ease;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.25);
+    }
+    .type-badge {
+      align-self: flex-start;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(59, 130, 246, 0.18);
+      color: #93c5fd;
+    }
+    .question-text {
+      font-size: 1.12rem;
+      line-height: 1.65;
+      font-weight: 600;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .blank-pill {
+      display: inline-block;
+      min-width: 72px;
+      border-bottom: 2px solid #60a5fa;
+      color: #93c5fd;
+      padding: 0 8px;
+      margin: 0 3px;
+      text-align: center;
+      font-weight: 700;
+    }
+    .q-images {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    .q-images img {
+      max-width: 100%;
+      max-height: 260px;
+      object-fit: contain;
+      background: #ffffff;
+      padding: 8px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      cursor: zoom-in;
+    }
+    .hint-btn {
+      align-self: flex-start;
+      background: none;
+      border: 1px dashed var(--text-muted);
+      color: var(--text-muted);
+      border-radius: 6px;
+      padding: 5px 11px;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .hint-text {
+      display: none;
+      background: rgba(59, 130, 246, 0.1);
+      border-left: 3px solid var(--accent);
+      padding: 10px 12px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      color: #93c5fd;
+      line-height: 1.5;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .option-btn {
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      text-align: left;
+      padding: 14px 16px;
+      border-radius: 10px;
+      font-size: 0.98rem;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      line-height: 1.5;
+    }
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: #172554;
+    }
+    .option-btn.selected {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.16);
+    }
+    .option-btn.correct {
+      border-color: var(--correct) !important;
+      background: var(--correct-bg) !important;
+      color: #6ee7b7;
+    }
+    .option-btn.wrong {
+      border-color: var(--wrong) !important;
+      background: var(--wrong-bg) !important;
+      color: #fca5a5;
+    }
+    .option-btn.missed {
+      border-color: var(--warn) !important;
+      background: var(--warn-bg) !important;
+      color: #fcd34d;
+    }
+    .option-btn:disabled {
+      cursor: default;
+    }
+    .opt-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .opt-check {
+      font-size: 1.05rem;
+      line-height: 1.35;
+      flex-shrink: 0;
+    }
+    .rationale {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      display: none;
+      line-height: 1.45;
+    }
+    .text-input, .text-area {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 13px 14px;
+      border-radius: 10px;
+      font-size: 1rem;
+      outline: none;
+    }
+    .text-input:focus, .text-area:focus {
+      border-color: var(--accent);
+    }
+    .text-area {
+      min-height: 110px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+    .feedback-box {
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 0.93rem;
+      line-height: 1.55;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .feedback-box.ok {
+      background: var(--correct-bg);
+      border: 1px solid var(--correct);
+    }
+    .feedback-box.bad {
+      background: var(--wrong-bg);
+      border: 1px solid var(--wrong);
+    }
+    .feedback-box.neutral {
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid var(--accent);
+    }
+    .self-grade-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .grade-btn {
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: white;
+    }
+    .grade-btn.good { background: #059669; border-color: #10b981; }
+    .grade-btn.bad { background: #dc2626; border-color: #ef4444; }
+    .override-btn {
+      align-self: flex-start;
+      background: transparent;
+      border: 1px solid var(--text-muted);
+      color: var(--text-muted);
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .action-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: none;
+      text-align: center;
+      transition: background 0.2s ease;
+    }
+    .action-btn:hover:not(:disabled) {
+      background: var(--accent-hover);
+    }
+    .action-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .results-card {
+      display: none;
+      text-align: center;
+      gap: 18px;
+    }
+    .score-circle {
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin: 12px 0;
+    }
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.88);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      cursor: zoom-out;
+    }
+    .lightbox img {
+      max-width: 96vw;
+      max-height: 92vh;
+      object-fit: contain;
+      background: #ffffff;
+      padding: 8px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h2 style="font-size: 1.08rem;">CNS Stimulants Quiz</h2>
+        <div style="font-size: 0.85rem; color: var(--text-muted);" id="q-counter">Question 1 / 26</div>
+      </div>
+      <div style="font-size: 0.95rem; font-weight: 600; white-space: nowrap;" id="score-counter">Score: 0</div>
+    </header>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <div class="card" id="quiz-card">
+      <span class="type-badge" id="q-type-badge">Question</span>
+      <div class="q-images" id="q-images"></div>
+      <div class="question-text" id="q-text"></div>
+      <button class="hint-btn" id="hint-btn" onclick="toggleHint()">💡 Show Hint</button>
+      <div class="hint-text" id="hint-box"></div>
+      <div class="options" id="options-container"></div>
+      <div class="feedback-box" id="feedback-box"></div>
+      <button class="action-btn" id="submit-btn">Check Answer ✓</button>
+      <button class="action-btn" id="next-btn" onclick="nextQuestion()">Next Question ➔</button>
+    </div>
+
+    <div class="card results-card" id="results-card">
+      <h2>Quiz Completed! 🎉</h2>
+      <div class="score-circle" id="final-score">0%</div>
+      <p id="score-summary" style="color: var(--text-muted);"></p>
+      <button class="action-btn" style="display: block;" onclick="restartQuiz()">Restart Quiz 🔄</button>
+    </div>
+  </div>
+
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <img id="lightbox-img" src="" alt="Zoomed diagram">
+  </div>
+
+  <script>
+    const questions = [{"type": "multiple_choice", "question": "A patient with a history of severe asthma and mild angina pectoris asks about using theophylline for bronchodilation. Based on the mechanism of action of methylxanthines, why might this therapy pose a significant cardiovascular risk for this specific patient?", "answerOptions": [{"text": "Theophylline causes selective blockade of muscarinic receptors, leading to severe bradycardia that precipitates angina.", "isCorrect": false, "rationale": "Muscarinic receptor blockade is associated with anticholinergic drugs rather than methylxanthines, and it would cause tachycardia rather than bradycardia."}, {"text": "At higher therapeutic doses, methylxanthines exert positive inotropic and chronotropic effects on the heart, increasing myocardial oxygen demand.", "isCorrect": true, "rationale": "Methylxanthines exert positive inotropic and chronotropic actions on cardiac muscle, which increases cardiac workload and oxygen consumption, potentially worsening ischemic cardiac conditions such as angina pectoris."}, {"text": "Inhibition of phosphodiesterase decreases intracellular cAMP, causing direct coronary artery constriction.", "isCorrect": false, "rationale": "Phosphodiesterase inhibition increases cAMP levels rather than decreasing them, and increased cAMP typically promotes smooth muscle relaxation."}, {"text": "Methylxanthines block peripheral voltage-gated calcium channels, leading to sudden reflex hypertension.", "isCorrect": false, "rationale": "Methylxanthines promote translocation of extracellular calcium or block adenosine receptors rather than blocking peripheral calcium channels to cause reflex hypertension."}], "hint": "Consider how cardiac workload and oxygen supply are altered by drugs that increase heart rate and force of contraction."}, {"type": "multiple_choice", "question": "Which of the following cellular sequences correctly describes how nicotine induces the release of epinephrine from the adrenal medulla?", "answerOptions": [{"text": "Nicotine binds nAChRs $\\rightarrow$ $Na^+$ influx and depolarization $\\rightarrow$ activation of voltage-gated $Ca^{2+}$ channels $\\rightarrow$ exocytosis of epinephrine vesicles.", "isCorrect": true, "rationale": "Nicotinic acetylcholine receptor activation causes sodium influx leading to membrane depolarization, which opens voltage-gated calcium channels to trigger exocytic secretion of catecholamines from adrenal chromaffin cells."}, {"text": "Nicotine inhibits phosphodiesterase $\\rightarrow$ elevation of cAMP $\\rightarrow$ intracellular release of $Ca^{2+}$ from the sarcoplasmic reticulum $\\rightarrow$ epinephrine release.", "isCorrect": false, "rationale": "This mechanism describes phosphodiesterase inhibition seen in methylxanthines, not the ionotropic receptor mechanism of nicotine at the adrenal medulla."}, {"text": "Nicotine blocks monoamine reuptake transporters $\\rightarrow$ accumulation of epinephrine in the synaptic cleft $\\rightarrow$ vesicle depletion.", "isCorrect": false, "rationale": "Reuptake blockade of monoamines is the characteristic mechanism of cocaine, whereas nicotine acts directly as a ion channel receptor agonist."}, {"text": "Nicotine activates muscarinic $M_3$ receptors $\\rightarrow$ $IP_3$ pathway stimulation $\\rightarrow$ direct efflux of $K^+$ ions $\\rightarrow$ epinephrine release.", "isCorrect": false, "rationale": "Nicotine acts specifically at nicotinic acetylcholine receptors, which are ligand-gated ion channels, not G-protein coupled muscarinic receptors."}], "hint": "Follow the cascade from ligand-gated ion channel opening to membrane depolarization and subsequent voltage-gated ion entry."}, {"type": "multiple_choice", "question": "A patient undergoing nasal reconstructive surgery receives a topical solution of cocaine to control localized bleeding and provide anesthesia. Which dual mechanisms account for these specific clinical effects?", "answerOptions": [{"text": "Blockade of voltage-activated $Na^+$ channels for local anesthesia, and blockade of norepinephrine reuptake for vasoconstriction.", "isCorrect": true, "rationale": "Local anesthetic action stems from blocking voltage-gated sodium channel conductance along sensory nerves, while sympathetic vasoconstriction results from blocking presynaptic norepinephrine reuptake."}, {"text": "Agonism at $nAChR$ receptors for local anesthesia, and selective inhibition of phosphodiesterase for local vasoconstriction.", "isCorrect": false, "rationale": "Nicotine, not cocaine, acts at nAChRs, and phosphodiesterase inhibition generally promotes vasodilation rather than vasoconstriction."}, {"text": "Inhibition of dopamine hydroxylase for local anesthesia, and activation of peripheral adenosine receptors for vasoconstriction.", "isCorrect": false, "rationale": "Cocaine blocks reuptake of monoamines and blocks voltage-gated sodium channels; it does not act via dopamine hydroxylase or adenosine receptor activation."}, {"text": "Stimulation of central respiratory centers for local anesthesia, and depletion of presynaptic serotonin for vasoconstriction.", "isCorrect": false, "rationale": "Central respiratory effects are systemic CNS manifestations, not the mechanism underlying topical sodium channel blockade or peripheral vascular alpha-adrenergic stimulation."}], "hint": "Identify which channel blockade prevents nerve conduction and which monoamine transport blockade causes peripheral blood vessel narrowing."}, {"type": "multiple_choice", "question": "A chronic smoker trying to quit is prescribed varenicline. How does the pharmacological profile of varenicline differ from nicotine to aid in smoking cessation?", "answerOptions": [{"text": "Varenicline acts as an irreversible antagonist at nicotinic receptors, completely preventing all neurotransmitter binding in the brain.", "isCorrect": false, "rationale": "Varenicline is a partial agonist, not an irreversible antagonist."}, {"text": "Varenicline is a partial agonist at neuronal nicotinic acetylcholine receptors, producing less euphoria than full agonist nicotine while reducing withdrawal symptoms.", "isCorrect": true, "rationale": "As a partial agonist, varenicline competitively binds nicotinic receptors to provide moderate stimulation (reducing withdrawal and cravings) while blunting the full euphoric response of inhaled nicotine."}, {"text": "Varenicline selectively inhibits hepatic CYP1A2, increasing endogenous nicotine concentrations to sustain therapeutic levels.", "isCorrect": false, "rationale": "Varenicline exerts its action via central neuronal nicotinic receptors rather than through metabolic enzyme inhibition."}, {"text": "Varenicline stimulates monoamine oxidase to accelerate dopamine degradation in cortico-limbic pathways.", "isCorrect": false, "rationale": "Accelerating dopamine breakdown would intensify withdrawal cravings rather than alleviate them."}], "hint": "Recall the receptor interaction concept where a drug provides submaximal intrinsic activity compared to a full agonist."}, {"type": "multiple_choice", "question": "Why does the risk of severe hyperthermia and mortality from a cocaine overdose increase significantly in warm environmental conditions?", "answerOptions": [{"text": "Cocaine directly inhibits the anterior pituitary gland, preventing thyroid-stimulating hormone regulation of body heat.", "isCorrect": false, "rationale": "Hyperthermia from cocaine is driven by peripheral autonomic impairment of heat loss rather than anterior pituitary suppression."}, {"text": "Cocaine causes massive systemic vasodilatation, leading to excessive environmental heat absorption through the skin.", "isCorrect": false, "rationale": "Cocaine causes peripheral vasoconstriction, which impairs heat dissipation, rather than systemic vasodilation."}, {"text": "Even low doses of cocaine impair normal heat dissipation mechanisms, specifically cutaneous vasodilation and sweating.", "isCorrect": true, "rationale": "Cocaine-induced sympathetic stimulation causes peripheral vasoconstriction (preventing cutaneous heat exchange) and disrupts sweating mechanisms, severely compromising body temperature regulation in hot environments."}, {"text": "Cocaine blocks renal excretion of sodium, causing hyperosmolar heat retention in extracellular fluid.", "isCorrect": false, "rationale": "Cocaine hyperthermia is primarily a result of impaired peripheral vascular and sudomotor thermoregulation."}], "hint": "Consider how body temperature is regulated through cutaneous blood vessels and sweat glands under intense sympathetic activity."}, {"type": "multiple_choice", "question": "How do psychomotor stimulants fundamentally differ from hallucinogens (psychomimetics) in terms of their primary physiological and behavioral effects?", "answerOptions": [{"text": "Psychomotor stimulants affect only the peripheral nervous system, whereas hallucinogens act exclusively on spinal cord reflexes.", "isCorrect": false, "rationale": "Psychomotor stimulants exert major central nervous system effects, including cortical and brainstem stimulation."}, {"text": "Psychomotor stimulants produce excitement, increased motor activity, and euphoria, whereas hallucinogens alter thought patterns and sensory perception with little effect on the brainstem and spinal cord.", "isCorrect": true, "rationale": "Psychomotor stimulants increase alertness, elevation of mood, and motor activity, while hallucinogens primarily distort sensory perception (seeing, hearing non-existent things) and thought patterns without prominently stimulating spinal or brainstem motor pathways."}, {"text": "Psychomotor stimulants produce profound sensory distortions without changing mood, whereas hallucinogens reduce alertness and cause sedation.", "isCorrect": false, "rationale": "This reverses the core definitions; psychomotor stimulants increase alertness while hallucinogens cause profound sensory distortions."}, {"text": "Psychomotor stimulants suppress dopamine release in the cortex, whereas hallucinogens block adenosine receptors throughout the CNS.", "isCorrect": false, "rationale": "Psychomotor stimulants typically enhance monoamine activity (like dopamine), whereas adenosine blockade is specific to methylxanthines."}], "hint": "Focus on the distinct impact of each drug class on motor activity versus sensory perception and cognition."}, {"type": "multiple_choice", "question": "At the cellular level in cortico-limbic pathways, what sequence of events leads to the addictive and euphoric properties of nicotine?", "answerOptions": [{"text": "Nicotine blocks presynaptic dopamine transporters $\\rightarrow$ accumulation of dopamine in synaptic clefts $\\rightarrow$ chronic depletion.", "isCorrect": false, "rationale": "Dopamine reuptake inhibition is the primary mechanism of cocaine, not nicotine."}, {"text": "Nicotine binds nicotinic receptors on dopaminergic neurons $\\rightarrow$ membrane depolarization $\\rightarrow$ activation of voltage-gated $Ca^{2+}$ channels $\\rightarrow$ vesicular release of dopamine into the synapse.", "isCorrect": true, "rationale": "Nicotine acts as an agonist at nicotinic cholinergic receptors on dopaminergic neurons, inducing calcium influx that drives exocytic dopamine release into cortico-limbic synapses."}, {"text": "Nicotine inhibits intracellular phosphodiesterase $\\rightarrow$ elevation of cGMP $\\rightarrow$ open potassium channels $\\rightarrow$ hyperpolarization and dopamine discharge.", "isCorrect": false, "rationale": "Methylxanthines inhibit phosphodiesterase; nicotine operates via ionotropic nicotinic acetylcholine receptors."}, {"text": "Nicotine directly stimulates postsynaptic $D_2$ receptors in the cerebral cortex $\\rightarrow$ suppression of GABAergic inhibition.", "isCorrect": false, "rationale": "Nicotine acts upstream by binding nicotinic acetylcholine receptors on presynaptic dopaminergic neurons to trigger endogenous dopamine release."}], "hint": "Think about how presynaptic receptor activation translates electrical depolarization into calcium-dependent neurotransmitter release."}, {"type": "multiple_choice", "question": "A patient presenting to the emergency department after an accidental ingestion of a large amount of caffeine exhibits severe muscle twitching, confusion, and high-frequency spinal reflexes. Based on dose-dependent responses, approximately what dose of caffeine did this patient likely consume?", "answerOptions": [{"text": "100 to 200 mg", "isCorrect": false, "rationale": "This range (1-2 cups of coffee) only produces decreased fatigue and increased mental alertness."}, {"text": "600 mg", "isCorrect": false, "rationale": "This chronic daily intake level is associated with withdrawal symptoms upon cessation, not acute spinal cord hyperexcitability."}, {"text": "1.5 g", "isCorrect": false, "rationale": "A dose of 1.5 g produces anxiety and tremors, but not direct spinal cord stimulation."}, {"text": "2 to 5 g", "isCorrect": true, "rationale": "Spinal cord stimulation occurs only at very high doses of caffeine, specifically in the 2 to 5 g range."}], "hint": "Differentiate between cortical stimulation doses, anxiety-inducing doses, and doses required to stimulate lower CNS structures like the spinal cord."}, {"type": "multiple_choice", "question": "A patient with peptic ulcer disease is advised to eliminate coffee and methylxanthine-containing energy drinks from their diet. What physiological action of methylxanthines warrants this restriction?", "answerOptions": [{"text": "Inhibition of gastric motility leading to delayed stomach emptying and mucosal ulceration.", "isCorrect": false, "rationale": "Methylxanthines do not primarily act by suppressing gastric motility to cause peptic ulceration."}, {"text": "Stimulation of gastric acid secretion by the gastric mucosa.", "isCorrect": true, "rationale": "Methylxanthines stimulate the secretion of gastric acid, which can aggravate the gastric mucosa and worsen peptic ulcer disease."}, {"text": "Blockade of histamine $H_2$ receptors on parietal cells.", "isCorrect": false, "rationale": "Blocking $H_2$ receptors reduces acid secretion and is a therapeutic mechanism for treating ulcers, whereas methylxanthines increase acid output."}, {"text": "Direct destruction of the mucosal bicarbonate layer via mucosal vasoconstriction.", "isCorrect": false, "rationale": "While vascular changes occur, the direct reported physiological trigger for dietary restriction in ulcer patients is the stimulation of gastric acid production."}], "hint": "Consider the impact of methylxanthines on secretions in the gastrointestinal tract."}, {"type": "multiple_choice", "question": "What happens to the activity of the gastrointestinal tract and urinary bladder when a individual transitions from low, non-toxic doses of nicotine to extremely high, toxic doses?", "answerOptions": [{"text": "Low doses block parasympathetic ganglia; high doses stimulate parasympathetic ganglia, causing severe urinary retention and constipation.", "isCorrect": false, "rationale": "Low doses stimulate parasympathetic ganglia (increasing GI motility), while high doses cause blockade."}, {"text": "Low doses stimulate parasympathetic ganglia, increasing bowel motor activity; high doses produce a blockade of parasympathetic ganglia, causing GI and bladder activity to cease.", "isCorrect": true, "rationale": "At low doses, nicotine stimulates parasympathetic ganglia to increase bowel motility; at toxic high doses, depolarization blockade occurs, shutting down autonomic transmission and halting GI and bladder smooth muscle activity."}, {"text": "Low doses decrease GI motility via alpha-adrenergic blockade; high doses cause continuous non-stop spasms of the bladder.", "isCorrect": false, "rationale": "Nicotine operates via nicotinic ganglia stimulation followed by blockade, not through primary alpha-adrenergic antagonist actions."}, {"text": "Both low and high doses consistently inhibit parasympathetic output, resulting in progressive bowel paralysis.", "isCorrect": false, "rationale": "The effect of nicotine on autonomic ganglia is biphasic: low doses stimulate while high doses block."}], "hint": "Recall the biphasic nature of nicotine's action on autonomic ganglia (stimulation followed by blockade)."}, {"type": "multiple_choice", "question": "What metabolic mechanism explains why individuals who smoke cigarettes often require higher doses of certain co-administered therapeutic drugs to achieve a therapeutic effect?", "answerOptions": [{"text": "Nicotine forms insoluble chelates with drugs inside the intestinal lumen, preventing absorption.", "isCorrect": false, "rationale": "Cigarette smoke alters hepatic drug clearance rather than causing chemical chelation in the gut lumen."}, {"text": "Cigarette smoke induces hepatic drug-metabolizing enzymes, accelerating the rate of metabolism of several drugs.", "isCorrect": true, "rationale": "Components of cigarette smoke increase the metabolic rate of many co-administered drugs by inducing liver enzymes (such as CYP pathways), lowering their plasma concentration."}, {"text": "Nicotine blocks renal drug excretion channels, trapping metabolites in active forms within circulation.", "isCorrect": false, "rationale": "Enzyme induction accelerates clearance rather than blocking renal excretion channels."}, {"text": "Carbon monoxide in cigarette smoke irreversibly binds plasma albumin, increasing free drug toxicity.", "isCorrect": false, "rationale": "Increased metabolism lowers drug efficacy/duration rather than increasing free drug toxicity through protein binding displacement."}], "hint": "Think about how constituents of tobacco smoke alter liver enzymatic biotransformation rates."}, {"type": "multiple_choice", "question": "An individual who routinely consumes 800 mg of caffeine daily decides to quit cold turkey. Within 24 hours, they experience severe headaches, fatigue, and irritability. What mechanism accounts for these withdrawal symptoms?", "answerOptions": [{"text": "Permanent inactivation of monoamine oxidase leading to excess catecholamine toxicity.", "isCorrect": false, "rationale": "Caffeine withdrawal does not involve permanent enzymatic inactivation of monoamine oxidase."}, {"text": "Tolerance developed to caffeine's central stimulating effects, leading to rebound sedation and headache upon abrupt cessation.", "isCorrect": true, "rationale": "Regular consumption of high doses of caffeine (>600 mg/day) leads to neurochemical adaptation and tolerance; sudden cessation results in characteristic withdrawal signs such as lethargy, headache, and irritability."}, {"text": "Unmasking of severe renal tubular necrosis due to acute potassium retention.", "isCorrect": false, "rationale": "Caffeine withdrawal is a neuro-vascular and CNS manifestation, not a sign of acute renal tubular necrosis."}, {"text": "Sudden accumulation of toxic methylxanthine metabolites in the brain due to CYP1A2 upregulation.", "isCorrect": false, "rationale": "Withdrawal occurs due to the absence of the drug in a dependent CNS, not from the accumulation of toxic metabolites."}], "hint": "Consider the cellular adaptation and tolerance that occur with chronic central adenosine receptor blockade."}, {"type": "multiple_choice", "question": "A forensic toxicologist determines that a deceased individual suffered an acute lethal nicotine poisoning. What is the approximate minimum acute lethal dose of nicotine in humans, and what is the primary central cause of death?", "answerOptions": [{"text": "10 mg; cardiac ventricular fibrillation caused by coronary spasm.", "isCorrect": false, "rationale": "10 mg is well below the acute lethal dose, and the primary fatal respiratory mechanism is medullary failure."}, {"text": "60 mg; central respiratory paralysis and severe hypotension caused by medullary paralysis.", "isCorrect": true, "rationale": "The acute lethal dose of nicotine is 60 mg, and toxicity culminates in central respiratory paralysis and severe hypotension secondary to medullary paralysis."}, {"text": "500 mg; liver failure due to acute CYP1A2 saturation.", "isCorrect": false, "rationale": "The lethal dose is significantly lower than 500 mg, and death is neurogenic rather than hepatic."}, {"text": "10 g; intractable tonic-clonic status epilepticus.", "isCorrect": false, "rationale": "10 g is the lethal dose for caffeine, not nicotine."}], "hint": "Distinguish between the numerical lethal thresholds and terminal CNS targets for nicotine versus caffeine."}, {"type": "multiple_choice", "question": "How does chronic cocaine abuse lead to intense drug craving and compulsive drug-seeking behavior?", "answerOptions": [{"text": "Chronic intake permanently destroys presynaptic monoamine oxidase, causing neurotoxic dopamine excess.", "isCorrect": false, "rationale": "Cocaine depletion of dopamine—not excess catecholamine toxicity from MAO destruction—drives cravings."}, {"text": "Blockade of monoamine reuptake initially causes intense dopamine accumulation in the limbic system, but chronic intake depletes dopamine stores over time.", "isCorrect": true, "rationale": "By inhibiting presynaptic monoamine transporters, cocaine acutely prolongs dopaminergic signaling in the pleasure (limbic) system; prolonged use exhausts dopamine pools, leaving a deficient state that triggers intense craving."}, {"text": "Cocaine replaces endogenous serotonin in vesicles, triggering immune-mediated destruction of dopaminergic pathways.", "isCorrect": false, "rationale": "Cocaine acts as a reuptake inhibitor, not a vesicular false transmitter that induces immune destruction."}, {"text": "Cocaine stimulates adenosine receptors, suppressing baseline cortical output until more drug is ingested.", "isCorrect": false, "rationale": "Adenosine receptor pathways are targeted by caffeine, not cocaine."}], "hint": "Connect the short-term synaptic accumulation of dopamine with the long-term intracellular state of neurotransmitter stores."}, {"type": "multiple_choice", "question": "Which of the following describes the mild renal/diuretic action exerted by caffeine?", "answerOptions": [{"text": "Decreased excretion of water due to enhanced antidiuretic hormone release.", "isCorrect": false, "rationale": "Caffeine increases urinary excretion rather than suppressing water loss via ADH stimulation."}, {"text": "Selective reabsorption of potassium coupled with complete excretion of glucose.", "isCorrect": false, "rationale": "Caffeine leads to increased loss of multiple electrolytes, including potassium."}, {"text": "Increased urinary output of sodium, chloride, and potassium.", "isCorrect": true, "rationale": "Caffeine exerts a mild diuretic action that enhances the urinary excretion of key electrolytes, namely sodium, chloride, and potassium."}, {"text": "Inhibition of carbonic anhydrase leading to severe metabolic acidosis.", "isCorrect": false, "rationale": "Caffeine's mild diuretic action does not stem from carbonic anhydrase inhibition or cause severe metabolic acidosis."}], "hint": "Recall the major monovalent cations and anions excreted in urine following methylxanthine consumption."}, {"type": "multiple_choice", "question": "An antidepressant medication is prescribed off-label to assist a patient with smoking cessation by reducing cigarette cravings and attenuating withdrawal symptoms. Which drug fits this description?", "answerOptions": [{"text": "Bupropion", "isCorrect": true, "rationale": "Bupropion is an antidepressant that effectively reduces cravings and mitigates withdrawal symptoms in individuals undergoing smoking cessation."}, {"text": "Varenicline", "isCorrect": false, "rationale": "Varenicline is a partial nicotinic receptor agonist, not an antidepressant."}, {"text": "Theophylline", "isCorrect": false, "rationale": "Theophylline is a methylxanthine bronchodilator used primarily in respiratory disorders like asthma."}, {"text": "Phencyclidine", "isCorrect": false, "rationale": "Phencyclidine is a hallucinogen with high abuse potential, not a therapeutic cessation aid."}], "hint": "Identify the non-nicotine antidepressant approved for smoking cessation assistance."}, {"type": "multiple_choice", "question": "What pharmacokinetic rationale explains why nicotine transdermal patches or chewing gums are effective in reducing withdrawal symptoms compared to smoking cigarettes?", "answerOptions": [{"text": "Chewing gum delivers higher peak blood concentrations than smoking, completely saturating receptors permanently.", "isCorrect": false, "rationale": "Nicotine replacement therapy provides lower, smoother blood levels than the rapid high peaks produced by smoking."}, {"text": "Nicotine replacement products deliver lower, more sustained blood concentrations (e.g., gum yields roughly half the peak level of smoking), avoiding sharp peaks while alleviating deficiency.", "isCorrect": true, "rationale": "Nicotine replacement options like gum provide about one-half the peak blood concentration of smoking, supplying sufficient receptor stimulation to suppress withdrawal without maintaining the sharp spikes that reinforce addiction."}, {"text": "Transdermal patches bypass system metabolism entirely, converting nicotine into active non-addictive metabolites.", "isCorrect": false, "rationale": "Patches deliver unchanged nicotine transdermally to prevent rapid systemic concentration drops; they do not alter the drug's metabolic end-products."}, {"text": "Oral replacement therapies selectively block central nicotinic receptors while activating peripheral parasympathetic ganglia.", "isCorrect": false, "rationale": "Nicotine in replacement products acts on the same nicotinic agonist sites as tobacco smoke."}], "hint": "Compare the steady-state pharmacokinetics of replacement therapies with the rapid arterial spike achieved by inhaling smoke."}, {"type": "multiple_choice", "question": "At ordinary levels of caffeine consumption (e.g., 1 to 2 cups of coffee), which mechanism of action is primarily responsible for the observed CNS stimulation and reduced fatigue?", "answerOptions": [{"text": "Translocation of extracellular calcium into motor neurons.", "isCorrect": false, "rationale": "Calcium translocation requires significantly higher concentrations than those achieved with normal dietary intake."}, {"text": "Significant inhibition of phosphodiesterase causing massive accumulation of cAMP.", "isCorrect": false, "rationale": "Phosphodiesterase inhibition occurs at higher, toxic pharmacological concentrations rather than normal dietary levels."}, {"text": "Blockade of central adenosine receptors.", "isCorrect": true, "rationale": "Blockade of adenosine receptors is the primary mechanism accounting for the alertness and fatigue-reducing actions obtained from usual dietary consumption of caffeine."}, {"text": "Direct stimulation of nicotinic acetylcholine receptors in the cerebral cortex.", "isCorrect": false, "rationale": "Nicotinic receptors are targeted by nicotine, not caffeine."}], "hint": "Distinguish between mechanisms active at typical dietary caffeine levels versus those operating at high toxic doses."}, {"type": "multiple_choice", "question": "Why is nicotine consumption particularly dangerous for patients diagnosed with hypertension and peripheral vascular disease?", "answerOptions": [{"text": "Nicotine stimulates parasympathetic ganglia, leading to severe bradycardia and fluid overload.", "isCorrect": false, "rationale": "Sympathetic and adrenal activation dominate the vascular picture, increasing heart rate and blood pressure rather than slowing the heart."}, {"text": "Stimulation of sympathetic ganglia and the adrenal medulla increases blood pressure and heart rate, while nicotine-induced vasoconstriction decreases tissue perfusion.", "isCorrect": true, "rationale": "Nicotine enhances sympathetic output and catecholamine release, driving up blood pressure and heart rate while triggering peripheral vasoconstriction, which worsens hypertension and ischemic tissue symptoms."}, {"text": "Nicotine acts as a direct vasodilator, causing profound orthostatic hypotension that damages vascular beds.", "isCorrect": false, "rationale": "Nicotine acts primarily as a vasoconstrictor, elevating blood pressure at normal-to-moderate doses."}, {"text": "Nicotine inhibits hepatic conversion of angiotensin I, leading to uninhibited renin secretion.", "isCorrect": false, "rationale": "The hypertensive and vascular effects of nicotine stem from autonomic ganglion and adrenal medulla stimulation, not direct inhibition of angiotensin conversion."}], "hint": "Consider the impact of sympathetic ganglion activation and adrenal catecholamine secretion on vascular tone and cardiac workload."}, {"type": "multiple_choice", "question": "A patient experiences emesis, cardiac arrhythmias, and tonic-clonic convulsions after an intentional overdose of caffeine powder. What is the approximate minimum lethal dose of caffeine in humans?", "answerOptions": [{"text": "60 mg", "isCorrect": false, "rationale": "60 mg is the acute lethal dose for nicotine."}, {"text": "600 mg", "isCorrect": false, "rationale": "600 mg represents a threshold for daily consumption that induces withdrawal upon sudden cessation."}, {"text": "1.5 g", "isCorrect": false, "rationale": "1.5 g causes anxiety and tremors but is not typically fatal."}, {"text": "10 g", "isCorrect": true, "rationale": "The lethal dose of caffeine is approximately 10 g (equivalent to about 100 cups of coffee), which induces fatal cardiac arrhythmias and convulsions."}], "hint": "Recall the dose equivalent to roughly 100 cups of coffee."}, {"type": "multiple_choice", "question": "Which of the following compounds is categorized as a hallucinogen (psychomimetic drug) rather than a psychomotor stimulant?", "answerOptions": [{"text": "Theobromine", "isCorrect": false, "rationale": "Theobromine is a methylxanthine, which is classified as a psychomotor stimulant."}, {"text": "Lysergic acid diethylamide (LSD)", "isCorrect": true, "rationale": "Lysergic acid diethylamide (LSD) is classified as a hallucinogen (psychomimetic drug)."}, {"text": "Nicotine", "isCorrect": false, "rationale": "Nicotine is a psychomotor stimulant."}, {"text": "Cocaine", "isCorrect": false, "rationale": "Cocaine is classified under psychomotor stimulants."}], "hint": "Look for the drug listed under hallucinogens alongside tetrahydrocannabinol and phencyclidine."}, {"type": "multiple_choice", "question": "What is the primary illicit practice referred to as a 'Speedball'?", "answerOptions": [{"text": "Combining caffeine with concentrated energy drinks and alcohol.", "isCorrect": false, "rationale": "Speedball specifically refers to an injectable mixture of two illicit substances."}, {"text": "Mixing powdered cocaine with heroin for intravenous injection.", "isCorrect": true, "rationale": "A 'Speedball' refers to the co-administration of cocaine (a CNS stimulant) mixed with heroin (an opioid) delivered as an injection."}, {"text": "Inhaling vaporized nicotine together with lysergic acid diethylamide.", "isCorrect": false, "rationale": "A Speedball does not involve nicotine or LSD."}, {"text": "Ingesting high doses of theophylline alongside amphetamines.", "isCorrect": false, "rationale": "The term 'Speedball' is specifically applied to the combination of cocaine and heroin."}], "hint": "Identify the combination involving a powerful CNS stimulant and a powerful opioid agonist."}, {"type": "multiple_choice", "question": "Regarding the distribution and metabolism of methylxanthines in humans, which statement accurately reflects their pharmacokinetics?", "answerOptions": [{"text": "They are poorly absorbed orally and remain confined strictly to the vascular compartment without crossing biological membranes.", "isCorrect": false, "rationale": "Methylxanthines are well absorbed orally and cross major body membranes, including the blood-brain barrier and placenta."}, {"text": "They distribute throughout the body (including the brain), cross the placenta, are secreted into breast milk, and are metabolized in the liver mainly by CYP1A2.", "isCorrect": true, "rationale": "Methylxanthines exhibit high tissue distribution, penetrate the BBB and placenta, enter breast milk, undergo hepatic biotransformation via CYP1A2, and are excreted in urine."}, {"text": "They undergo zero hepatic metabolism and are excreted entirely unchanged in the feces.", "isCorrect": false, "rationale": "They undergo extensive liver metabolism by CYP1A2, and metabolites are primarily eliminated in urine."}, {"text": "They are rapidly inactivated by renal esterases prior to entering systemic circulation.", "isCorrect": false, "rationale": "Inactivation occurs primarily in the liver via CYP1A2 pathways rather than renal esterases."}], "hint": "Consider their oral bioavailability, ability to cross barriers, hepatic enzymatic pathway, and route of elimination."}, {"type": "multiple_choice", "question": "At very high toxic doses, what progression of systemic symptoms is typically observed following cocaine administration?", "answerOptions": [{"text": "Mild drowsiness leading immediately to severe hypothermia and bradycardia.", "isCorrect": false, "rationale": "Cocaine is a stimulant causing hyperthermia and tachycardia, not drowsiness, hypothermia, or bradycardia."}, {"text": "Tremors and convulsions, followed by central respiratory and vasomotor depression.", "isCorrect": true, "rationale": "Excessive doses of cocaine overstimulate the CNS leading to tremors and tonic-clonic convulsions, which can be followed by fatal respiratory and vasomotor center collapse."}, {"text": "Complete block of neuromuscular junctions leading to flaccid paralysis without cortical excitement.", "isCorrect": false, "rationale": "Cocaine acts on central cortical and brainstem structures to induce convulsions rather than causing peripheral neuromuscular junction blockade."}, {"text": "Selective parasympathetic hyperactivation causing profuse salivation and diarrhea.", "isCorrect": false, "rationale": "Cocaine enhances adrenergic (sympathetic) activity, leading to symptoms like tachycardia, hypertension, and pupillary dilation."}], "hint": "Trace how central excitation at toxic levels transitions into medullary failure."}, {"type": "multiple_choice", "question": "What common plant source serves as the natural botanical origin of cocaine?", "answerOptions": [{"text": "Camellia sinensis leaves native to Asia", "isCorrect": false, "rationale": "Camellia sinensis is the tea plant, which contains methylxanthines like theophylline and caffeine."}, {"text": "Nicotiana tabacum leaves native to North America", "isCorrect": false, "rationale": "Nicotiana tabacum is the source of nicotine."}, {"text": "Leaves of the coca plant native to South America", "isCorrect": true, "rationale": "Cocaine is an alkaloid obtained directly from the leaves of the coca plant native to South America."}, {"text": "Theobroma cacao beans native to Central America", "isCorrect": false, "rationale": "Theobroma cacao is the cocoa plant, which yields theobromine."}], "hint": "Identify the South American plant from which this Schedule II local anesthetic alkaloid is extracted."}, {"type": "multiple_choice", "question": "Which of the following symptoms is characteristic of the nicotine withdrawal syndrome in a physically dependent individual?", "answerOptions": [{"text": "Euphoria, hypomania, and decreased appetite.", "isCorrect": false, "rationale": "Euphoria and decreased appetite are acute effects of nicotine administration, not withdrawal."}, {"text": "Irritability, anxiety, restlessness, difficulty concentrating, headaches, and insomnia.", "isCorrect": true, "rationale": "Physical dependence on nicotine produces a withdrawal state marked by psychological distress (irritability, anxiety, restlessness, impaired concentration) and somatic complaints (headaches, insomnia, GI upset)."}, {"text": "Severe analgesia, hypothermia, and excessive drowsiness.", "isCorrect": false, "rationale": "Withdrawal from CNS stimulants produces irritability, restlessness, and anxiety rather than analgesia or hypothermia."}, {"text": "Flaccid muscle paralysis and loss of deep tendon reflexes.", "isCorrect": false, "rationale": "Nicotine withdrawal does not involve loss of spinal reflex arches or motor paralysis."}], "hint": "Focus on the neurological and psychological distress signals associated with stopping regular tobacco use."}];
+    let currentIndex = 0;
+    let score = 0;
+    let answered = false;
+    let multiSelected = new Set();
+
+    function escapeHtml(str) {
+      return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function normalizeAnswer(str) {
+      return String(str ?? '')
+        .trim()
+        .toLowerCase()
+        .replace(/^["'«»“”‘’]+|["'«»“”‘’.,;!?]+$/g, '')
+        .replace(/\s+/g, ' ');
+    }
+
+    function getQuestionType(q) {
+      const t = q && q.type;
+      if (t === 'multiple_choice' || t === 'multiple_select' || t === 'fill_in_the_blank' || t === 'short_answer') {
+        return t;
+      }
+      if (q && q.grading && typeof q.grading === 'object' && q.grading.modelAnswer) return 'short_answer';
+      if (q && typeof q.bestAnswer === 'string' && q.bestAnswer.trim()) return 'fill_in_the_blank';
+      if (q && Array.isArray(q.answerOptions)) {
+        const c = q.answerOptions.filter(o => o && o.isCorrect).length;
+        return c > 1 ? 'multiple_select' : 'multiple_choice';
+      }
+      return 'multiple_choice';
+    }
+
+    function openLightbox(src) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox').style.display = 'flex';
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').style.display = 'none';
+    }
+
+    function renderMath() {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false}
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    function loadQuestion() {
+      if (questions.length === 0) {
+        document.getElementById('q-text').textContent = 'No questions found in this quiz.';
+        document.getElementById('hint-btn').style.display = 'none';
+        return;
+      }
+      if (currentIndex >= questions.length) {
+        showResults();
+        return;
+      }
+
+      answered = false;
+      multiSelected = new Set();
+      const q = questions[currentIndex];
+      const qType = getQuestionType(q);
+
+      document.getElementById('q-counter').textContent = `Question ${currentIndex + 1} / ${questions.length}`;
+      document.getElementById('score-counter').textContent = `Score: ${score}`;
+      document.getElementById('progress-bar').style.width = `${(currentIndex / questions.length) * 100}%`;
+
+      const badgeMap = {
+        multiple_choice: 'Multiple Choice',
+        multiple_select: 'Multiple Select • Select all that apply',
+        fill_in_the_blank: 'Fill in the Blank',
+        short_answer: 'Short Answer'
+      };
+      document.getElementById('q-type-badge').textContent = badgeMap[qType] || 'Question';
+
+      // Render embedded diagrams if any
+      const imgWrap = document.getElementById('q-images');
+      imgWrap.innerHTML = '';
+      const imgs = Array.isArray(q.imageUrls) ? q.imageUrls : (Array.isArray(q.images) ? q.images : []);
+      imgs.forEach(src => {
+        const url = typeof src === 'string' ? src : (src && src.url ? src.url : '');
+        if (!url) return;
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = 'Question diagram';
+        img.onclick = () => openLightbox(url);
+        imgWrap.appendChild(img);
+      });
+      imgWrap.style.display = imgWrap.children.length > 0 ? 'flex' : 'none';
+
+      // Question text (highlight ___ for fill_in_the_blank)
+      const qTextEl = document.getElementById('q-text');
+      const rawQuestion = String(q.question || '');
+      if (qType === 'fill_in_the_blank' && /_{3,}/.test(rawQuestion)) {
+        qTextEl.innerHTML = escapeHtml(rawQuestion).replace(/_{3,}/g, '<span class="blank-pill" id="blank-slot">______</span>');
+      } else {
+        qTextEl.textContent = rawQuestion;
+      }
+
+      // Hint
+      const hintBtn = document.getElementById('hint-btn');
+      const hintBox = document.getElementById('hint-box');
+      if (q.hint) {
+        hintBtn.style.display = 'inline-block';
+        hintBox.style.display = 'none';
+        hintBox.textContent = q.hint;
+      } else {
+        hintBtn.style.display = 'none';
+        hintBox.style.display = 'none';
+      }
+
+      const optionsBox = document.getElementById('options-container');
+      const feedbackBox = document.getElementById('feedback-box');
+      const submitBtn = document.getElementById('submit-btn');
+      const nextBtn = document.getElementById('next-btn');
+
+      optionsBox.innerHTML = '';
+      feedbackBox.style.display = 'none';
+      feedbackBox.className = 'feedback-box';
+      feedbackBox.innerHTML = '';
+      submitBtn.style.display = 'none';
+      submitBtn.disabled = false;
+      nextBtn.style.display = 'none';
+
+      if (qType === 'multiple_choice') {
+        (q.answerOptions || []).forEach((opt, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'option-btn';
+          btn.innerHTML = `<div class="opt-row"><strong>${String.fromCharCode(65 + idx)}.</strong><span>${escapeHtml(opt.text)}</span></div><div class="rationale">${escapeHtml(opt.rationale || '')}</div>`;
+          btn.onclick = () => selectSingleOption(idx);
+          optionsBox.appendChild(btn);
+        });
+      } else if (qType === 'multiple_select') {
+        (q.answerOptions || []).forEach((opt, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'option-btn';
+          btn.innerHTML = `<div class="opt-row"><span class="opt-check" id="chk-${idx}">☐</span><span><strong>${String.fromCharCode(65 + idx)}.</strong> ${escapeHtml(opt.text)}</span></div><div class="rationale">${escapeHtml(opt.rationale || '')}</div>`;
+          btn.onclick = () => toggleMultiOption(idx, btn);
+          optionsBox.appendChild(btn);
+        });
+        submitBtn.textContent = 'Check Answer ✓';
+        submitBtn.style.display = 'block';
+        submitBtn.disabled = true;
+        submitBtn.onclick = submitMultiSelect;
+      } else if (qType === 'fill_in_the_blank') {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = 'fib-input';
+        input.className = 'text-input';
+        input.placeholder = 'Type the missing word or phrase...';
+        input.autocomplete = 'off';
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && !answered) submitFillBlank();
+        });
+        optionsBox.appendChild(input);
+        submitBtn.textContent = 'Check Answer ✓';
+        submitBtn.style.display = 'block';
+        submitBtn.onclick = submitFillBlank;
+      } else if (qType === 'short_answer') {
+        const ta = document.createElement('textarea');
+        ta.id = 'sa-input';
+        ta.className = 'text-area';
+        ta.placeholder = 'Write your response here, then reveal the model answer to self-grade...';
+        optionsBox.appendChild(ta);
+        submitBtn.textContent = 'Reveal Model Answer 👀';
+        submitBtn.style.display = 'block';
+        submitBtn.onclick = revealShortAnswer;
+      }
+
+      setTimeout(renderMath, 50);
+    }
+
+    function toggleHint() {
+      const hintBox = document.getElementById('hint-box');
+      hintBox.style.display = hintBox.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function selectSingleOption(index) {
+      if (answered) return;
+      answered = true;
+      const q = questions[currentIndex];
+      const buttons = document.querySelectorAll('#options-container .option-btn');
+
+      buttons.forEach((btn, idx) => {
+        btn.disabled = true;
+        const opt = q.answerOptions[idx];
+        const rat = btn.querySelector('.rationale');
+        if (rat && rat.textContent.trim()) rat.style.display = 'block';
+
+        if (opt.isCorrect) {
+          btn.classList.add('correct');
+        } else if (idx === index) {
+          btn.classList.add('wrong');
+        }
+      });
+
+      if (q.answerOptions[index] && q.answerOptions[index].isCorrect) {
+        score++;
+        document.getElementById('score-counter').textContent = `Score: ${score}`;
+      }
+
+      document.getElementById('next-btn').style.display = 'block';
+      setTimeout(renderMath, 50);
+    }
+
+    function toggleMultiOption(idx, btn) {
+      if (answered) return;
+      const chk = document.getElementById(`chk-${idx}`);
+      if (multiSelected.has(idx)) {
+        multiSelected.delete(idx);
+        btn.classList.remove('selected');
+        if (chk) chk.textContent = '☐';
+      } else {
+        multiSelected.add(idx);
+        btn.classList.add('selected');
+        if (chk) chk.textContent = '☑';
+      }
+      document.getElementById('submit-btn').disabled = multiSelected.size === 0;
+    }
+
+    function submitMultiSelect() {
+      if (answered || multiSelected.size === 0) return;
+      answered = true;
+      const q = questions[currentIndex];
+      const buttons = document.querySelectorAll('#options-container .option-btn');
+      let exactMatch = true;
+
+      buttons.forEach((btn, idx) => {
+        btn.disabled = true;
+        btn.classList.remove('selected');
+        const opt = q.answerOptions[idx];
+        const wasPicked = multiSelected.has(idx);
+        const rat = btn.querySelector('.rationale');
+        if (rat && rat.textContent.trim()) rat.style.display = 'block';
+
+        if (opt.isCorrect && wasPicked) {
+          btn.classList.add('correct');
+        } else if (opt.isCorrect && !wasPicked) {
+          btn.classList.add('missed');
+          exactMatch = false;
+        } else if (!opt.isCorrect && wasPicked) {
+          btn.classList.add('wrong');
+          exactMatch = false;
+        }
+      });
+
+      const fb = document.getElementById('feedback-box');
+      if (exactMatch) {
+        score++;
+        document.getElementById('score-counter').textContent = `Score: ${score}`;
+        fb.className = 'feedback-box ok';
+        fb.innerHTML = '<strong>✅ Correct! You selected all right answers.</strong>';
+      } else {
+        fb.className = 'feedback-box bad';
+        fb.innerHTML = '<strong>❌ Not quite — green = selected &amp; correct, yellow = missed correct option, red = incorrect selection.</strong>';
+      }
+      fb.style.display = 'flex';
+      document.getElementById('submit-btn').style.display = 'none';
+      document.getElementById('next-btn').style.display = 'block';
+      setTimeout(renderMath, 50);
+    }
+
+    function submitFillBlank() {
+      if (answered) return;
+      const input = document.getElementById('fib-input');
+      const userRaw = input ? input.value : '';
+      if (!userRaw.trim()) return;
+
+      answered = true;
+      if (input) input.disabled = true;
+
+      const q = questions[currentIndex];
+      const accepted = [q.bestAnswer, ...(Array.isArray(q.acceptableAnswers) ? q.acceptableAnswers : [])]
+        .filter(Boolean);
+      const normUser = normalizeAnswer(userRaw);
+      const isCorrect = accepted.some(ans => normalizeAnswer(ans) === normUser);
+
+      const blankSlot = document.getElementById('blank-slot');
+      if (blankSlot) blankSlot.textContent = q.bestAnswer || userRaw;
+
+      const fb = document.getElementById('feedback-box');
+      let htmlParts = [];
+      if (isCorrect) {
+        score++;
+        document.getElementById('score-counter').textContent = `Score: ${score}`;
+        fb.className = 'feedback-box ok';
+        htmlParts.push(`<div><strong>✅ Correct!</strong> Best answer: <strong>${escapeHtml(q.bestAnswer)}</strong></div>`);
+      } else {
+        fb.className = 'feedback-box bad';
+        htmlParts.push(`<div><strong>❌ Expected:</strong> <strong>${escapeHtml(q.bestAnswer)}</strong></div>`);
+      }
+      if (Array.isArray(q.acceptableAnswers) && q.acceptableAnswers.length > 0) {
+        htmlParts.push(`<div style="color: var(--text-muted); font-size: 0.86rem;">Also accepted: ${escapeHtml(q.acceptableAnswers.join(', '))}</div>`);
+      }
+      if (q.rationale) {
+        htmlParts.push(`<div>${escapeHtml(q.rationale)}</div>`);
+      }
+      if (!isCorrect) {
+        htmlParts.push(`<button class="override-btn" id="override-btn" onclick="overrideFillBlank()">✓ My answer was a valid synonym — count as correct</button>`);
+      }
+      fb.innerHTML = htmlParts.join('');
+      fb.style.display = 'flex';
+
+      document.getElementById('submit-btn').style.display = 'none';
+      document.getElementById('next-btn').style.display = 'block';
+      setTimeout(renderMath, 50);
+    }
+
+    function overrideFillBlank() {
+      const btn = document.getElementById('override-btn');
+      if (!btn) return;
+      btn.remove();
+      score++;
+      document.getElementById('score-counter').textContent = `Score: ${score}`;
+      const fb = document.getElementById('feedback-box');
+      fb.className = 'feedback-box ok';
+    }
+
+    function revealShortAnswer() {
+      if (answered) return;
+      const ta = document.getElementById('sa-input');
+      if (ta) ta.disabled = true;
+
+      const q = questions[currentIndex];
+      const g = q.grading || {};
+      const fb = document.getElementById('feedback-box');
+      fb.className = 'feedback-box neutral';
+
+      let parts = [];
+      if (g.modelAnswer) {
+        parts.push(`<div><strong>📖 Model Answer:</strong><br>${escapeHtml(g.modelAnswer)}</div>`);
+      }
+      if (Array.isArray(g.requiredAttributes) && g.requiredAttributes.length > 0) {
+        const items = g.requiredAttributes.map(a => `<li style="margin-left:18px;">${escapeHtml(a)}</li>`).join('');
+        parts.push(`<div><strong>🔑 Key Points to Cover:</strong><ul>${items}</ul></div>`);
+      }
+      if (g.rationale) {
+        parts.push(`<div style="color: var(--text-muted); font-size: 0.88rem;"><strong>Why:</strong> ${escapeHtml(g.rationale)}</div>`);
+      }
+      if (g.errors && Array.isArray(g.errors.misconceptions) && g.errors.misconceptions.length > 0) {
+        const mItems = g.errors.misconceptions.map(m => `<li style="margin-left:18px;">${escapeHtml(m)}</li>`).join('');
+        parts.push(`<div style="color: #fcd34d; font-size: 0.86rem;"><strong>⚠️ Common Pitfalls:</strong><ul>${mItems}</ul></div>`);
+      }
+      parts.push(`
+        <div id="self-grade-wrap">
+          <div style="font-size: 0.88rem; color: var(--text-muted); margin-top: 4px;">How did your answer compare?</div>
+          <div class="self-grade-row">
+            <button class="grade-btn good" onclick="finishShortAnswer(true)">✅ Got it right</button>
+            <button class="grade-btn bad" onclick="finishShortAnswer(false)">❌ Needs review</button>
+          </div>
+        </div>
+      `);
+
+      fb.innerHTML = parts.join('');
+      fb.style.display = 'flex';
+      document.getElementById('submit-btn').style.display = 'none';
+      setTimeout(renderMath, 50);
+    }
+
+    function finishShortAnswer(gotIt) {
+      if (answered) return;
+      answered = true;
+      if (gotIt) {
+        score++;
+        document.getElementById('score-counter').textContent = `Score: ${score}`;
+      }
+      const wrap = document.getElementById('self-grade-wrap');
+      if (wrap) {
+        wrap.innerHTML = gotIt
+          ? '<strong style="color:#6ee7b7;">✅ Marked correct!</strong>'
+          : '<strong style="color:#fca5a5;">📌 Marked for review.</strong>';
+      }
+      document.getElementById('next-btn').style.display = 'block';
+    }
+
+    function nextQuestion() {
+      currentIndex++;
+      loadQuestion();
+    }
+
+    function showResults() {
+      document.getElementById('quiz-card').style.display = 'none';
+      document.getElementById('progress-bar').style.width = '100%';
+      const resultsCard = document.getElementById('results-card');
+      resultsCard.style.display = 'flex';
+      const pct = questions.length > 0 ? Math.round((score / questions.length) * 100) : 0;
+      document.getElementById('final-score').textContent = `${pct}%`;
+      document.getElementById('score-summary').textContent = `You answered ${score} out of ${questions.length} questions correctly.`;
+    }
+
+    function restartQuiz() {
+      currentIndex = 0;
+      score = 0;
+      document.getElementById('quiz-card').style.display = 'flex';
+      document.getElementById('results-card').style.display = 'none';
+      loadQuestion();
+    }
+
+    window.onload = () => {
+      loadQuestion();
+      setTimeout(renderMath, 200);
+    };
+  </script>
+</body>
+</html>
