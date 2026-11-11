@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lec.5 Public Health MCQ Quiz — Obesity, Activity, STIs, Hepatitis & Alcohol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:#080c1a;--card:#0e1530;--text:#f0f4ff;--muted:#8899cc;
+    --accent:#60a5fa;--green:#22c55e;--red:#ef4444;--border:#1e2d5a;--border2:#263870;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;background:radial-gradient(ellipse at 20% 20%,#0d1a4a 0%,#080c1a 60%);color:var(--text);min-height:100vh;padding:20px 16px 48px}
+
+  #screen-quiz{max-width:900px;margin:0 auto}
+  .quiz-topbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:18px}
+  .pills{display:flex;gap:8px;flex-wrap:wrap}
+  .pill{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:7px 13px;color:var(--muted);font-size:13px;font-weight:600}
+  .pill span{color:var(--text)}
+
+  .progress-bar-wrap{height:4px;background:var(--border);border-radius:99px;margin-bottom:18px;overflow:hidden}
+  .progress-bar-fill{height:100%;background:linear-gradient(90deg,#38bdf8,#818cf8);border-radius:99px;transition:width .3s}
+
+  .quiz-card{background:rgba(14,21,48,.95);border:1px solid var(--border);border-radius:22px;padding:26px 24px;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+  .qhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+  .qtag{font-size:12px;font-weight:700;border-radius:999px;padding:5px 13px;letter-spacing:.04em;background:rgba(255,255,255,.08);border:1px solid var(--border)}
+  .qmode{font-size:12px;color:var(--muted);background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:999px;padding:4px 11px}
+
+  .question-text{font-size:clamp(15px,2.6vw,19px);font-weight:700;line-height:1.5;margin-bottom:20px;color:#e8eeff}
+  .options{display:grid;gap:9px}
+  .opt{width:100%;text-align:left;border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--text);border-radius:13px;padding:13px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:border-color .15s,background .15s,transform .12s;display:flex;align-items:flex-start;gap:11px;line-height:1.45}
+  .opt:hover:not(:disabled){transform:translateX(4px);border-color:var(--accent);background:rgba(96,165,250,.07)}
+  .opt-letter{min-width:24px;height:24px;border-radius:7px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);flex-shrink:0;margin-top:1px;transition:.15s}
+  .opt.correct{background:rgba(34,197,94,.14);border-color:var(--green)}
+  .opt.correct .opt-letter{background:rgba(34,197,94,.25);border-color:var(--green);color:#86efac}
+  .opt.wrong{background:rgba(239,68,68,.12);border-color:var(--red)}
+  .opt.wrong .opt-letter{background:rgba(239,68,68,.2);border-color:var(--red);color:#fca5a5}
+  .opt:disabled{cursor:default}
+
+  .explain{display:none;margin-top:14px;padding:14px 16px;border-radius:13px;background:rgba(6,16,40,.7);border:1px solid var(--border2);color:#c7d8ff;line-height:1.6;font-size:13.5px}
+  .explain.show{display:block}
+  .explain .correct-label{color:#86efac;font-weight:700;font-size:14px;display:block;margin-bottom:5px}
+
+  .controls{display:flex;gap:9px;flex-wrap:wrap;margin-top:20px}
+  .btn{border:0;border-radius:11px;padding:10px 16px;font-weight:700;font-size:13px;font-family:inherit;cursor:pointer;transition:opacity .15s,transform .1s}
+  .btn:hover{opacity:.88;transform:translateY(-1px)}.btn:active{transform:translateY(0)}.btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+  .btn.primary{background:linear-gradient(135deg,#2563eb,#4f46e5);color:white}
+  .btn.secondary{background:#1e2d5a;color:#93c5fd}
+  .btn.success{background:linear-gradient(135deg,#16a34a,#15803d);color:white}
+  .btn.purple{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:white}
+  .btn.ghost{background:transparent;border:1px solid var(--border2);color:var(--muted)}
+
+  .answer-list{display:none;margin-top:20px}.answer-list.show{display:block}
+  .answer-list h3{font-size:15px;font-weight:700;margin-bottom:12px;color:#93c5fd}
+  .answer-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:9px}
+  .answer-mini{background:rgba(14,21,48,.8);border:1px solid var(--border);border-radius:11px;padding:11px 13px;font-size:12.5px;line-height:1.5}
+  .answer-mini .q-num{color:#93c5fd;font-weight:700;font-size:11px;margin-bottom:3px}
+  .answer-mini .q-ans{color:#86efac;font-weight:600}
+  .footer-tip{margin-top:14px;color:var(--muted);font-size:12px;text-align:center}
+
+  #screen-results{display:none;max-width:520px;margin:0 auto;text-align:center}
+  .result-card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:40px 28px;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+  .result-emoji{font-size:58px;margin-bottom:14px}
+  .result-score{font-size:50px;font-weight:800;background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .result-label{font-size:15px;color:var(--muted);margin-bottom:20px}
+  .result-msg{font-size:19px;font-weight:700;margin-bottom:6px}
+  .result-actions{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+
+  .header-inline{text-align:center;margin-bottom:20px}
+  .header-inline .badge{display:inline-block;background:linear-gradient(135deg,#1e3a8a,#312e81);border:1px solid #3b4fd8;border-radius:999px;padding:5px 14px;font-size:11px;font-weight:600;letter-spacing:.08em;color:#a5b4fc;text-transform:uppercase;margin-bottom:8px}
+  .header-inline h1{font-size:clamp(18px,4vw,26px);font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+</style>
+</head>
+<body>
+
+<div id="screen-quiz">
+  <div class="header-inline">
+    <div class="badge">Lec.5 · @Ph22kh</div>
+    <h1>Obesity · Activity · STIs · Hepatitis · Alcohol</h1>
+  </div>
+  <div class="quiz-topbar">
+    <div class="pills">
+      <div class="pill">Score: <span id="score-display">0/0</span></div>
+      <div class="pill">Q <span id="progress-display">1/1</span></div>
+    </div>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-bar" style="width:0%"></div></div>
+  <div class="quiz-card">
+    <div class="qhead"><span class="qtag" id="q-tag">Lec.5</span><span class="qmode" id="q-mode">Normal order</span></div>
+    <div class="question-text" id="q-text">Loading…</div>
+    <div class="options" id="q-options"></div>
+    <div class="explain" id="q-explain"></div>
+    <div class="controls">
+      <button class="btn secondary" id="btn-prev" onclick="prevQ()">← Back</button>
+      <button class="btn primary" id="btn-next" onclick="nextQ()">Next →</button>
+      <button class="btn purple" onclick="shuffleQ()">🔀 Shuffle</button>
+      <button class="btn success" onclick="restartQ()">↺ Restart</button>
+      <button class="btn ghost" id="btn-sheet" onclick="toggleSheet()">Show Answer Sheet</button>
+    </div>
+    <div class="answer-list" id="answer-list"><h3>Answer Sheet</h3><div class="answer-grid" id="answer-grid"></div></div>
+    <div class="footer-tip">Tip: keep shuffling until every answer feels instant 🎯</div>
+  </div>
+</div>
+
+<div id="screen-results">
+  <div class="result-card">
+    <div class="result-emoji" id="r-emoji">🎉</div>
+    <div class="result-score" id="r-score">0/0</div>
+    <div class="result-label">Final Score</div>
+    <div class="result-msg" id="r-msg">Well done!</div>
+    <div class="result-actions">
+      <button class="btn primary" onclick="restartQ()">↺ Try Again</button>
+      <button class="btn purple" onclick="shuffleAndRestart()">🔀 Shuffle & Retry</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const BANK = [
+  {
+    "q": "In 1995, the WHO accepted which method for assessing degrees of underweight and overweight?",
+    "opts": ["A) Waist circumference","B) Skinfold thickness","C) Body mass index (BMI)","D) Waist-to-hip ratio","E) Body weight alone"],
+    "ans": "C) Body mass index (BMI)",
+    "note": "WHO adopted BMI (kg/m²) as the standard method for classifying underweight and overweight."
+  },
+  {
+    "q": "The BMI lower limit used to distinguish normal from underweight is:",
+    "opts": ["A) 16","B) 18.5","C) 20","D) 22.9","E) 25"],
+    "ans": "B) 18.5",
+    "note": "BMI < 18.5 is classified as underweight."
+  },
+  {
+    "q": "According to the classification for Asians, the overweight BMI range is:",
+    "opts": ["A) 18.5–24.9","B) 20–25","C) 23–24.9","D) 18.5–22.9","E) 25–29.9"],
+    "ans": "C) 23–24.9",
+    "note": "Asian BMI cut-offs: Normal 18.5–22.9, Overweight 23–24.9, Obese class 1 ≥25."
+  },
+  {
+    "q": "Which condition has a HIGH relative risk (RR > 3) in obese adults?",
+    "opts": ["A) Stroke","B) Hypertension","C) Osteoarthritis","D) Breast cancer","E) Sleep apnoea"],
+    "ans": "E) Sleep apnoea",
+    "note": "Sleep apnoea (along with diabetes, gall-bladder disease, etc.) has RR > 3 in obesity."
+  },
+  {
+    "q": "Ischaemic heart disease, stroke, and hypertension are associated with obesity at which relative risk?",
+    "opts": ["A) High (RR > 3)","B) Moderate (RR = 2–3)","C) Minor (RR = 1–2)","D) No increased risk","E) RR > 5"],
+    "ans": "B) Moderate (RR = 2–3)",
+    "note": "IHD, stroke and hypertension fall in the moderate-risk category (RR 2–3)."
+  },
+  {
+    "q": "Which of the following is a NEW condition found to be associated with high BMI?",
+    "opts": ["A) Gout","B) Diabetes","C) Oesophageal cancer","D) Polycystic ovary syndrome","E) Hyperuricaemia"],
+    "ans": "C) Oesophageal cancer",
+    "note": "Oesophageal cancer (and biliary-tract cancers) were identified as newly associated with high BMI (minor RR 1–2)."
+  },
+  {
+    "q": "Physical activity is defined as:",
+    "opts": ["A) Any planned sport performed at least 3 times weekly","B) Any bodily movement produced by skeletal muscle that requires energy expenditure","C) Any activity that raises heart rate above 150 bpm","D) Leisure-time exercise only","E) Occupational activity only"],
+    "ans": "B) Any bodily movement produced by skeletal muscle that requires energy expenditure",
+    "note": "WHO definition: any bodily movement produced by skeletal muscles that requires energy expenditure."
+  },
+  {
+    "q": "Physical inactivity is ranked as the ___ leading cause of death worldwide.",
+    "opts": ["A) First","B) Second","C) Third","D) Fourth","E) Tenth"],
+    "ans": "D) Fourth",
+    "note": "Physical inactivity is the fourth leading risk factor for global mortality."
+  },
+  {
+    "q": "Physical activity may alter tumour initiation events by enhancing:",
+    "opts": ["A) Insulin secretion","B) Cortisol release","C) Platelet aggregation","D) Oestrogen production","E) Cytochrome P450 system and carcinogen detoxification enzymes"],
+    "ans": "E) Cytochrome P450 system and carcinogen detoxification enzymes",
+    "note": "Exercise can up-regulate detoxification enzymes that help prevent tumour initiation."
+  },
+  {
+    "q": "Osteoporosis is characterized by:",
+    "opts": ["A) Increased bone mass with joint inflammation","B) Decline in bone mass with deterioration of bone tissue and increased fracture risk","C) Cartilage loss only","D) Muscle wasting only","E) Excess calcium deposition"],
+    "ans": "B) Decline in bone mass with deterioration of bone tissue and increased fracture risk",
+    "note": "Osteoporosis = low bone mass + micro-architectural deterioration → fragility fractures."
+  },
+  {
+    "q": "Which is NOT among the major individual socioeconomic risk factors for mental health problems and suicide?",
+    "opts": ["A) Poverty","B) Unemployment","C) High debt","D) Social isolation","E) High educational level"],
+    "ans": "E) High educational level",
+    "note": "High education is protective; poverty, unemployment, debt and isolation are risk factors."
+  },
+  {
+    "q": "Workplace social capital (trusting relationships) has been shown to protect against:",
+    "opts": ["A) Obesity","B) Depression","C) Hypertension","D) Osteoporosis","E) Dental caries"],
+    "ans": "B) Depression",
+    "note": "High workplace social capital is associated with lower risk of depression."
+  },
+  {
+    "q": "Which population-level intervention has considerable evidence for effectiveness in suicide prevention?",
+    "opts": ["A) Increased sensational media coverage","B) Social isolation of high-risk individuals","C) Restriction of access to lethal means","D) Reducing the number of GPs","E) Removing mental health services from primary care"],
+    "ans": "C) Restriction of access to lethal means",
+    "note": "Restricting access to means (pesticides, firearms, etc.) is one of the best-evidenced population interventions."
+  },
+  {
+    "q": "The 5-year survival of oral cancer is:",
+    "opts": ["A) More than 90%","B) About 75%","C) Exactly 60%","D) Less than 50%","E) 100% with early diagnosis"],
+    "ans": "D) Less than 50%",
+    "note": "Overall 5-year survival for oral cancer remains below 50%."
+  },
+  {
+    "q": "Clinically significant dental caries occurs only in the presence of:",
+    "opts": ["A) Fluoride deficiency","B) Excess dietary sugar","C) Smoking","D) Poorly fitting dentures","E) Xerostomia"],
+    "ans": "B) Excess dietary sugar",
+    "note": "Dental caries requires fermentable dietary sugars; without them clinically significant decay does not occur."
+  },
+  {
+    "q": "Which is a necessary cause of destructive periodontal disease?",
+    "opts": ["A) Dental plaque","B) Fluoride","C) Artificial sweeteners","D) Mouth guards","E) Saliva"],
+    "ans": "A) Dental plaque",
+    "note": "Dental plaque is a necessary cause of destructive periodontitis."
+  },
+  {
+    "q": "To prevent dental decay, dietary sugars can be substituted with:",
+    "opts": ["A) Honey","B) Artificial sweeteners","C) Fruit juice","D) Glucose syrup","E) Molasses"],
+    "ans": "B) Artificial sweeteners",
+    "note": "Non-cariogenic artificial sweeteners can replace dietary sugars to reduce caries risk."
+  },
+  {
+    "q": "Sexually transmitted infections (STIs) are transmitted through:",
+    "opts": ["A) Respiratory droplets","B) Vaginal, anal, or oral sex","C) Contaminated food and water","D) Mosquito bites","E) Casual skin contact"],
+    "ans": "B) Vaginal, anal, or oral sex",
+    "note": "STIs are primarily transmitted by sexual contact (vaginal, anal or oral)."
+  },
+  {
+    "q": "The majority of STIs are:",
+    "opts": ["A) Symptomatic","B) Fatal","C) Asymptomatic","D) Vaccine-preventable","E) Self-limiting within days"],
+    "ans": "C) Asymptomatic",
+    "note": "Most STI infections are asymptomatic, facilitating silent spread."
+  },
+  {
+    "q": "STIs can be transmitted from mother to child:",
+    "opts": ["A) In utero or at the time of delivery","B) Only through breastfeeding","C) Only after the neonatal period","D) Through respiratory droplets only","E) They cannot be transmitted vertically"],
+    "ans": "A) In utero or at the time of delivery",
+    "note": "Vertical transmission can occur in utero or during delivery."
+  },
+  {
+    "q": "The most common of the serious STI consequences are:",
+    "opts": ["A) Neurological disorders","B) Cardiovascular disease","C) Renal failure","D) Adverse reproductive outcomes","E) Respiratory failure"],
+    "ans": "D) Adverse reproductive outcomes",
+    "note": "Infertility, ectopic pregnancy, stillbirth and neonatal infection are the most frequent serious sequelae."
+  },
+  {
+    "q": "Infertility as an STI consequence is often caused by:",
+    "opts": ["A) Syphilis and HIV","B) Candida and Trichomonas","C) HPV and HSV","D) Scabies and pubic lice","E) Chlamydia and gonorrhea"],
+    "ans": "E) Chlamydia and gonorrhea",
+    "note": "Chlamydia and gonorrhoea are the main bacterial causes of tubal-factor infertility."
+  },
+  {
+    "q": "Pelvic inflammatory disease (PID) is:",
+    "opts": ["A) An inflammation of the lower urinary tract","B) An inflammation of the upper female tract","C) A malignancy of the cervix","D) An infection of the male urethra","E) A fungal vaginal infection"],
+    "ans": "B) An inflammation of the upper female tract",
+    "note": "PID is infection/inflammation of the upper female genital tract (uterus, tubes, ovaries)."
+  },
+  {
+    "q": "Which is NOT an adverse pregnancy outcome associated with STIs?",
+    "opts": ["A) Stillbirth or fetal loss","B) Neonatal death","C) Prematurity","D) Macrosomia (large birth weight)","E) Infected infant"],
+    "ans": "D) Macrosomia (large birth weight)",
+    "note": "Macrosomia is associated with maternal diabetes, not with STIs."
+  },
+  {
+    "q": "Which of the following is NOT an STI-associated malignancy?",
+    "opts": ["A) Anogenital cancers","B) Hepatocellular carcinoma","C) Cervical cancer","D) Kaposi's sarcoma","E) Osteosarcoma"],
+    "ans": "E) Osteosarcoma",
+    "note": "Osteosarcoma is not linked to STI pathogens; the others are (HPV, HBV, HHV-8, etc.)."
+  },
+  {
+    "q": "In addition to anogenital and cervical cancers, STI-associated malignancies include:",
+    "opts": ["A) Lung cancer and melanoma","B) Glioma and thyroid cancer","C) Some lymphomas and Kaposi's sarcoma","D) Osteosarcoma and leukaemia","E) Gastric and colorectal cancer"],
+    "ans": "C) Some lymphomas and Kaposi's sarcoma",
+    "note": "HHV-8 (Kaposi) and certain other viruses linked to STIs can cause lymphomas."
+  },
+  {
+    "q": "Globally, hepatitis B is:",
+    "opts": ["A) One of the most common infectious diseases","B) A rare disease","C) Restricted to developed countries","D) Eradicated","E) Non-infectious"],
+    "ans": "A) One of the most common infectious diseases",
+    "note": "HBV remains one of the most prevalent infectious diseases worldwide."
+  },
+  {
+    "q": "Which is NOT a primary route of HBV transmission?",
+    "opts": ["A) Horizontal transmission","B) Sexual contact","C) Percutaneous exposure to blood","D) Faecal-oral route","E) Exposure to infectious body fluids"],
+    "ans": "D) Faecal-oral route",
+    "note": "HBV is not transmitted by the faecal–oral route (unlike HAV/HEV)."
+  },
+  {
+    "q": "Acute hepatitis B has an incubation period ranging from:",
+    "opts": ["A) 2 to 14 days","B) 15 to 180 days","C) 6 to 7 weeks","D) 1 to 2 weeks","E) 1 to 2 years"],
+    "ans": "B) 15 to 180 days",
+    "note": "Incubation of acute HBV is 15–180 days (average ≈ 90 days)."
+  },
+  {
+    "q": "During the long incubation period of acute hepatitis B, the individual is:",
+    "opts": ["A) Not infectious","B) Immune","C) Infectious","D) Infectious only after jaundice appears","E) Infectious only if symptomatic"],
+    "ans": "C) Infectious",
+    "note": "Infectivity begins well before symptoms; the person is infectious during the incubation period."
+  },
+  {
+    "q": "Jaundice in acute HBV may be accompanied by all of the following EXCEPT:",
+    "opts": ["A) Dark urine","B) Weight gain","C) Extreme fatigue","D) Anorexia","E) Abdominal pain"],
+    "ans": "B) Weight gain",
+    "note": "Patients typically experience anorexia and weight loss, not weight gain."
+  },
+  {
+    "q": "In acute hepatitis B, jaundice usually peaks within:",
+    "opts": ["A) 1–2 weeks","B) 24 hours","C) 3 months","D) 6 months","E) 1 year"],
+    "ans": "A) 1–2 weeks",
+    "note": "Jaundice typically peaks within 1–2 weeks after onset."
+  },
+  {
+    "q": "The chronic carrier state of HBV is defined as:",
+    "opts": ["A) Anti-HBs positivity once","B) HBsAg positivity on two occasions 1 month apart","C) Elevated liver enzymes for 2 weeks","D) HBsAg positivity on two occasions 6 months apart","E) Jaundice lasting more than 1 month"],
+    "ans": "D) HBsAg positivity on two occasions 6 months apart",
+    "note": "Chronic carriage = HBsAg positive on two occasions at least 6 months apart."
+  },
+  {
+    "q": "Which therapies are licensed for chronic HBV infection?",
+    "opts": ["A) Antibiotics and corticosteroids","B) Nucleo(t)side analogues and interferon-based therapy","C) Antifungals","D) Protease inhibitors only","E) No therapy is licensed"],
+    "ans": "B) Nucleo(t)side analogues and interferon-based therapy",
+    "note": "Licensed therapies are nucleos(t)ide analogues and pegylated interferon."
+  },
+  {
+    "q": "The most effective approach to reducing the burden of HBV is:",
+    "opts": ["A) Treatment with interferon","B) Liver transplantation","C) Primary prevention through universal vaccination and control of transmission","D) Antiviral prophylaxis for everyone","E) Isolation of carriers"],
+    "ans": "C) Primary prevention through universal vaccination and control of transmission",
+    "note": "Universal infant vaccination plus blood/sexual-transmission control is the most effective strategy."
+  },
+  {
+    "q": "The HBV vaccine is given as:",
+    "opts": ["A) A single oral dose at birth","B) Two SC doses at 0 and 6 months","C) Three oral doses at 2, 4 and 6 months","D) An annual IM booster","E) Three IM doses at 0, 1, and 6 months"],
+    "ans": "E) Three IM doses at 0, 1, and 6 months",
+    "note": "Standard schedule is three intramuscular doses at 0, 1 and 6 months."
+  },
+  {
+    "q": "Regarding HBV vaccination in pregnant or lactating women:",
+    "opts": ["A) It is not contraindicated","B) It is absolutely contraindicated","C) It is contraindicated in the first trimester only","D) It is contraindicated during lactation only","E) It requires a double dose"],
+    "ans": "A) It is not contraindicated",
+    "note": "HBV vaccine is safe in pregnancy and lactation."
+  },
+  {
+    "q": "Hepatitis D virus (HDV) is only found in patients who are also infected with:",
+    "opts": ["A) HAV","B) HCV","C) HEV","D) HBV","E) HIV"],
+    "ans": "D) HBV",
+    "note": "HDV is a defective virus that requires HBV co-infection to replicate."
+  },
+  {
+    "q": "The incubation period of hepatitis C is on average:",
+    "opts": ["A) 15–180 days","B) 1–2 weeks","C) 90 days","D) 6–7 weeks","E) 6 months"],
+    "ans": "D) 6–7 weeks",
+    "note": "Average incubation of HCV is approximately 6–7 weeks."
+  },
+  {
+    "q": "Which statement about hepatitis C is correct?",
+    "opts": ["A) HCV vaccine is given at 0, 1, and 6 months","B) HCV is transmitted mainly by the faecal–oral route","C) HCV is only found in patients infected with HBV","D) HCV incubation period is 15–180 days","E) There is no vaccine against HCV"],
+    "ans": "E) There is no vaccine against HCV",
+    "note": "No vaccine currently exists for hepatitis C."
+  },
+  {
+    "q": "The first and most predictable hepatic change attributable to alcohol is:",
+    "opts": ["A) Cirrhosis","B) Hepatocellular carcinoma","C) Large droplet (macrovesicular) steatosis","D) Alcoholic hepatitis","E) Liver fibrosis"],
+    "ans": "C) Large droplet (macrovesicular) steatosis",
+    "note": "Fatty change (macrovesicular steatosis) is the earliest and most consistent hepatic response to alcohol."
+  },
+  {
+    "q": "Alcoholic fatty liver usually resolves within ___ if alcohol consumption is discontinued.",
+    "opts": ["A) 2 days","B) 2 weeks","C) 2 months","D) 6 months","E) It never resolves"],
+    "ans": "B) 2 weeks",
+    "note": "Simple steatosis typically resolves within about 2 weeks of abstinence."
+  },
+  {
+    "q": "Alcoholic steatohepatitis includes:",
+    "opts": ["A) Fatty infiltration without any cell injury","B) Malignant transformation of hepatocytes","C) Fatty infiltration of hepatocytes associated with hepatocellular injury","D) Biliary obstruction","E) Viral infection of hepatocytes"],
+    "ans": "C) Fatty infiltration of hepatocytes associated with hepatocellular injury",
+    "note": "Steatohepatitis = steatosis + inflammation and hepatocyte injury."
+  },
+  {
+    "q": "What percentage of patients with alcoholic hepatitis will eventually develop cirrhosis?",
+    "opts": ["A) 5%","B) 15%","C) 30%","D) 70%","E) 100%"],
+    "ans": "D) 70%",
+    "note": "Approximately 70% of patients with alcoholic hepatitis progress to cirrhosis."
+  },
+  {
+    "q": "The main causes of cirrhosis are:",
+    "opts": ["A) HAV, HEV, and obesity","B) HDV and smoking","C) Paracetamol and NSAIDs","D) Malaria and schistosomiasis","E) HBV, HCV, and alcohol"],
+    "ans": "E) HBV, HCV, and alcohol",
+    "note": "Chronic HBV, HCV and alcohol are the three dominant global causes of cirrhosis."
+  },
+  {
+    "q": "The 5-year survival in compensated cirrhosis patients who continue to drink is:",
+    "opts": ["A) 10%","B) 30%","C) 50%","D) 70%","E) 90%"],
+    "ans": "D) 70%",
+    "note": "Continued drinking reduces 5-year survival in compensated cirrhosis to about 70%."
+  },
+  {
+    "q": "In compensated cirrhosis, the 5-year survival can be as high as ___ if patients abstain from alcohol.",
+    "opts": ["A) 50%","B) 60%","C) 70%","D) 80%","E) 90%"],
+    "ans": "E) 90%",
+    "note": "Abstinence raises 5-year survival in compensated cirrhosis to approximately 90%."
+  },
+  {
+    "q": "Regarding hepatocellular carcinoma (HCC), alcohol can be considered:",
+    "opts": ["A) Protective","B) Unrelated","C) A primary cause of HCC","D) A cause only in the presence of HDV","E) A cause only in women"],
+    "ans": "C) A primary cause of HCC",
+    "note": "Alcohol is an independent primary cause of hepatocellular carcinoma."
+  }
+];
+
+const LETTERS = ['A','B','C','D','E'];
+
+let activeBank = [...BANK];
+let order = activeBank.map((_, i) => i);
+let idx = 0, score = 0, attempts = 0;
+let chosen = new Array(activeBank.length).fill(null);
+
+function shuffleArr(a) {
+  for (let j = a.length-1; j > 0; j--) {
+    const k = Math.floor(Math.random()*(j+1));
+    [a[j],a[k]] = [a[k],a[j]];
+  }
+  return a;
+}
+
+function render() {
+  const q = activeBank[order[idx]];
+  const answered = chosen[order[idx]] !== null;
+  document.getElementById('progress-display').textContent = (idx+1)+'/'+order.length;
+  document.getElementById('score-display').textContent = score+'/'+attempts;
+  document.getElementById('progress-bar').style.width = ((idx+1)/order.length*100).toFixed(1)+'%';
+  document.getElementById('btn-prev').disabled = idx === 0;
+  document.getElementById('btn-next').textContent = idx === order.length-1 ? 'Finish ✓' : 'Next →';
+  document.getElementById('q-text').textContent = (idx+1)+'. '+q.q;
+  const optDiv = document.getElementById('q-options');
+  optDiv.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = '<span class="opt-letter">'+LETTERS[i]+'</span><span>'+opt.replace(/^[A-Ea-e][\)\.\-]\s*/,'')+'</span>';
+    btn.onclick = () => choose(opt);
+    if (answered) {
+      btn.disabled = true;
+      if (opt === q.ans) btn.classList.add('correct');
+      if (opt === chosen[order[idx]] && opt !== q.ans) btn.classList.add('wrong');
+    }
+    optDiv.appendChild(btn);
+  });
+  const ex = document.getElementById('q-explain');
+  if (answered) {
+    ex.className = 'explain show';
+    const isOk = chosen[order[idx]] === q.ans;
+    ex.innerHTML = '<span class="correct-label">'+(isOk?'✅ Correct!':'❌ Incorrect')+' — Answer: '+q.ans+'</span>'+(q.note||'');
+  } else {
+    ex.className = 'explain';
+    ex.innerHTML = '';
+  }
+}
+
+function choose(opt) {
+  if (chosen[order[idx]] !== null) return;
+  chosen[order[idx]] = opt;
+  attempts++;
+  if (opt === activeBank[order[idx]].ans) score++;
+  render();
+}
+
+function nextQ() {
+  if (idx < order.length-1) { idx++; render(); }
+  else showResults();
+}
+
+function prevQ() { if (idx > 0) { idx--; render(); } }
+
+function shuffleQ() {
+  shuffleArr(order);
+  idx=0; score=0; attempts=0;
+  chosen = new Array(activeBank.length).fill(null);
+  document.getElementById('q-mode').textContent = 'Shuffled 🔀';
+  document.getElementById('answer-list').classList.remove('show');
+  document.getElementById('btn-sheet').textContent = 'Show Answer Sheet';
+  render();
+}
+
+function restartQ() {
+  order = activeBank.map((_, i) => i);
+  idx=0; score=0; attempts=0;
+  chosen = new Array(activeBank.length).fill(null);
+  document.getElementById('screen-results').style.display = 'none';
+  document.getElementById('screen-quiz').style.display = 'block';
+  document.getElementById('q-mode').textContent = 'Normal order';
+  document.getElementById('answer-list').classList.remove('show');
+  document.getElementById('btn-sheet').textContent = 'Show Answer Sheet';
+  render();
+}
+
+function shuffleAndRestart() {
+  shuffleArr(order = activeBank.map((_, i) => i));
+  idx=0; score=0; attempts=0;
+  chosen = new Array(activeBank.length).fill(null);
+  document.getElementById('screen-results').style.display = 'none';
+  document.getElementById('screen-quiz').style.display = 'block';
+  document.getElementById('q-mode').textContent = 'Shuffled 🔀';
+  document.getElementById('answer-list').classList.remove('show');
+  document.getElementById('btn-sheet').textContent = 'Show Answer Sheet';
+  render();
+}
+
+function toggleSheet() {
+  const list = document.getElementById('answer-list');
+  list.classList.toggle('show');
+  document.getElementById('btn-sheet').textContent = list.classList.contains('show') ? 'Hide Answer Sheet' : 'Show Answer Sheet';
+}
+
+function buildAnswerGrid() {
+  const grid = document.getElementById('answer-grid');
+  grid.innerHTML = '';
+  activeBank.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'answer-mini';
+    d.innerHTML = '<div class="q-num">Q'+(i+1)+'</div><div>'+q.q.substring(0,55)+(q.q.length>55?'…':'')+'</div><div class="q-ans">'+q.ans+'</div>';
+    grid.appendChild(d);
+  });
+}
+
+function showResults() {
+  const pct = attempts > 0 ? Math.round(score/attempts*100) : 0;
+  document.getElementById('screen-quiz').style.display = 'none';
+  document.getElementById('screen-results').style.display = 'block';
+  document.getElementById('r-score').textContent = score+'/'+attempts;
+  let emoji = '🎉';
+  let msg = 'Great job!';
+  if (pct >= 90) { emoji = '🏆'; msg = 'Outstanding! You nailed it!'; }
+  else if (pct >= 75) { emoji = '🎉'; msg = 'Great job! Keep it up!'; }
+  else if (pct >= 60) { emoji = '💪'; msg = 'Good effort — review weak spots!'; }
+  else if (pct >= 40) { emoji = '📚'; msg = 'Review your notes and try again.'; }
+  else { emoji = '🔄'; msg = 'Keep practicing!'; }
+  document.getElementById('r-emoji').textContent = emoji;
+  document.getElementById('r-msg').textContent = msg + ' (' + pct + '%)';
+}
+
+// Auto-start
+buildAnswerGrid();
+render();
+</script>
+</body>
+</html>
