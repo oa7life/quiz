@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Public Health & Community Pharmacy MCQ Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:#080c1a;--card:#0e1530;--text:#f0f4ff;--muted:#8899cc;
+    --accent:#60a5fa;--green:#22c55e;--red:#ef4444;--border:#1e2d5a;--border2:#263870;
+    --c1:#0ea5e9;--c2:#a855f7;--c3:#f59e0b;--c4:#10b981;--c5:#f43f5e;--c6:#3b82f6;--c7:#8b5cf6;
+    --c8:#06b6d4;--c9:#14b8a6;--c10:#84cc16;--c11:#eab308;--c12:#f97316;--c13:#ec4899;--c14:#d946ef;--c15:#6366f1;--cmix:#e11d48;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;background:radial-gradient(ellipse at 20% 20%,#0d1a4a 0%,#080c1a 60%);color:var(--text);min-height:100vh;padding:20px 16px 48px}
+
+  .header{text-align:center;margin-bottom:34px;padding-top:14px}
+  .header-badge{display:inline-block;background:linear-gradient(135deg,#1e3a8a,#312e81);border:1px solid #3b4fd8;border-radius:999px;padding:6px 18px;font-size:12px;font-weight:600;letter-spacing:.08em;color:#a5b4fc;text-transform:uppercase;margin-bottom:14px}
+  .header h1{font-size:clamp(24px,5vw,40px);font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:10px}
+  .header p{color:var(--muted);font-size:15px}
+
+  #screen-select{max-width:980px;margin:0 auto}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;padding-left:4px}
+  .ch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:28px}
+  .ch-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px 18px;cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s;position:relative;overflow:hidden}
+  .ch-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:20px 20px 0 0}
+  .ch-card.cmix::before{background:linear-gradient(90deg,#ec4899,#8b5cf6,#06b6d4)}
+  .ch-card:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,.5);border-color:var(--accent)}
+  .ch-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:10px;background:rgba(255,255,255,.08)}
+  .ch-card h3{font-size:13.5px;font-weight:700;margin-bottom:4px;line-height:1.35}
+  .ch-card p{font-size:11.5px;color:var(--muted);line-height:1.45}
+  .ch-count{display:inline-block;margin-top:10px;background:rgba(255,255,255,.06);border-radius:999px;padding:3px 10px;font-size:11px;font-weight:600;color:var(--muted)}
+
+  #screen-quiz{display:none;max-width:900px;margin:0 auto}
+  .quiz-topbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:18px}
+  .back-btn{background:none;border:1px solid var(--border2);color:var(--muted);border-radius:999px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;font-family:inherit}
+  .back-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .pills{display:flex;gap:8px;flex-wrap:wrap}
+  .pill{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:7px 13px;color:var(--muted);font-size:13px;font-weight:600}
+  .pill span{color:var(--text)}
+
+  .progress-bar-wrap{height:4px;background:var(--border);border-radius:99px;margin-bottom:18px;overflow:hidden}
+  .progress-bar-fill{height:100%;background:linear-gradient(90deg,#38bdf8,#818cf8);border-radius:99px;transition:width .3s}
+
+  .quiz-card{background:rgba(14,21,48,.95);border:1px solid var(--border);border-radius:22px;padding:26px 24px;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+  .qhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+  .qtag{font-size:12px;font-weight:700;border-radius:999px;padding:5px 13px;letter-spacing:.04em;background:rgba(255,255,255,.08);border:1px solid var(--border)}
+  .qmode{font-size:12px;color:var(--muted);background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:999px;padding:4px 11px}
+
+  .question-text{font-size:clamp(15px,2.6vw,19px);font-weight:700;line-height:1.5;margin-bottom:20px;color:#e8eeff}
+  .options{display:grid;gap:9px}
+  .opt{width:100%;text-align:left;border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--text);border-radius:13px;padding:13px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:border-color .15s,background .15s,transform .12s;display:flex;align-items:flex-start;gap:11px;line-height:1.45}
+  .opt:hover:not(:disabled){transform:translateX(4px);border-color:var(--accent);background:rgba(96,165,250,.07)}
+  .opt-letter{min-width:24px;height:24px;border-radius:7px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);flex-shrink:0;margin-top:1px;transition:.15s}
+  .opt.correct{background:rgba(34,197,94,.14);border-color:var(--green)}
+  .opt.correct .opt-letter{background:rgba(34,197,94,.25);border-color:var(--green);color:#86efac}
+  .opt.wrong{background:rgba(239,68,68,.12);border-color:var(--red)}
+  .opt.wrong .opt-letter{background:rgba(239,68,68,.2);border-color:var(--red);color:#fca5a5}
+  .opt:disabled{cursor:default}
+
+  .explain{display:none;margin-top:14px;padding:14px 16px;border-radius:13px;background:rgba(6,16,40,.7);border:1px solid var(--border2);color:#c7d8ff;line-height:1.6;font-size:13.5px}
+  .explain.show{display:block}
+  .explain .correct-label{color:#86efac;font-weight:700;font-size:14px;display:block;margin-bottom:5px}
+
+  .controls{display:flex;gap:9px;flex-wrap:wrap;margin-top:20px}
+  .btn{border:0;border-radius:11px;padding:10px 16px;font-weight:700;font-size:13px;font-family:inherit;cursor:pointer;transition:opacity .15s,transform .1s}
+  .btn:hover{opacity:.88;transform:translateY(-1px)}.btn:active{transform:translateY(0)}.btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+  .btn.primary{background:linear-gradient(135deg,#2563eb,#4f46e5);color:white}
+  .btn.secondary{background:#1e2d5a;color:#93c5fd}
+  .btn.success{background:linear-gradient(135deg,#16a34a,#15803d);color:white}
+  .btn.purple{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:white}
+  .btn.ghost{background:transparent;border:1px solid var(--border2);color:var(--muted)}
+
+  .answer-list{display:none;margin-top:20px}.answer-list.show{display:block}
+  .answer-list h3{font-size:15px;font-weight:700;margin-bottom:12px;color:#93c5fd}
+  .answer-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:9px}
+  .answer-mini{background:rgba(14,21,48,.8);border:1px solid var(--border);border-radius:11px;padding:11px 13px;font-size:12.5px;line-height:1.5}
+  .answer-mini .q-num{color:#93c5fd;font-weight:700;font-size:11px;margin-bottom:3px}
+  .answer-mini .q-ans{color:#86efac;font-weight:600}
+  .footer-tip{margin-top:14px;color:var(--muted);font-size:12px;text-align:center}
+
+  #screen-results{display:none;max-width:520px;margin:0 auto;text-align:center}
+  .result-card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:40px 28px;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+  .result-emoji{font-size:58px;margin-bottom:14px}
+  .result-score{font-size:50px;font-weight:800;background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .result-label{font-size:15px;color:var(--muted);margin-bottom:20px}
+  .result-msg{font-size:19px;font-weight:700;margin-bottom:6px}
+  .result-actions{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+</style>
+</head>
+<body>
+
+<div id="screen-select">
+  <div class="header">
+    <div class="header-badge">📚 Public Health & Community Pharmacy · Stage 4</div>
+    <h1>Public Health MCQ Quiz</h1>
+    <p>44 curriculum-matched questions from Lectures 1, 3, 4 & 5 — no categories, all questions in one pool</p>
+  </div>
+
+  <div class="section-label">Start Quiz</div>
+  <div class="ch-grid" style="grid-template-columns:1fr">
+    <div class="ch-card cmix" onclick="startQuiz()">
+      <div class="ch-icon">🎲</div>
+      <h3>All 44 Questions</h3>
+      <p>Prevention, NCDs, infection control, vaccines, public health concepts — shuffled or sequential</p>
+      <span class="ch-count" id="cnt-all">44 questions</span>
+    </div>
+  </div>
+</div>
+
+<div id="screen-quiz">
+  <div class="quiz-topbar">
+    <button class="back-btn" onclick="goHome()">← Back</button>
+    <div class="pills">
+      <div class="pill">Score: <span id="score-display">0/0</span></div>
+      <div class="pill">Q <span id="progress-display">1/1</span></div>
+    </div>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-bar" style="width:0%"></div></div>
+  <div class="quiz-card">
+    <div class="qhead"><span class="qtag" id="q-tag">Public Health</span><span class="qmode" id="q-mode">Normal order</span></div>
+    <div class="question-text" id="q-text">Loading…</div>
+    <div class="options" id="q-options"></div>
+    <div class="explain" id="q-explain"></div>
+    <div class="controls">
+      <button class="btn secondary" id="btn-prev" onclick="prevQ()">← Back</button>
+      <button class="btn primary" id="btn-next" onclick="nextQ()">Next →</button>
+      <button class="btn purple" onclick="shuffleQ()">🔀 Shuffle</button>
+      <button class="btn success" onclick="restartQ()">↺ Restart</button>
+      <button class="btn ghost" id="btn-sheet" onclick="toggleSheet()">Show Answer Sheet</button>
+    </div>
+    <div class="answer-list" id="answer-list"><h3>Answer Sheet</h3><div class="answer-grid" id="answer-grid"></div></div>
+    <div class="footer-tip">Tip: keep shuffling until every answer feels instant 🎯</div>
+  </div>
+</div>
+
+<div id="screen-results">
+  <div class="result-card">
+    <div class="result-emoji" id="r-emoji">🎉</div>
+    <div class="result-score" id="r-score">0/0</div>
+    <div class="result-label">Final Score</div>
+    <div class="result-msg" id="r-msg">Well done!</div>
+    <div class="result-actions">
+      <button class="btn primary" onclick="restartQ()">↺ Try Again</button>
+      <button class="btn purple" onclick="shuffleAndRestart()">🔀 Shuffle & Retry</button>
+      <button class="btn secondary" onclick="goHome()">← Home</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const BANK = [
+  {
+    "q": "All of the following are non-communicable diseases EXCEPT:",
+    "opts": [
+      "A) Cancer",
+      "B) Respiratory diseases",
+      "C) Diabetes mellitus",
+      "D) Tuberculosis",
+      "E) Chronic respiratory diseases"
+    ],
+    "ans": "D) Tuberculosis",
+    "note": "Tuberculosis is a communicable (infectious) disease caused by Mycobacterium tuberculosis."
+  },
+  {
+    "q": "Which of the following health problems has a high relative risk (RR >3) in obese individuals?",
+    "opts": [
+      "A) Diabetes",
+      "B) Hyperuricaemia",
+      "C) Oesophageal cancer",
+      "D) Hypertension",
+      "E) Biliary tract cancer"
+    ],
+    "ans": "A) Diabetes",
+    "note": "Obesity confers a high relative risk (RR >3) for type 2 diabetes."
+  },
+  {
+    "q": "Which of the following is NOT considered a general obesity prevention strategy?",
+    "opts": [
+      "A) Integrating physical activity in everyday life",
+      "B) Marketing what matters for a healthy life",
+      "C) Making healthy foods and drinks widely available",
+      "D) Activating employers & healthcare providers",
+      "E) Equitable distribution of services"
+    ],
+    "ans": "E) Equitable distribution of services",
+    "note": "Equitable distribution of services is a broader health-system principle, not a specific general obesity prevention strategy listed in the lecture."
+  },
+  {
+    "q": "Winslow's definition of Public Health begins with the phrase:",
+    "opts": [
+      "A) The study of clinical management of diseases",
+      "B) Improving hospital services through medical care",
+      "C) Organizing health programs at the community level",
+      "D) The science and art of preventing disease"
+    ],
+    "ans": "D) The science and art of preventing disease",
+    "note": "C.E.A. Winslow defined public health as “the science and art of preventing disease, prolonging life and promoting health…”"
+  },
+  {
+    "q": "What is the main cause of cirrhosis?",
+    "opts": [
+      "A) Vitamin D deficiency",
+      "B) Fatty diet",
+      "C) Hepatitis B & C infection",
+      "D) Excessive sugar intake"
+    ],
+    "ans": "C) Hepatitis B & C infection",
+    "note": "Chronic hepatitis B and C are major causes of cirrhosis worldwide."
+  },
+  {
+    "q": "The purpose of assessing and monitoring the health of the population is to:",
+    "opts": [
+      "A) Identify and deal with health problems",
+      "B) Build hospitals",
+      "C) Provide individual clinical care",
+      "D) Supply medical equipment"
+    ],
+    "ans": "A) Identify and deal with health problems",
+    "note": "Assessment and monitoring of population health is a core public-health function that enables identification and response to health problems."
+  },
+  {
+    "q": "Which of the following is NOT a key public health function?",
+    "opts": [
+      "A) Assessing and monitoring of the health of the population",
+      "B) Planning, implementing and evaluating public health programs",
+      "C) Identifying and dealing with environmental hazards",
+      "D) Providing individual clinical care"
+    ],
+    "ans": "D) Providing individual clinical care",
+    "note": "Individual clinical care is the domain of clinical medicine, not a core public-health function."
+  },
+  {
+    "q": "Which of the following best describes the responsibility of the state in public health?",
+    "opts": [
+      "A) Governments ensure that people have the basic elements that enable healthy living",
+      "B) Leaving health entirely to individuals",
+      "C) Focusing only on hospital care",
+      "D) Ignoring environmental factors"
+    ],
+    "ans": "A) Governments ensure that people have the basic elements that enable healthy living",
+    "note": "The state has a responsibility to secure the conditions (safe environment, education, income, etc.) that make healthy living possible."
+  },
+  {
+    "q": "What is the aim of secondary prevention?",
+    "opts": [
+      "A) Early diagnosis and treatment",
+      "B) Health promotion and lifestyle changes",
+      "C) Rehabilitation after disease",
+      "D) Immunization programs"
+    ],
+    "ans": "A) Early diagnosis and treatment",
+    "note": "Secondary prevention aims at early detection and prompt treatment to halt or slow disease progression."
+  },
+  {
+    "q": "Which policy is MOST effective in reducing tobacco consumption?",
+    "opts": [
+      "A) Reducing sale hours",
+      "B) Increasing tobacco excise taxes",
+      "C) Allowing mild advertising",
+      "D) Encouraging voluntary reduction",
+      "E) Using herbal alternatives"
+    ],
+    "ans": "B) Increasing tobacco excise taxes",
+    "note": "Raising tobacco taxes is one of the most effective population-level measures to reduce consumption."
+  },
+  {
+    "q": "Replacing transfats with unsaturated fats prevents mainly which disease?",
+    "opts": [
+      "A) Tuberculosis",
+      "B) CVD",
+      "C) Cholera",
+      "D) Influenza",
+      "E) Hepatitis A"
+    ],
+    "ans": "B) CVD",
+    "note": "Eliminating industrially produced trans fats reduces risk of cardiovascular disease."
+  },
+  {
+    "q": "Horizontal transmission is defined as spread:",
+    "opts": [
+      "A) From mother to fetus",
+      "B) From parent to child",
+      "C) Between individuals of the same generation",
+      "D) Through genetic mutation",
+      "E) Through breast milk"
+    ],
+    "ans": "C) Between individuals of the same generation",
+    "note": "Horizontal transmission occurs between individuals of the same generation (person-to-person)."
+  },
+  {
+    "q": "Mosquito transmitting malaria represents:",
+    "opts": [
+      "A) Mechanical vector",
+      "B) Biological vector",
+      "C) Vehicle-borne",
+      "D) Droplet spread",
+      "E) Airborne"
+    ],
+    "ans": "B) Biological vector",
+    "note": "Anopheles mosquitoes are biological vectors: the parasite undergoes development inside the mosquito."
+  },
+  {
+    "q": "Rubella virus can cross:",
+    "opts": [
+      "A) Skin",
+      "B) GI tract",
+      "C) Placenta",
+      "D) Mouth",
+      "E) Kidneys"
+    ],
+    "ans": "C) Placenta",
+    "note": "Rubella virus is teratogenic and can cross the placenta, causing congenital rubella syndrome."
+  },
+  {
+    "q": "Which is a control measure applied to vectors?",
+    "opts": [
+      "A) Chemotherapy",
+      "B) Disinfection",
+      "C) Environmental management",
+      "D) Quarantine",
+      "E) Reverse isolation"
+    ],
+    "ans": "C) Environmental management",
+    "note": "Environmental management (e.g., source reduction, habitat modification) is a key vector-control measure."
+  },
+  {
+    "q": "Passive immunity provides:",
+    "opts": [
+      "A) Lifelong protection",
+      "B) Rapid, short-term protection",
+      "C) Slow response",
+      "D) No protection",
+      "E) Cellular immunity only"
+    ],
+    "ans": "B) Rapid, short-term protection",
+    "note": "Passive immunity (antibodies transferred) gives immediate but temporary protection."
+  },
+  {
+    "q": "Whole inactivated vaccines include:",
+    "opts": [
+      "A) MMR",
+      "B) Varicella",
+      "C) Polio (IPV)",
+      "D) Measles",
+      "E) Rotavirus"
+    ],
+    "ans": "C) Polio (IPV)",
+    "note": "Inactivated polio vaccine (IPV) is a whole inactivated (killed) vaccine."
+  },
+  {
+    "q": "At 2 months, infants receive:",
+    "opts": [
+      "A) Only OPV",
+      "B) Only PCV",
+      "C) OPV, Rota, PCV13, Penta",
+      "D) MMR",
+      "E) BCG"
+    ],
+    "ans": "C) OPV, Rota, PCV13, Penta",
+    "note": "Iraqi (and many national) schedules give OPV, rotavirus, PCV13 and pentavalent vaccine at 2 months."
+  },
+  {
+    "q": "Penta vaccine contains:",
+    "opts": [
+      "A) MMR + OPV + HBV",
+      "B) PCV + Rota + IPV",
+      "C) DTaP + HBV + Hib",
+      "D) HBV + TB",
+      "E) Rota + Hepatitis A"
+    ],
+    "ans": "C) DTaP + HBV + Hib",
+    "note": "The pentavalent vaccine typically combines diphtheria, tetanus, pertussis, hepatitis B and Haemophilus influenzae type b."
+  },
+  {
+    "q": "Which risk factor is NOT among the 4 main preventable NCD risk factors?",
+    "opts": [
+      "A) Tobacco use",
+      "B) Physical inactivity",
+      "C) Harmful use of alcohol",
+      "D) Obesity",
+      "E) Unhealthy diet"
+    ],
+    "ans": "D) Obesity",
+    "note": "The four main modifiable NCD risk factors are tobacco use, physical inactivity, harmful use of alcohol and unhealthy diet. Obesity is an intermediate risk factor / outcome."
+  },
+  {
+    "q": "What is the main intervention to prevent cervical cancer?",
+    "opts": [
+      "A) Lung X-ray",
+      "B) VIA or Pap smear screening",
+      "C) Blood pressure control",
+      "D) Salt reduction",
+      "E) Vitamin D supplements"
+    ],
+    "ans": "B) VIA or Pap smear screening",
+    "note": "Screening with VIA or cytology (Pap smear) detects precancerous lesions and is the main secondary-prevention tool for cervical cancer."
+  },
+  {
+    "q": "Which term describes the ability of an agent to cause disease?",
+    "opts": [
+      "A) Virulence",
+      "B) Infectivity",
+      "C) Pathogenicity",
+      "D) Susceptibility",
+      "E) Transmission rate"
+    ],
+    "ans": "C) Pathogenicity",
+    "note": "Pathogenicity = ability of an agent to produce disease in a susceptible host. Virulence is the degree of pathogenicity."
+  },
+  {
+    "q": "Airborne transmission involves:",
+    "opts": [
+      "A) Large droplets",
+      "B) Food particles",
+      "C) Droplet nuclei",
+      "D) Vectors",
+      "E) Direct skin contact"
+    ],
+    "ans": "C) Droplet nuclei",
+    "note": "Airborne transmission occurs via droplet nuclei (≤5 µm) that remain suspended in air."
+  },
+  {
+    "q": "Vibrio cholerae enters the body through:",
+    "opts": [
+      "A) Skin",
+      "B) Respiratory tract",
+      "C) GI tract",
+      "D) Placenta",
+      "E) Urinary tract"
+    ],
+    "ans": "C) GI tract",
+    "note": "Cholera is acquired by ingestion; the portal of entry is the gastrointestinal tract."
+  },
+  {
+    "q": "Control measures targeting the host include:",
+    "opts": [
+      "A) Vector elimination",
+      "B) Disinfection",
+      "C) Active immunization",
+      "D) Water sanitation",
+      "E) Sterilization"
+    ],
+    "ans": "C) Active immunization",
+    "note": "Active immunization (vaccination) is a host-directed control measure."
+  },
+  {
+    "q": "Isolation is applied to:",
+    "opts": [
+      "A) Susceptible host",
+      "B) General population",
+      "C) Infected humans",
+      "D) Vectors",
+      "E) Environment"
+    ],
+    "ans": "C) Infected humans",
+    "note": "Isolation separates infected persons from others to prevent transmission."
+  },
+  {
+    "q": "A toxoid is:",
+    "opts": [
+      "A) Dead microorganism",
+      "B) Live attenuated organism",
+      "C) Modified toxin",
+      "D) Antibody",
+      "E) Virus particle"
+    ],
+    "ans": "C) Modified toxin",
+    "note": "Toxoids are inactivated toxins (e.g., diphtheria and tetanus toxoids) that retain antigenicity."
+  },
+  {
+    "q": "At birth, the vaccination schedule includes:",
+    "opts": [
+      "A) MMR",
+      "B) IPV",
+      "C) BCG + HBV + OPV",
+      "D) DTaP",
+      "E) Rota"
+    ],
+    "ans": "C) BCG + HBV + OPV",
+    "note": "Many national schedules (including Iraq) give BCG, hepatitis B and OPV at birth."
+  },
+  {
+    "q": "OPV is what type of vaccine?",
+    "opts": [
+      "A) Inactivated",
+      "B) Toxoid",
+      "C) Live oral vaccine",
+      "D) Recombinant",
+      "E) Subunit"
+    ],
+    "ans": "C) Live oral vaccine",
+    "note": "Oral polio vaccine (OPV) is a live attenuated vaccine given by mouth."
+  },
+  {
+    "q": "Which of the following NCDs contributes most to mortality in the Western Pacific Region?",
+    "opts": [
+      "A) Malaria",
+      "B) Tuberculosis",
+      "C) Cardiovascular diseases",
+      "D) HIV",
+      "E) Dengue"
+    ],
+    "ans": "C) Cardiovascular diseases",
+    "note": "Cardiovascular diseases are the leading cause of NCD mortality in the Western Pacific Region."
+  },
+  {
+    "q": "In infectious disease control, the “agent” refers to:",
+    "opts": [
+      "A) Human host",
+      "B) Portal of entry",
+      "C) Causative microorganism",
+      "D) Mode of treatment",
+      "E) Environmental factor"
+    ],
+    "ans": "C) Causative microorganism",
+    "note": "In the epidemiologic triad the agent is the causative microorganism (or other causative factor)."
+  },
+  {
+    "q": "Infectivity refers to:",
+    "opts": [
+      "A) Ability to cause severe disease",
+      "B) Ability to cause disease",
+      "C) Ability to enter and multiply",
+      "D) Ability to survive in environment",
+      "E) Ability to produce toxins"
+    ],
+    "ans": "C) Ability to enter and multiply",
+    "note": "Infectivity is the ability of an agent to invade and multiply in a host."
+  },
+  {
+    "q": "Droplet spread is usually limited to:",
+    "opts": [
+      "A) 10 meters",
+      "B) 5 meters",
+      "C) 1 meter or less",
+      "D) 20 meters",
+      "E) No distance limitation"
+    ],
+    "ans": "C) 1 meter or less",
+    "note": "Large respiratory droplets typically travel ≤1 metre before falling."
+  },
+  {
+    "q": "Which is a portal of entry for M. tuberculosis?",
+    "opts": [
+      "A) Genitourinary tract",
+      "B) Skin",
+      "C) Respiratory tract",
+      "D) Placenta",
+      "E) GI tract"
+    ],
+    "ans": "C) Respiratory tract",
+    "note": "Mycobacterium tuberculosis most commonly enters via the respiratory tract (inhalation of droplet nuclei)."
+  },
+  {
+    "q": "Chemoprophylaxis is a control measure applied to:",
+    "opts": [
+      "A) Animals",
+      "B) Host",
+      "C) Environment",
+      "D) Infected humans",
+      "E) All of the above"
+    ],
+    "ans": "A) Animals",
+    "note": "Chemoprophylaxis can be applied to animals (and also to the human host). The lecture answer highlights animals."
+  },
+  {
+    "q": "Maternal antibodies provide immunity for:",
+    "opts": [
+      "A) 1 week",
+      "B) 2 weeks",
+      "C) Up to 1 year",
+      "D) 5 years",
+      "E) Lifetime"
+    ],
+    "ans": "C) Up to 1 year",
+    "note": "Passively acquired maternal IgG generally provides protection for up to about one year."
+  },
+  {
+    "q": "Live attenuated vaccines include:",
+    "opts": [
+      "A) Hepatitis A",
+      "B) HBV",
+      "C) MMR",
+      "D) IPV",
+      "E) DTaP"
+    ],
+    "ans": "C) MMR",
+    "note": "MMR is a live attenuated vaccine combination."
+  },
+  {
+    "q": "MMR is given at:",
+    "opts": [
+      "A) Birth",
+      "B) 2 months",
+      "C) 9 months",
+      "D) 12 months",
+      "E) 4 years only"
+    ],
+    "ans": "D) 12 months",
+    "note": "The first dose of MMR is commonly scheduled at 12 months of age."
+  },
+  {
+    "q": "DTaP protects against:",
+    "opts": [
+      "A) Measles, mumps, rubella",
+      "B) Polio, hepatitis B",
+      "C) Diphtheria, tetanus, pertussis",
+      "D) Cholera",
+      "E) Hepatitis A"
+    ],
+    "ans": "C) Diphtheria, tetanus, pertussis",
+    "note": "DTaP = diphtheria, tetanus and acellular pertussis vaccine."
+  },
+  {
+    "q": "The term “preventive medicine” mainly refers to:",
+    "opts": [
+      "A) Avoiding illness through preventive actions",
+      "B) Managing acute diseases",
+      "C) Treating only severe illnesses",
+      "D) Relying on surgery",
+      "E) Pharmaceutical therapy"
+    ],
+    "ans": "A) Avoiding illness through preventive actions",
+    "note": "Preventive medicine focuses on actions that prevent the occurrence or progression of disease."
+  },
+  {
+    "q": "One of the core features of modern public health is:",
+    "opts": [
+      "A) Partnership with the population",
+      "B) Focusing only on hospitals",
+      "C) Limiting care to doctors",
+      "D) Ignoring prevention",
+      "E) Emphasizing treatment only"
+    ],
+    "ans": "A) Partnership with the population",
+    "note": "Modern public health emphasizes community partnership and participation."
+  },
+  {
+    "q": "The phrase “prevention is better than cure” relates to:",
+    "opts": [
+      "A) Preventive medicine",
+      "B) Curative medicine",
+      "C) Surgery",
+      "D) Therapy",
+      "E) Alternative medicine"
+    ],
+    "ans": "A) Preventive medicine",
+    "note": "The maxim underlines the philosophy of preventive medicine."
+  },
+  {
+    "q": "The target population for secondary prevention is:",
+    "opts": [
+      "A) Healthy individuals",
+      "B) Sick individuals",
+      "C) Convalescent patients",
+      "D) Entire community",
+      "E) Health workers"
+    ],
+    "ans": "B) Sick individuals",
+    "note": "Secondary prevention targets people who already have the disease (or early-stage disease) for early diagnosis and treatment."
+  },
+  {
+    "q": "Which of the following is a fundamental assumption of social medicine?",
+    "opts": [
+      "A) Health is a birthright",
+      "B) Health depends only on genes",
+      "C) Health is a privilege",
+      "D) Only doctors ensure health",
+      "E) Health is unrelated to education"
+    ],
+    "ans": "A) Health is a birthright",
+    "note": "Social medicine regards health as a fundamental right of every individual."
+  }
+];
+
+const LETTERS = ['A','B','C','D','E','F'];
+
+let activeBank = [], order = [], idx = 0, score = 0, attempts = 0, chosen = [];
+
+function startQuiz() {
+  activeBank = [...BANK];
+  order = activeBank.map((_, i) => i);
+  idx = 0; score = 0; attempts = 0;
+  chosen = new Array(activeBank.length).fill(null);
+  buildAnswerGrid();
+  document.getElementById('screen-select').style.display = 'none';
+  document.getElementById('screen-results').style.display = 'none';
+  document.getElementById('screen-quiz').style.display = 'block';
+  document.getElementById('answer-list').classList.remove('show');
+  document.getElementById('btn-sheet').textContent = 'Show Answer Sheet';
+  document.getElementById('q-mode').textContent = 'Normal order';
+  render();
+}
+
+function goHome() {
+  document.getElementById('screen-quiz').style.display = 'none';
+  document.getElementById('screen-results').style.display = 'none';
+  document.getElementById('screen-select').style.display = 'block';
+}
+
+function shuffleArr(a) {
+  for (let j = a.length-1; j > 0; j--) {
+    const k = Math.floor(Math.random()*(j+1));
+    [a[j],a[k]] = [a[k],a[j]];
+  }
+  return a;
+}
+
+function render() {
+  const q = activeBank[order[idx]];
+  const answered = chosen[order[idx]] !== null;
+  document.getElementById('q-tag').textContent = 'Public Health';
+  document.getElementById('progress-display').textContent = (idx+1)+'/'+order.length;
+  document.getElementById('score-display').textContent = score+'/'+attempts;
+  document.getElementById('progress-bar').style.width = ((idx+1)/order.length*100).toFixed(1)+'%';
+  document.getElementById('btn-prev').disabled = idx === 0;
+  document.getElementById('btn-next').textContent = idx === order.length-1 ? 'Finish ✓' : 'Next →';
+  document.getElementById('q-text').textContent = (idx+1)+'. '+q.q;
+  const optDiv = document.getElementById('q-options');
+  optDiv.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = '<span class="opt-letter">'+LETTERS[i]+'</span><span>'+opt.replace(/^[A-Fa-f][\)\.\-]\s*/,'')+'</span>';
+    btn.onclick = () => choose(opt);
+    if (answered) {
+      btn.disabled = true;
+      if (opt === q.ans) btn.classList.add('correct');
+      if (opt === chosen[order[idx]] && opt !== q.ans) btn.classList.add('wrong');
+    }
+    optDiv.appendChild(btn);
+  });
+  const ex = document.getElementById('q-explain');
+  if (answered) {
+    ex.className = 'explain show';
+    const isOk = chosen[order[idx]] === q.ans;
+    ex.innerHTML = '<span class="correct-label">'+(isOk?'✅ Correct!':'❌ Incorrect')+' — Answer: '+q.ans+'</span>'+(q.note||'');
+  } else {
+    ex.className = 'explain';
+    ex.innerHTML = '';
+  }
+}
+
+function choose(opt) {
+  if (chosen[order[idx]] !== null) return;
+  chosen[order[idx]] = opt;
+  attempts++;
+  if (opt === activeBank[order[idx]].ans) score++;
+  render();
+}
+
+function nextQ() {
+  if (idx < order.length-1) { idx++; render(); }
+  else showResults();
+}
+
+function prevQ() { if (idx > 0) { idx--; render(); } }
+
+function shuffleQ() {
+  shuffleArr(order);
+  idx=0; score=0; attempts=0;
+  chosen = new Array(activeBank.length).fill(null);
+  document.getElementById('q-mode').textContent = 'Shuffled 🔀';
+  document.getElementById('answer-list').classList.remove('show');
+  document.getElementById('btn-sheet').textContent = 'Show Answer Sheet';
+  render();
+}
+
+function restartQ() {
+  order = activeBank.map((_, i) => i);
+  idx=0; score=0; attempts=0;
+  chosen = new Array(activeBank.length).fill(null);
+  document.getElementById('screen-results').style.display = 'none';
+  document.getElementById('screen-quiz').style.display = 'block';
+  document.getElementById('q-mode').textContent = 'Normal order';
+  document.getElementById('answer-list').classList.remove('show');
+  document.getElementById('btn-sheet').textContent = 'Show Answer Sheet';
+  render();
+}
+
+function shuffleAndRestart() {
+  shuffleArr(order = activeBank.map((_, i) => i));
+  idx=0; score=0; attempts=0;
+  chosen = new Array(activeBank.length).fill(null);
+  document.getElementById('screen-results').style.display = 'none';
+  document.getElementById('screen-quiz').style.display = 'block';
+  document.getElementById('q-mode').textContent = 'Shuffled 🔀';
+  document.getElementById('answer-list').classList.remove('show');
+  document.getElementById('btn-sheet').textContent = 'Show Answer Sheet';
+  render();
+}
+
+function toggleSheet() {
+  const list = document.getElementById('answer-list');
+  list.classList.toggle('show');
+  document.getElementById('btn-sheet').textContent = list.classList.contains('show') ? 'Hide Answer Sheet' : 'Show Answer Sheet';
+}
+
+function buildAnswerGrid() {
+  const grid = document.getElementById('answer-grid');
+  grid.innerHTML = '';
+  activeBank.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'answer-mini';
+    d.innerHTML = '<div class="q-num">Q'+(i+1)+'</div><div>'+q.q.substring(0,55)+(q.q.length>55?'…':'')+'</div><div class="q-ans">'+q.ans+'</div>';
+    grid.appendChild(d);
+  });
+}
+
+function showResults() {
+  const pct = attempts > 0 ? Math.round(score/attempts*100) : 0;
+  document.getElementById('screen-quiz').style.display = 'none';
+  document.getElementById('screen-results').style.display = 'block';
+  document.getElementById('r-score').textContent = score+'/'+attempts;
+  let emoji = '🎉';
+  let msg = 'Great job!';
+  if (pct >= 90) { emoji = '🏆'; msg = 'Outstanding! You nailed it!'; }
+  else if (pct >= 75) { emoji = '🎉'; msg = 'Great job! Keep it up!'; }
+  else if (pct >= 60) { emoji = '💪'; msg = 'Good effort — review weak spots!'; }
+  else if (pct >= 40) { emoji = '📚'; msg = 'Review your notes and try again.'; }
+  else { emoji = '🔄'; msg = 'Keep practicing!'; }
+  document.getElementById('r-emoji').textContent = emoji;
+  document.getElementById('r-msg').textContent = msg + ' (' + pct + '%)';
+}
+
+document.getElementById('screen-select').style.display = 'block';
+</script>
+</body>
+</html>
