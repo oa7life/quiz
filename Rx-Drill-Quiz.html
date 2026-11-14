@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rx Drill — Community Pharmacy MCQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560;9..144,680&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:#080c1a; --card:#0e1530; --text:#f0f4ff; --muted:#8899cc;
+    --accent:#60a5fa; --green:#22c55e; --red:#ef4444;
+    --border:#1e2d5a; --border2:#263870; --note:#c7d8ff; --ink:#e8eeff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Outfit, sans-serif;
+    background: radial-gradient(ellipse at 18% 0%, #132552 0%, #080c1a 55%);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 20px 16px 48px;
+  }
+  #screen-quiz, #screen-results { max-width: 760px; margin: 0 auto; }
+  #screen-results { display: none; max-width: 520px; text-align: center; }
+  .header-inline { text-align: center; margin-bottom: 18px; }
+  .badge {
+    display: inline-block;
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-family: Fraunces, Georgia, serif;
+    font-size: clamp(28px, 5vw, 40px);
+    font-weight: 680;
+    color: var(--ink);
+  }
+  .sub { color: var(--muted); font-size: 14px; margin-top: 6px; }
+  .counts { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 12px; }
+  .pill {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 12px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .pill span { color: var(--text); }
+  .quiz-topbar { display: flex; justify-content: space-between; gap: 8px; margin: 16px 0 10px; }
+  .progress-bar-wrap { height: 4px; background: var(--border); border-radius: 99px; margin-bottom: 16px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--accent); width: 0; transition: width .3s; }
+  .quiz-card, .result-card {
+    background: rgba(14,21,48,.95);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 26px 22px;
+    box-shadow: 0 24px 60px rgba(0,0,0,.4);
+  }
+  .qhead { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .qtag, .qmode {
+    font-size: 12px; font-weight: 700; border-radius: 999px; padding: 5px 12px;
+    border: 1px solid var(--border); background: rgba(255,255,255,.05);
+  }
+  .qtag { color: var(--accent); }
+  .qmode { color: var(--muted); font-weight: 600; }
+  .question-text { font-size: clamp(16px, 2.4vw, 20px); font-weight: 700; line-height: 1.45; margin-bottom: 18px; color: var(--ink); }
+  .options { display: grid; gap: 8px; }
+  .opt {
+    width: 100%; text-align: left; border: 1px solid var(--border);
+    background: rgba(255,255,255,.03); color: var(--text);
+    border-radius: 14px; padding: 12px 14px; font-size: 14.5px;
+    font-family: inherit; cursor: pointer; display: flex; gap: 10px;
+    line-height: 1.45; align-items: flex-start;
+  }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: rgba(96,165,250,.08); }
+  .opt-letter {
+    min-width: 24px; height: 24px; border-radius: 7px; border: 1px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: var(--muted); flex-shrink: 0;
+  }
+  .opt.correct { background: rgba(34,197,94,.14); border-color: var(--green); }
+  .opt.correct .opt-letter { border-color: var(--green); color: #86efac; }
+  .opt.wrong { background: rgba(239,68,68,.12); border-color: var(--red); }
+  .opt.wrong .opt-letter { border-color: var(--red); color: #fca5a5; }
+  .opt:disabled { cursor: default; }
+  .explain { display: none; margin-top: 14px; padding: 14px 16px; border-radius: 14px; background: rgba(6,16,40,.75); border: 1px solid var(--border2); color: var(--note); line-height: 1.55; font-size: 13.5px; }
+  .explain.show { display: block; }
+  .explain .correct-label { font-weight: 700; font-size: 14px; display: block; margin-bottom: 6px; }
+  .ok { color: #86efac; }
+  .bad { color: #fca5a5; }
+  .controls { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
+  .btn {
+    border: 1px solid var(--border2); background: transparent; color: var(--accent);
+    border-radius: 12px; min-height: 44px; padding: 10px 14px;
+    font-weight: 700; font-size: 13px; font-family: inherit; cursor: pointer;
+  }
+  .btn.primary { background: #2563eb; border-color: transparent; color: white; }
+  .btn.success { color: #86efac; }
+  .btn.ghost { color: var(--muted); }
+  .btn:disabled { opacity: .35; cursor: not-allowed; }
+  .answer-list { display: none; margin-top: 20px; }
+  .answer-list.show { display: block; }
+  .answer-list h3 { font-size: 15px; margin-bottom: 12px; color: var(--accent); }
+  .answer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+  .answer-mini { background: rgba(8,12,26,.7); border: 1px solid var(--border); border-radius: 12px; padding: 11px 12px; font-size: 12.5px; line-height: 1.45; }
+  .answer-mini .q-num { color: var(--accent); font-weight: 700; font-size: 11px; margin-bottom: 4px; }
+  .answer-mini .q-ans { color: #86efac; font-weight: 600; margin-top: 4px; }
+  .footer-tip { margin-top: 14px; color: var(--muted); font-size: 12px; text-align: center; }
+  .result-score { font-family: Fraunces, Georgia, serif; font-size: 56px; color: var(--accent); margin: 8px 0; }
+  .result-label, .result-sub { color: var(--muted); }
+  .result-msg { font-size: 18px; font-weight: 700; margin-top: 8px; }
+  .result-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 22px; }
+</style>
+</head>
+<body>
+<div id="screen-quiz">
+  <div class="header-inline">
+    <div class="badge">Community pharmacy · @Ph22kh</div>
+    <h1>Rx Drill</h1>
+    <p class="sub">Question bank first, then Lecture 2, then Lecture 5 clinical.</p>
+    <div class="counts" id="counts"></div>
+  </div>
+  <div class="quiz-topbar">
+    <div class="pill">Score: <span id="score-display">0/0</span></div>
+    <div class="pill">Q <span id="progress-display">1/1</span></div>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-bar"></div></div>
+  <div class="quiz-card">
+    <div class="qhead">
+      <span class="qtag" id="q-tag">Bank</span>
+      <span class="qmode" id="q-mode">Bank order</span>
+    </div>
+    <div class="question-text" id="q-text">Loading…</div>
+    <div class="options" id="q-options"></div>
+    <div class="explain" id="q-explain"></div>
+    <div class="controls">
+      <button class="btn" id="btn-prev" type="button">← Back</button>
+      <button class="btn primary" id="btn-next" type="button">Next →</button>
+      <button class="btn" id="btn-shuffle" type="button">Shuffle</button>
+      <button class="btn success" id="btn-restart" type="button">Restart</button>
+      <button class="btn ghost" id="btn-sheet" type="button">Show answer sheet</button>
+    </div>
+    <div class="answer-list" id="answer-list">
+      <h3>Answer sheet · original bank order</h3>
+      <div class="answer-grid" id="answer-grid"></div>
+    </div>
+    <p class="footer-tip">Keys 1–5 or A–E answer. Arrow keys move between questions.</p>
+  </div>
+</div>
+<div id="screen-results">
+  <div class="result-card">
+    <div class="result-label" id="r-tone">Final score</div>
+    <div class="result-score" id="r-score">0/0</div>
+    <div class="result-sub" id="r-pct"></div>
+    <div class="result-msg" id="r-msg"></div>
+    <p class="result-sub" id="r-skip" style="margin-top:8px"></p>
+    <div class="result-actions">
+      <button class="btn primary" id="btn-again" type="button">Try again</button>
+      <button class="btn" id="btn-shuffle-again" type="button">Shuffle and retry</button>
+    </div>
+  </div>
+</div>
+<script>
+const BANK = [{"tag":"Bank · GI","q":"Responsible for causing severe diarrhea in infants and children under the age of 2 years","opts":["Adenovirus","Norovirus","Rotavirus","E. coli","Salmonella"],"ans":2,"note":"Rotavirus is the leading cause of severe acute gastroenteritis in infants and children under 2, peaking in winter. Norovirus affects all ages; adenovirus is a less common viral cause; E. coli and Salmonella are bacterial food-borne pathogens."},{"tag":"Bank · GI","q":"Adsorbents such as kaolin are not recommended for acute diarrheas because of interaction with","opts":["Activated charcoal","Pektokaolin","Omeprazole","Zinc supplements","Oral rehydration salts"],"ans":4,"note":"Kaolin can bind oral rehydration salts and other oral medicines, and it does not replace lost fluid. Pektokaolin already contains kaolin; activated charcoal is another adsorbent; omeprazole and zinc are not the cornerstone that adsorbents compromise."},{"tag":"Bank · GI","q":"Persistent diarrhea is defined as duration","opts":["More than 24 hours","More than 7 days","More than 4 weeks","More than 2 months","More than 6 months"],"ans":1,"note":"Exam key: more than 7 days. Lecture slide 2 defines persistent diarrhea as 14 days to 4 weeks and chronic as more than 4 weeks; among the choices, more than 7 days is the key that separates prolonged diarrhea from a brief acute episode. More than 24 hours is still acute. More than 4 weeks, 2 months, or 6 months is chronic."},{"tag":"Bank · GI","q":"Considered OTC only in patients > 12 years old","opts":["Diphenhydramine","Loperamide","Bisacodyl","Metoclopramide","Omeprazole"],"ans":1,"note":"Loperamide is licensed OTC as an antimotility agent for patients older than 12 years (co-phenotrope is over 16). OTC omeprazole is for adults 18 and over; metoclopramide is prescription-only; diphenhydramine and bisacodyl are not OTC antidiarrheals restricted to over 12 years."},{"tag":"Bank · GI","q":"Causes of chronic diarrhea","opts":["IBS","Crohn's disease","Celiac disease","All of them","None of them"],"ans":3,"note":"IBS, inflammatory bowel disease (including Crohn's), and malabsorption syndromes such as celiac disease are all listed causes of chronic diarrhea. A, B, and C are each correct, so the complete answer is all of them."},{"tag":"Bank · GI","q":"Precipitating or aggravating factors of reflux disease EXCEPT","opts":["Bending or lying down","Overweight","Exercise","Stress","Fatty meals"],"ans":2,"note":"Moderate exercise is not a standard GERD precipitant and is encouraged for weight control. Bending or lying down reduces clearance, overweight raises intra-abdominal pressure, and stress or fatty meals lower LES tone and delay emptying."},{"tag":"Bank · GI","q":"Containing antacids can form a 'raft' that floats on gastric contents to reduce reflux","opts":["Aluminum hydroxide","Magnesium trisilicate","Alginate","Calcium carbonate","Sodium bicarbonate"],"ans":2,"note":"Alginates (for example Gaviscon) react with acid to form a neutral viscous raft that floats on stomach contents and blocks reflux. The other options are simple neutralizing antacids and do not form that floating barrier on their own."},{"tag":"Bank · GI","q":"PPIs supplied OTC for relief of heartburn associated with reflux in adults > 18 years","opts":["Esomeprazole","Omeprazole","Pantoprazole","All of them","None of them"],"ans":3,"note":"Esomeprazole, omeprazole, and pantoprazole are all available OTC for frequent heartburn in adults aged 18 and over. Choosing only one of them is incomplete."},{"tag":"Bank · GI","q":"When acidic gastric contents reflux into the esophagus causing irritation","opts":["Peptic ulcer disease","Heartburn","Gastritis","Flatulence","Dysphagia"],"ans":1,"note":"Heartburn is the retrosternal burn from acidic gastric contents contacting unprotected esophageal mucosa. Ulcer disease and gastritis are stomach or duodenal injury; flatulence is gas; dysphagia is difficulty swallowing."},{"tag":"Bank · GI","q":"Hemorrhoids are swollen blood vessels that project into the bowel lumen during?","opts":["Urination","Defecation","Sneezing","Walking","Sleeping"],"ans":1,"note":"Hemorrhoids are inflamed, swollen vessels and tissue that project into the bowel lumen during defecation, especially with straining. Urination, sneezing, walking, and sleeping are not the defining event."},{"tag":"Bank · GI","q":"Hemorrhoids graded according to severity — incorrect statement","opts":["Grade I: do not prolapse","Grade II: prolapse but reduce spontaneously","Grade III: require manual reduction","Grade IV: can be reduced manually","All are correct"],"ans":3,"note":"Grade IV hemorrhoids stay permanently prolapsed and cannot be reduced manually; they risk thrombosis and gangrene. Grades I–III are described correctly."},{"tag":"Bank · GI","q":"Causes of hemorrhoids — all TRUE except","opts":["Anatomical: degeneration of elastic tissue","Physiological: increased anal canal pressure","Mechanical: straining at defecation","None of them","All of them"],"ans":3,"note":"Anatomical degeneration, high anal-canal pressure, and straining are all true causes, so there is no false statement among A–C. The correct choice is “none of them.”"},{"tag":"Bank · GI","q":"Mr. FT has previously diagnosed hemorrhoids. Which symptom would indicate referral to the doctor?","opts":["Bright red blood on the surface of the stool","Stools that are tarry","Perianal itching","Mucous discharge","Dull ache on defecation"],"ans":1,"note":"Tarry stools (melena) suggest bleeding higher in the GI tract, not uncomplicated piles, and need investigation. Bright red blood on the stool surface, mild itch, minor mucus, and a dull ache can occur with known uncomplicated hemorrhoids."},{"tag":"Bank · GI","q":"A.M., a 14-year-old male, complains of heartburn that gets worse when lying down. Which drug is most suitable?","opts":["Ranitidine","Gaviscon Liquid","Esomeprazole","Milk of Magnesia","Sodium bicarbonate powder"],"ans":1,"note":"Gaviscon (alginate) forms a raft that limits reflux when lying down, works quickly, and is not restricted away from a 14-year-old. Ranitidine was withdrawn (NDMA) and OTC H2RAs are for over 16; OTC esomeprazole is for adults 18+; Milk of Magnesia causes osmotic diarrhea without a raft; sodium bicarbonate is short-acting, causes rebound and gas, and has a high sodium load."},{"tag":"Bank · Women's health","q":"Used for many years to treat breast tenderness associated with PMS","opts":["Cranberry extract","Evening primrose oil","Lavender extract","Black seed oil","Iron supplements"],"ans":1,"note":"Evening primrose oil has long been used for cyclical breast tenderness (mastalgia), although strong trial evidence is limited. Cranberry is linked with UTIs; lavender, black seed oil, and iron are not established remedies for PMS mastalgia."},{"tag":"Bank · Women's health","q":"Oral fluconazole interacts with certain drugs, such as","opts":["Amoxicillin","Paracetamol","Phenytoin","Ibuprofen","Omeprazole"],"ans":2,"note":"Fluconazole inhibits CYP enzymes and raises phenytoin levels (toxicity risk). It also interacts with warfarin, sulfonylureas, ciclosporin, rifampicin, and theophylline. Amoxicillin, paracetamol, ibuprofen, and omeprazole are not clinically important partners of a single 150 mg dose."},{"tag":"Bank · Women's health","q":"Medications that predispose to vaginal thrush and need prescriber contact — which statement is correct?","opts":["Broad-spectrum antibiotics","Corticosteroids","Cancer chemotherapy","All require referral","None of them"],"ans":3,"note":"Broad-spectrum antibiotics, systemic corticosteroids, and cancer chemotherapy all disrupt flora or immunity and predispose to complicated candidiasis. Each needs prescriber involvement, so the complete answer is that all require referral."},{"tag":"Bank · Women's health","q":"Recommended as a folk remedy for urinary tract infection prevention","opts":["Orange juice","Cranberry juice","Apple vinegar","Mint tea","Ginger tea"],"ans":1,"note":"Cranberry juice is the folk remedy cited for UTI prevention, although evidence in acute cystitis is weak. Orange juice, apple vinegar, mint tea, and ginger tea are not the standard recommendation."},{"tag":"Bank · Women's health","q":"Regarding dysmenorrhea, all the following statements are right EXCEPT:","opts":["A simple non-drug measure is a hot-water bottle","TENS machines can be bought OTC and used for painful periods","NSAIDs inhibit prostaglandin production and decrease uterine contractions","Take ibuprofen only when pain builds up, rather than regularly for 2–3 days","Take the first ibuprofen dose as soon as pain or bleeding starts, whichever comes first"],"ans":3,"note":"The false statement is “on need” dosing. NSAIDs should be taken regularly for the first 2–3 days to keep prostaglandin synthesis suppressed, not only when pain builds. Heat, OTC TENS, prostaglandin inhibition, and an early first dose are all correct."},{"tag":"Bank · Women's health","q":"All the following statements are right regarding premenstrual syndrome (PMS), EXCEPT?","opts":["PMS is a collection of physical and psychological symptoms","Symptoms are cyclical, usually from 2 to 14 days before menstruation","Relief generally occurs once menstrual bleeding ends","The cause is unknown, but PMS is associated with ovulation","None of the above"],"ans":2,"note":"Relief occurs once menstrual bleeding begins, not when it ends. The other statements match the lecture definition."},{"tag":"Bank · Ear & respiratory","q":"Which medicine is the drug of choice for nasal congestion caused by allergic rhinitis?","opts":["Acrivastine","Chlorphenamine","Loratadine","Nasal beclometasone","Nasal decongestant"],"ans":3,"note":"An intranasal corticosteroid such as beclometasone is first choice for allergic rhinitis and treats congestion as well as sneeze and rhinorrhoea. Oral antihistamines help itch, sneeze, and drip but poorly treat blockage. Decongestant sprays only help briefly and cause rebound if overused."},{"tag":"Bank · Ear & respiratory","q":"Which of the following medicines should only be given short-term for the relief of hay fever?","opts":["Acrivastine","Beclometasone","Sodium cromoglicate","Naphazoline","Fluticasone"],"ans":3,"note":"Naphazoline is a topical sympathomimetic and must be limited to about 5–7 days to avoid rhinitis medicamentosa. Intranasal steroids and sodium cromoglicate are used through the season; acrivastine does not cause rebound congestion."},{"tag":"Bank · Ear & respiratory","q":"Match the condition to its non-pharmacologic treatment. Which pairing is correct?","opts":["Water-clogged ears → docusate; ear wax → hot-water bottle","Water-clogged ears → hot-water bottle; ear wax → docusate","Water-clogged ears → hair-dryer; ear wax → wet washcloth over a finger","Water-clogged ears → wet washcloth; ear wax → hair-dryer","Both conditions → docusate ear drops"],"ans":2,"note":"A hair-dryer on a low setting evaporates trapped water. Outer-ear wax is wiped with a wet washcloth draped over a finger. Docusate is a pharmacologic cerumenolytic, not a non-drug measure. A hot-water bottle is a non-drug treatment for primary dysmenorrhoea, not ears."},{"tag":"Bank · Ear & respiratory","q":"The recommended duration of treatment of earwax impaction by docusate (Dewax) ear drops is?","opts":["Two consecutive nights","Three consecutive nights","Four consecutive days","Five consecutive hours","None of the above"],"ans":0,"note":"Fill the affected ear with docusate, plug it with a little cotton wool, and repeat for not more than two consecutive nights. Three days applies to sodium bicarbonate ear drops, not docusate."},{"tag":"Lec.2","q":"A patient with suspected cerumen impaction reports vertigo and tinnitus. Why should this presentation be referred rather than attributed confidently to wax?","opts":["These symptoms commonly prove bacterial infection","They infrequently occur with wax and may indicate an inner-ear problem","They always indicate a foreign body","They are expected after every cerumenolytic","They indicate seasonal allergy"],"ans":1,"note":"Vertigo and tinnitus are uncommon with wax alone and may point to inner-ear disease, so the patient should be referred rather than treated as simple cerumen."},{"tag":"Lec.2","q":"A 34-year-old has predictable sneezing, nasal itching, watery rhinorrhoea and congestion every spring. Symptoms improve indoors and worsen on windy days. No fever, no sick contacts. Which finding most strongly supports seasonal allergic rhinitis rather than the common cold?","opts":["Symptoms lasting several days","Absence of nasal congestion","Coloured nasal discharge from the outset","Symptoms at the same time each year during pollen production","High fever"],"ans":3,"note":"A predictable seasonal pattern during pollen production, better indoors and worse on windy days, points to seasonal allergic rhinitis. A cold is not locked to the same weeks each year and often involves sick contacts."},{"tag":"Lec.2","q":"All of the following seasonal allergic rhinitis findings do not require referral EXCEPT?","opts":["Rhinorrhoea","Fever","Clear watery conjunctivitis","Itch","None of the above"],"ans":1,"note":"Fever is the feature that needs referral. Rhinorrhoea, itch, and clear watery conjunctivitis fit uncomplicated seasonal allergic rhinitis."},{"tag":"Lec.2","q":"A contact-lens wearer uses ocular drops for allergic conjunctivitis and develops ocular irritation. Which counselling point best explains the risk?","opts":["All ocular drops contain pseudoephedrine","Benzalkonium chloride may be absorbed into soft lenses and released onto the cornea","Cromoglicate permanently stains lenses","Antihistamines dissolve contact lenses","Glycerine causes lens dehydration"],"ans":1,"note":"Benzalkonium chloride, a common preservative, can bind soft lenses and then leach onto the cornea, causing irritation. Lenses should be removed before preserved drops."},{"tag":"Lec.2","q":"Which children with acute otitis media (AOM) may receive initial observation without antibiotics?","opts":["Children 6–23 months with non-severe bilateral AOM","All children under 6 months","Children with a temperature of 39°C or higher","Children 6–23 months with non-severe unilateral AOM, and children 24 months–12 years with non-severe AOM","Children with severe otalgia for 48 hours"],"ans":3,"note":"Initial observation is an option for non-severe unilateral AOM at 6–23 months and for non-severe AOM from 24 months to 12 years. Under 6 months, bilateral disease in the younger group, high fever, and severe pain are not watch-and-wait cases."},{"tag":"Lec.2","q":"A 20-month-old with acute otitis media is considered for a short antibiotic course. Which statement is appropriate?","opts":["Short-course therapy is not recommended in children younger than 2 years","Short-course therapy is always preferred under age 2","No analgesia should be offered","Treatment must always be one dose","Tympanostomy is required"],"ans":0,"note":"Children younger than 2 years should not be given a shortened antibiotic course for AOM. Analgesia is still appropriate; a single dose or routine tympanostomy is not the rule."},{"tag":"Lec.2","q":"Which agents are the treatments of choice for pharyngitis?","opts":["Measures that only prevent acute rheumatic fever and suppurative complications, with no named drug","Azithromycin and clindamycin","Supportive care and steam inhalation","Penicillin and amoxicillin","None of the above"],"ans":3,"note":"Penicillin and amoxicillin are the treatments of choice for streptococcal pharyngitis. Macrolides or clindamycin are alternatives when beta-lactams cannot be used, not first choice."},{"tag":"Lec.5 · Clinical","q":"A 35-year-old man presents with dysuria and urinary frequency for 2 days and asks for an OTC product. What is the most appropriate action?","opts":["Recommend potassium citrate and reassess in 5 days","Recommend cranberry juice capsules","Refer him to the doctor","Advise increased fluid intake only","Recommend sodium bicarbonate for 7 days"],"ans":2,"note":"Any man with cystitis symptoms should be referred. The differential includes stones, prostatitis, and other problems that are not suitable for OTC alkalinizing agents."},{"tag":"Lec.5 · Clinical","q":"Why is cystitis common in women but rare in men, especially men under the age of 50?","opts":["Male urine is more acidic","Men have a longer urethra, and prostatic fluid confers some antibacterial property","Men have higher oestrogen levels","E. coli cannot infect the male bladder","Men drink more fluids than women"],"ans":1,"note":"The male urethra is longer, and prostatic fluid has some antibacterial effect, so uncomplicated cystitis is uncommon in men under 50."},{"tag":"Lec.5 · Clinical","q":"Which organism is the most common cause of acute uncomplicated cystitis?","opts":["Candida albicans","Trichomonas vaginalis","Staphylococcus aureus","Escherichia coli","Proteus mirabilis"],"ans":3,"note":"Bacterial infection causes about half of cases, and E. coli from the gut is the most common organism. The female urethra is only about 3 cm long, which makes ascent easier."},{"tag":"Lec.5 · Clinical","q":"A 28-year-old woman with mild dysuria for one day asks whether cystitis can settle without treatment. What is the lecture-based response?","opts":["About half of cases resolve within 3 days even without treatment","Cystitis never resolves without antibiotics","All cases resolve within 24 hours","It always progresses to pyelonephritis","It resolves only if cranberry juice is used"],"ans":0,"note":"About half of uncomplicated episodes settle within 3 days without antibiotics. That does not mean every case is safe to ignore if referral features are present."},{"tag":"Lec.5 · Clinical","q":"A mother asks for an OTC product for her 12-year-old daughter, who has burning on urination and frequency. What is the most appropriate action?","opts":["Recommend potassium citrate diluted with water","Recommend sodium citrate sachets for 2 days","Advise cranberry juice and reassess in a week","Recommend ibuprofen and increased fluids only","Refer, because cystitis is unusual in children and may indicate a structural urinary tract abnormality"],"ans":4,"note":"Urinary symptoms in a child are not a routine OTC cystitis case. Referral is needed because a structural abnormality may be present."},{"tag":"Lec.5 · Clinical","q":"A 30-year-old woman has dysuria and frequency for 2 days, plus fever, nausea, vomiting and loin pain. What is the most appropriate action?","opts":["Recommend potassium citrate","Recommend paracetamol for up to 2 days","Advise her to drink about 5 litres of fluid daily","Refer, as these symptoms may indicate an upper urinary tract infection","Recommend sodium bicarbonate and reassess in 3 days"],"ans":3,"note":"Fever, vomiting, nausea, and loin pain suggest pyelonephritis or another upper-tract infection. OTC cystitis treatment is not appropriate."},{"tag":"Lec.5 · Clinical","q":"A 33-year-old woman has had dysuria and frequency for one day and has noticed blood in her urine. What is the most appropriate action?","opts":["Recommend potassium citrate and reassess in 2 days","Recommend sodium citrate sachets","Advise cranberry juice and increased fluids","Refer her, because haematuria requires referral","Recommend ibuprofen for up to 2 days"],"ans":3,"note":"Visible blood in the urine is a referral sign and should not be managed with OTC alkalinizers alone."},{"tag":"Lec.5 · Clinical","q":"Which of the following is described as a classical symptom of cystitis?","opts":["Passing large volumes of urine","Dysuria (pain on urination)","Loin pain","High fever","Vaginal discharge"],"ans":1,"note":"Dysuria is the classical symptom. Loin pain, fever, and vaginal discharge are referral features, not the typical uncomplicated picture."},{"tag":"Lec.5 · Clinical","q":"A woman who is 24 weeks pregnant presents with symptoms of cystitis. Why should she be referred?","opts":["Potassium citrate is teratogenic","Cystitis does not occur during pregnancy","Bacteriuria in pregnancy can lead to kidney infection and other problems","Cranberry juice is contraindicated in pregnancy","She needs a higher dose of an alkalinizing agent"],"ans":2,"note":"Bacteriuria in pregnancy can progress to pyelonephritis and is linked with other obstetric problems, so she needs medical assessment rather than OTC treatment."},{"tag":"Lec.5 · Clinical","q":"OTC treatment of cystitis is considered reasonable when:","opts":["Symptoms are mild, of short duration (under 3 days), and no other symptoms are present","Symptoms have lasted 5–7 days","Symptoms have lasted more than 7 days","The patient has recurrent cystitis","The patient is a man under 50 years"],"ans":0,"note":"OTC care fits mild symptoms lasting under 3 days with no red flags. Longer duration, recurrence, and any male patient need referral."},{"tag":"Lec.5 · Clinical","q":"A 40-year-old woman has had symptoms of cystitis for 8 days and asks for an OTC product. Why should she be referred?","opts":["Symptoms lasting longer than 5–7 days may indicate pyelonephritis","Cystitis lasting this long is always viral","She most likely has vaginal thrush","Alkalinizing agents are licensed for one day only","She needs a higher intake of cranberry juice"],"ans":0,"note":"Symptoms beyond about 5–7 days are no longer a short uncomplicated episode and may indicate an upper-tract infection."},{"tag":"Lec.5 · Clinical","q":"A 26-year-old woman gets frequent episodes of cystitis following sexual intercourse (honeymoon cystitis). Which statement is correct?","opts":["It is caused by a fungal infection","Her doctor may prescribe trimethoprim (POM) to be taken within 2 hours of sex","She should take potassium citrate before every intercourse","Honeymoon cystitis occurs only in men","Cranberry juice is the treatment of choice"],"ans":1,"note":"Post-coital prophylaxis is a prescriber decision. Trimethoprim taken within 2 hours of intercourse is the lecture example, not an OTC alkalinizer."},{"tag":"Lec.5 · Clinical","q":"A 48-year-old patient receiving chemotherapy develops urinary symptoms. Which cytotoxic drug is known to cause cystitis?","opts":["Paracetamol","Fluconazole","Cyclophosphamide","Ibuprofen","Potassium citrate"],"ans":2,"note":"Cyclophosphamide causes haemorrhagic cystitis via the urinary metabolite acrolein. Extra fluids and mesna help prevent it. Opioids and nifedipine can also cause urinary symptoms."},{"tag":"Lec.5 · Clinical","q":"A 55-year-old woman taking an ACE inhibitor (or spironolactone) asks for potassium citrate for mild cystitis. Key counselling:","opts":["It is safe at double the usual dose","It should not be used because it may cause hyperkalaemia","It should be taken undiluted","It can be used for 7 days without referral","It must be taken with cranberry juice"],"ans":1,"note":"Potassium citrate must not be combined with ACE inhibitors, potassium-sparing diuretics, or aldosterone antagonists because of hyperkalaemia."},{"tag":"Lec.5 · Clinical","q":"A 45-year-old woman with hypertension asks for an alkalinizing agent for mild cystitis. Which product should NOT be recommended?","opts":["Paracetamol","Potassium citrate (if no interacting medicines)","Increased fluid intake","Ibuprofen for up to 2 days","Sodium citrate"],"ans":4,"note":"Sodium citrate is avoided in hypertension, heart disease, and pregnancy because of the sodium load. Potassium citrate can be considered if there is no potassium interaction."},{"tag":"Lec.5 · Clinical","q":"A patient complains that the taste of potassium citrate mixture is unpleasant. Best counselling:","opts":["Stop the treatment immediately","Switch to sodium citrate in all patients","Dilute the mixture with water to make the taste more palatable","Take it with cranberry juice","Take it only once daily"],"ans":2,"note":"Dilute potassium citrate mixture with water. Do not switch everyone to sodium citrate, and do not stop a suitable short course only because of taste."},{"tag":"Lec.5 · Clinical","q":"How much fluid should a patient with cystitis be advised to drink?","opts":["Fluids should be restricted","About 1 litre per day","About 10 litres per day","About 5 litres per day, to promote urination and flush bacteria from the bladder","Fluids only at night"],"ans":3,"note":"About 5 litres a day is the lecture figure, aiming to increase urine flow and flush bacteria. Restriction, 1 litre, or an unrealistic 10 litres are not the advice."},{"tag":"Lec.5 · Clinical","q":"If the symptoms of cystitis have not improved within ________ of beginning treatment, the patient should see the doctor.","opts":["12 hours","2 days","5 days","7 days","2 weeks"],"ans":1,"note":"Failure to improve within 2 days of starting OTC treatment is a referral point."},{"tag":"Lec.5 · Clinical","q":"All of the following patients with symptoms of cystitis should be referred EXCEPT:","opts":["A woman with diabetes","A 75-year-old woman","A 32-year-old non-pregnant woman with mild dysuria for 1 day and no other symptoms","A woman with haematuria","A woman with vaginal discharge"],"ans":2,"note":"The young non-pregnant woman with one day of mild dysuria and no other symptoms can be considered for OTC care. Diabetes, older age, haematuria, and vaginal discharge all need referral."},{"tag":"Lec.5 · Clinical","q":"Primary dysmenorrhoea (PD) is defined as:","opts":["Menstrual pain without organic pathology","Menstrual pain caused by endometriosis","Pain that starts one week before menses","Menstrual pain associated with heavy bleeding","Pain occurring after the menopause"],"ans":0,"note":"Primary dysmenorrhoea is period pain with no organic pathology. If a pathological cause is identifiable, it is secondary dysmenorrhoea and should be referred."},{"tag":"Lec.5 · Clinical","q":"A 17-year-old reports lower abdominal cramping that starts a few hours before her period and is usually gone by the end of the first day of bleeding. What is the most likely diagnosis?","opts":["Secondary dysmenorrhoea","Premenstrual syndrome","Primary dysmenorrhoea","Cystitis","Vaginal thrush"],"ans":2,"note":"Primary dysmenorrhoea starts very shortly before or within 24 hours of menses, eases as bleeding continues, and is often gone by the end of the first day."},{"tag":"Lec.5 · Clinical","q":"A 36-year-old woman reports new period pain that starts about 5 days before menses and persists after menstruation finishes. What is the most appropriate action?","opts":["Recommend ibuprofen and reassess after two cycles","Recommend hyoscine butylbromide","Advise a heat pad only","Refer her, as the presentation suggests secondary dysmenorrhoea","Recommend aspirin 1000 mg every 4 hours"],"ans":3,"note":"Pain that starts days before the period and continues after bleeding suggests secondary dysmenorrhoea. New or worsening symptoms over age 30 should also be referred."},{"tag":"Lec.5 · Clinical","q":"Why is dysmenorrhoea often NOT associated with the start of menstruation (menarche)?","opts":["Prostaglandins are absent before the age of 16","Ovulation often does not occur during the early months of menstruation (anovulatory cycles)","Oestrogen is absent at menarche","Periods are shorter at menarche","The uterus is too small to contract"],"ans":1,"note":"Early cycles are often anovulatory, and anovulatory cycles are usually painless. Pain tends to appear once ovulation is established."},{"tag":"Lec.5 · Clinical","q":"The initial onset of primary dysmenorrhoea is usually:","opts":["6–12 months after menarche, with the onset of ovulatory cycles","At the first menstrual period","In the 30s or 40s","After the first pregnancy","After the menopause"],"ans":0,"note":"Primary dysmenorrhoea usually begins 6–12 months after menarche, when ovulatory cycles start. Menarche itself is typically between 10 and 16 years."},{"tag":"Lec.5 · Clinical","q":"A 22-year-old had pain-free periods for the first two years after menarche, but now has period pain. She asks whether this is abnormal. What is the lecture-based explanation?","opts":["Pain starting after menarche always indicates secondary dysmenorrhoea","Dysmenorrhoea always begins with the first period","Her pain is caused by a urinary tract infection","Her pain indicates the onset of the menopause","Early menstrual cycles are often anovulatory and usually pain-free, so period pain may begin months or years after menarche"],"ans":4,"note":"A painless start followed later by typical cramps fits the shift from anovulatory to ovulatory cycles. It is not automatically secondary dysmenorrhoea."},{"tag":"Lec.5 · Clinical","q":"Which statement about the menstrual cycle is correct?","opts":["A normal cycle is exactly 28 days in all women","A normal period lasts 7–10 days","A normal cycle is 10–16 days","A period lasting 5 days is abnormal","A normal cycle is 21–35 days, and a period normally lasts 2–7 days (average 5 days)"],"ans":4,"note":"Normal cycle length is 21–35 days. Bleeding normally lasts 2–7 days, with an average of about 5 days. A fixed 28-day cycle is not required."},{"tag":"Lec.5 · Clinical","q":"In primary dysmenorrhoea, the pain typically lasts:","opts":["Between 8 and 72 hours, and improves as the menses progresses","Throughout the whole menstrual cycle","1–2 weeks before menses","Less than one hour","7–10 days after menstruation finishes"],"ans":0,"note":"The pain of primary dysmenorrhoea lasts about 8–72 hours and improves as menstruation progresses."},{"tag":"Lec.5 · Clinical","q":"A 24-year-old woman with period pain is taking a combined oral contraceptive pill. What is the most appropriate action?","opts":["Recommend naproxen and reassess after two cycles","Refer her, since COCs usually reduce or eliminate dysmenorrhoea and further investigation is needed","Advise her to stop the pill","Recommend hyoscine butylbromide","Recommend aspirin 650 mg"],"ans":1,"note":"Combined pills and desogestrel usually reduce or abolish dysmenorrhoea. Pain that continues on the pill should be referred."},{"tag":"Lec.5 · Clinical","q":"What is considered the first-line OTC treatment option for primary dysmenorrhoea, provided it is appropriate for the patient?","opts":["Paracetamol","Aspirin","Hyoscine butylbromide","NSAIDs such as ibuprofen and naproxen","Evening primrose oil"],"ans":3,"note":"NSAIDs are first-line because they relieve pain and inhibit prostaglandin production, which reduces uterine contractions."},{"tag":"Lec.5 · Clinical","q":"A 20-year-old woman with dysmenorrhoea also has nausea and vomiting with her periods. Which analgesic is best avoided?","opts":["Paracetamol","Aspirin","A heat pad","TENS","A warm bath"],"ans":1,"note":"Aspirin is less effective than ibuprofen and more irritant to the stomach, so it is a poor choice when nausea and vomiting are already present."},{"tag":"Lec.5 · Clinical","q":"Why is paracetamol theoretically less effective than NSAIDs for dysmenorrhoea?","opts":["It is more irritant to the stomach","It is poorly absorbed orally","It does not inhibit prostaglandin synthesis","It has anticholinergic side effects","It increases uterine contractions"],"ans":2,"note":"Paracetamol lacks meaningful prostaglandin inhibition, so it does not reduce the uterine contractions that drive primary dysmenorrhoea as NSAIDs do."},{"tag":"Lec.5 · Clinical","q":"The dose of aspirin for dysmenorrhoea is:","opts":["75 mg once daily","300 mg as a single dose","2 g every 2 hours","650–1000 mg every 4–6 hours (maximum 4 g/day)","100 mg every 12 hours"],"ans":3,"note":"The analgesic dose is 650–1000 mg every 4–6 hours, not exceeding 4 g in a day. Low-dose 75 mg is an antiplatelet dose, not period-pain treatment."},{"tag":"Lec.5 · Clinical","q":"A woman with narrow-angle glaucoma asks for hyoscine butylbromide (Buscopan 10 mg) for period cramps. Key counselling:","opts":["It is contraindicated in narrow-angle glaucoma","It is safe at two tablets four times daily","It should be taken together with an antihistamine","Only constipation needs to be considered","It should be taken only at night"],"ans":0,"note":"Buscopan is contraindicated in narrow-angle glaucoma. The usual dose is two 10 mg tablets four times daily. Anticholinergic effects include dry mouth, visual disturbance, and constipation, and they are potentiated by TCAs and antihistamines."},{"tag":"Lec.5 · Clinical","q":"A patient asks how to take ibuprofen for primary dysmenorrhoea. Which practical point is correct?","opts":["Take it only now and then when the pain builds up","Take the first dose as soon as the pain begins or the bleeding starts, whichever comes first, then regularly for 2–3 days","Start taking it 2 weeks before the period","Take a single dose once a month","Stop it as soon as bleeding starts"],"ans":1,"note":"Start at the first sign of pain or bleeding, then dose regularly for 2–3 days so prostaglandin synthesis stays suppressed."},{"tag":"Lec.5 · Clinical","q":"A woman reports that the maximum non-prescription dose of ibuprofen did not relieve her period pain. What is the lecture-based response?","opts":["Double the ibuprofen dose","Stop all analgesics","Add aspirin to ibuprofen","Use cranberry capsules","Switch to another NSAID, as patients may respond better to one NSAID than another"],"ans":4,"note":"Do not exceed the OTC maximum or stack NSAIDs. A different NSAID may work better for that patient."},{"tag":"Lec.5 · Clinical","q":"If the pain of primary dysmenorrhoea is not improved after ________ of treatment, referral to the doctor is advisable.","opts":["2 days","1 week","two cycles","6 months","1 year"],"ans":2,"note":"If appropriate treatment has not helped after two cycles, refer for further assessment."},{"tag":"Lec.5 · Clinical","q":"All of the following are non-pharmacological measures for primary dysmenorrhoea EXCEPT:","opts":["A heat pad or hot water bottle on the abdomen","Warm baths or showers","Transcutaneous electrical nerve stimulation (TENS)","Exercise","Vaginal douching"],"ans":4,"note":"Heat, warm baths, TENS, and exercise are reasonable non-drug measures. Vaginal douching is not a treatment for period pain and is not advised."},{"tag":"Lec.5 · Clinical","q":"All of the following women with dysmenorrhoea should be referred EXCEPT:","opts":["A 19-year-old with cramping pain starting on the first day of bleeding and settling within a day","Heavy or unexplained bleeding","Accompanying fever and malaise","Vaginal bleeding in a postmenopausal woman","Presence of abnormal vaginal discharge"],"ans":0,"note":"A young woman with a short, typical primary pattern does not automatically need referral. Heavy bleeding, fever, postmenopausal bleeding, and abnormal discharge do."},{"tag":"Lec.5 · Clinical","q":"A 29-year-old reports bloating, breast tenderness and irritability that start about 10 days before her period and resolve once bleeding begins. What is the most likely diagnosis?","opts":["Primary dysmenorrhoea","Secondary dysmenorrhoea","Premenstrual syndrome","Cystitis","Vaginal thrush"],"ans":2,"note":"PMS symptoms are cyclical, appear 2–14 days before menstruation, and are relieved once bleeding begins."},{"tag":"Lec.5 · Clinical","q":"PMS does not occur before puberty, during pregnancy, after the menopause, or in women who do not ovulate. This indicates that PMS is associated with:","opts":["Ovulation","Menstrual bleeding","Candida infection","Oestrogen deficiency","E. coli infection"],"ans":0,"note":"The pattern tracks ovulation. PMS is absent when ovulation does not occur."},{"tag":"Lec.5 · Clinical","q":"One theory states that women with PMS are abnormally sensitive to progesterone secreted after ovulation, which reduces the levels of:","opts":["Calcium","Iron","Potassium","Pyridoxine","Vitamin C"],"ans":3,"note":"The theory is reduced pyridoxine. Pyridoxine is a coenzyme in the last step of serotonin synthesis, so a fall may contribute to low mood."},{"tag":"Lec.5 · Clinical","q":"A patient asks about taking pyridoxine for PMS. Key counselling:","opts":["There is no maximum dose","The dose should be limited to 100 mg daily because of the risk of peripheral neuropathy","The dose should be 1200 mg daily","It causes hyperkalaemia at high doses","It must be taken only during bleeding"],"ans":1,"note":"Keep pyridoxine to 100 mg daily. Higher doses risk peripheral neuropathy."},{"tag":"Lec.5 · Clinical","q":"Which statement about OTC treatment options for PMS is correct?","opts":["Calcium is given as 1200 mg elemental calcium daily, and the product must provide that amount of elemental calcium","Evening primrose oil is proven by good-quality studies to be effective","There is no placebo response in PMS","Calcium supplements have no side effects","Pyridoxine can be given at any dose"],"ans":0,"note":"The calcium figure is 1200 mg elemental calcium daily, and the label must actually supply that elemental amount. Evening primrose oil is not well proven, placebo response is substantial, and pyridoxine is dose-limited."},{"tag":"Lec.5 · Clinical","q":"Of the three most common causes of vaginal discharge, which one can be treated OTC?","opts":["Bacterial vaginosis","Trichomoniasis","Vulvovaginal candidiasis (thrush)","All three conditions","None of the above"],"ans":2,"note":"Only uncomplicated vulvovaginal candidiasis is suitable for OTC imidazoles or fluconazole. Bacterial vaginosis and trichomoniasis need referral."},{"tag":"Lec.5 · Clinical","q":"A 38-year-old woman complains of vaginal discharge that has a strong odour and is not white or curd-like. What is the most appropriate action?","opts":["Recommend fluconazole 150 mg single dose","Recommend a clotrimazole 1-night pessary","Advise vaginal douching","Refer, as bacterial vaginosis or trichomoniasis is more likely","Recommend clotrimazole cream to the vulva"],"ans":3,"note":"A strong odour and discharge that is not white and curd-like points away from thrush and toward bacterial vaginosis or trichomoniasis."},{"tag":"Lec.5 · Clinical","q":"Which finding is the most important to differentiate vaginal thrush from bacterial vaginosis and trichomoniasis?","opts":["Absence of an offensive odour of the vaginal discharge","Presence of dysuria","Presence of fever","Volume of the discharge","Duration of the menstrual cycle"],"ans":0,"note":"Thrush discharge is typically not offensive. A fishy or otherwise strong smell suggests bacterial vaginosis or trichomoniasis."},{"tag":"Lec.5 · Clinical","q":"A profuse, frothy, greenish-yellow vaginal discharge is most likely associated with:","opts":["Vaginal thrush","Trichomoniasis","Bacterial vaginosis","Cystitis","Primary dysmenorrhoea"],"ans":1,"note":"Profuse frothy yellow-green discharge is the classic description of trichomoniasis, which is not an OTC condition."},{"tag":"Lec.5 · Clinical","q":"A 25-year-old woman has vulvar itching, burning and a white curd-like discharge. She has never had these symptoms before. What is the most appropriate action?","opts":["Recommend fluconazole 150 mg single dose","Recommend a clotrimazole 1-night pessary","Recommend a vaginal deodorant","Advise douching after each wash","Refer, because this is the first occurrence of symptoms"],"ans":4,"note":"A first episode should be referred so the diagnosis is confirmed before OTC antifungals are supplied."},{"tag":"Lec.5 · Clinical","q":"Why should women under 16 or over 60 years with symptoms of vaginal thrush be referred?","opts":["High oestrogen at these ages strongly promotes Candida","Lack of oestrogen removes the protective barrier, increasing the tendency to bacterial (but not fungal) infection","Fluconazole is ineffective at these ages","The symptoms are always due to an STD","Candida cannot grow in the vagina at any age"],"ans":1,"note":"Low oestrogen before puberty and after the menopause removes the protective vaginal environment. Infection at those ages is more often bacterial than candidal, so referral is required."},{"tag":"Lec.5 · Clinical","q":"A 30-year-old woman reports her third episode of vaginal thrush within the previous 6 months. What is the most appropriate action?","opts":["Recommend fluconazole and reassess in 7 days","Recommend a clotrimazole 7-night regimen","Refer, as recurrent attacks may indicate an underlying cause such as diabetes","Treat her husband only","Advise a perfumed soap"],"ans":2,"note":"Recurrent thrush (more than two episodes in six months in this stem) may signal diabetes or another underlying problem and should be referred."},{"tag":"Lec.5 · Clinical","q":"A woman with typical vaginal thrush symptoms is taking warfarin and asks for oral fluconazole. Key counselling:","opts":["Oral fluconazole interacts with anticoagulants, so a topical imidazole is a more suitable option","Fluconazole is safe with all medicines","She should take a double dose of fluconazole","Fluconazole must be taken only at night","Fluconazole is contraindicated only in men"],"ans":0,"note":"Oral fluconazole interacts with anticoagulants, sulfonylureas, ciclosporin, phenytoin, rifampicin, and theophylline. A topical imidazole avoids that interaction."},{"tag":"Lec.5 · Clinical","q":"Which statement about OTC oral fluconazole for vaginal thrush is correct?","opts":["It is given as 50 mg daily for 7 days","It must be taken at night only","It is the preferred option during pregnancy and breastfeeding","It is given as a single 150 mg dose at any time of the day, and symptoms usually improve within 12–24 hours","GIT side effects occur in all patients"],"ans":3,"note":"OTC fluconazole is a single 150 mg dose at any time of day. Symptoms usually improve within 12–24 hours. GI effects occur in up to about 10%, not everyone. It is not recommended in pregnancy or breastfeeding."},{"tag":"Lec.5 · Clinical","q":"A 27-year-old woman who is 20 weeks pregnant has typical vaginal thrush and asks for fluconazole. What is the most appropriate action?","opts":["Recommend fluconazole 150 mg single dose","Refer her; pregnant women may need a longer course, and oral fluconazole is not recommended in pregnancy","Recommend a clotrimazole 1-night pessary with no follow-up","Advise douching until symptoms resolve","Advise waiting 7 days before treatment"],"ans":1,"note":"Do not supply oral fluconazole in pregnancy. Pregnant women often need a longer topical course and should be referred."},{"tag":"Lec.5 · Clinical","q":"Why should internal (vaginal) imidazole preparations be administered at night?","opts":["The drug is absorbed only in the dark","Night administration prevents interactions with fluconazole","It avoids contact with menstrual blood","Morning administration causes systemic toxicity","This gives the drug time to be absorbed and reduces accidental loss, which is more likely when the patient is mobile"],"ans":4,"note":"Night-time dosing lets the preparation stay in place while the woman is lying down, so less is lost with movement."},{"tag":"Lec.5 · Clinical","q":"A woman using a clotrimazole vaginal cream course starts her menstrual period. What is the lecture-based response?","opts":["Continue the course; vaginal antifungals can be used during the menstrual period","Stop and restart after the period ends","Switch to oral fluconazole immediately","Double the dose during bleeding","Refer her immediately"],"ans":0,"note":"Menstruation is not a reason to stop a vaginal antifungal course. Continue as directed."},{"tag":"Lec.5 · Clinical","q":"All of the following can predispose women to vaginal thrush EXCEPT:","opts":["Broad-spectrum antibiotics","Corticosteroids","Oral contraceptives or HRT","Wearing cotton underwear","Tamoxifen"],"ans":3,"note":"Antibiotics, corticosteroids, oral contraceptives or HRT, and tamoxifen can predispose to thrush. Cotton underwear is preventive advice, not a risk factor."},{"tag":"Lec.5 · Clinical","q":"A 31-year-old woman develops vaginal thrush after every antibiotic course and has just been prescribed a broad-spectrum antibiotic. What is the lecture-based response?","opts":["She should stop the antibiotic immediately","Antibiotics do not predispose to thrush","Her doctor may prescribe an antifungal at the same time as the antibiotic","She should douche daily during the antibiotic course","She should take potassium citrate with the antibiotic"],"ans":2,"note":"Antibiotics do predispose to thrush. The prescriber may supply an antifungal alongside the antibiotic. She should not stop the antibiotic herself or start douching."},{"tag":"Lec.5 · Clinical","q":"A man has an irritating rash on the penis (candidal balanitis), and his wife has vaginal thrush. What is the appropriate treatment?","opts":["No treatment is ever needed for men","Topical azole applied twice daily for 7 days; oral fluconazole can also be used","Potassium citrate mixture","A vaginal pessary","Cranberry capsules"],"ans":1,"note":"Candidal balanitis is treated with a topical azole twice daily for 7 days. Oral fluconazole is another option. Partners with symptoms should be treated; asymptomatic partners do not always need treatment."},{"tag":"Lec.5 · Clinical","q":"A patient with vaginal thrush should seek medical advice if symptoms do not improve within ________ or if symptoms persist beyond ________.","opts":["1 day; 3 days","7 days; 14 days","12 hours; 24 hours","two cycles; three cycles","3 days; 7 days"],"ans":4,"note":"Seek advice if there is no improvement within 3 days, or if symptoms are still present beyond 7 days."},{"tag":"Lec.5 · Clinical","q":"Which prevention advice for vaginal thrush is correct?","opts":["Use foam baths and vaginal deodorants","Wear synthetic underwear","Keep the area cool and dry, wear cotton underwear, and use an unperfumed, mild cleanser if needed","Douche daily to remove Candida","Keep the area warm and moist"],"ans":2,"note":"Cool, dry skin, cotton underwear, and a mild unperfumed wash if needed reduce recurrence. Avoid foam baths, deodorants, synthetic underwear, and douching."}];
+const LETTERS = ["A","B","C","D","E"];
+let order = BANK.map((_, i) => i);
+let idx = 0, score = 0, attempts = 0, shuffled = false;
+let chosen = BANK.map(() => null);
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({
+    "&":"&","<":"<",">":">",'"':""","'":"&#39;"
+  }[c]));
+}
+
+function renderCounts() {
+  const map = new Map();
+  BANK.forEach((q) => map.set(q.tag, (map.get(q.tag) || 0) + 1));
+  document.getElementById("counts").innerHTML = [...map.entries()]
+    .map(([tag, n]) => '<span class="pill">' + esc(tag) + " · " + n + "</span>")
+    .join("");
+}
+
+function render() {
+  const qi = order[idx];
+  const q = BANK[qi];
+  const pick = chosen[qi];
+  const answered = pick !== null;
+  document.getElementById("progress-display").textContent = (idx + 1) + "/" + order.length;
+  document.getElementById("score-display").textContent = score + "/" + attempts;
+  document.getElementById("progress-bar").style.width = (((idx + 1) / order.length) * 100).toFixed(1) + "%";
+  document.getElementById("btn-prev").disabled = idx === 0;
+  document.getElementById("btn-next").textContent = idx === order.length - 1 ? "Finish" : "Next →";
+  document.getElementById("q-tag").textContent = q.tag;
+  document.getElementById("q-mode").textContent = shuffled ? "Shuffled" : "Bank order";
+  document.getElementById("q-text").textContent = (idx + 1) + ". " + q.q;
+  const optDiv = document.getElementById("q-options");
+  optDiv.innerHTML = "";
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "opt";
+    btn.innerHTML = '<span class="opt-letter">' + LETTERS[i] + "</span><span>" + esc(opt) + "</span>";
+    btn.onclick = () => choose(i);
+    if (answered) {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add("correct");
+      if (i === pick && i !== q.ans) btn.classList.add("wrong");
+    }
+    optDiv.appendChild(btn);
+  });
+  const ex = document.getElementById("q-explain");
+  if (answered) {
+    const ok = pick === q.ans;
+    ex.className = "explain show";
+    ex.innerHTML = '<span class="correct-label ' + (ok ? "ok" : "bad") + '">' +
+      (ok ? "Correct" : "Incorrect") + " — " + LETTERS[q.ans] + ") " + esc(q.opts[q.ans]) +
+      "</span>" + esc(q.note);
+  } else {
+    ex.className = "explain";
+    ex.innerHTML = "";
+  }
+}
+
+function choose(i) {
+  const qi = order[idx];
+  if (chosen[qi] !== null) return;
+  chosen[qi] = i;
+  attempts++;
+  if (i === BANK[qi].ans) score++;
+  render();
+}
+
+function showQuiz() {
+  document.getElementById("screen-results").style.display = "none";
+  document.getElementById("screen-quiz").style.display = "block";
+}
+
+function reset(mix) {
+  order = BANK.map((_, i) => i);
+  if (mix) {
+    for (let j = order.length - 1; j > 0; j--) {
+      const k = Math.floor(Math.random() * (j + 1));
+      [order[j], order[k]] = [order[k], order[j]];
+    }
+  }
+  idx = 0; score = 0; attempts = 0; shuffled = mix;
+  chosen = BANK.map(() => null);
+  document.getElementById("answer-list").classList.remove("show");
+  document.getElementById("btn-sheet").textContent = "Show answer sheet";
+  showQuiz();
+  render();
+  window.scrollTo(0, 0);
+}
+
+function showResults() {
+  const pct = attempts ? Math.round(score / attempts * 100) : 0;
+  document.getElementById("screen-quiz").style.display = "none";
+  document.getElementById("screen-results").style.display = "block";
+  document.getElementById("r-score").textContent = score + "/" + attempts;
+  document.getElementById("r-pct").textContent = pct + "% of answered questions";
+  let tone = "Keep drilling";
+  let msg = "Read the notes, then run the set again in order.";
+  if (pct >= 90) { tone = "Outstanding"; msg = "You nailed the bank."; }
+  else if (pct >= 75) { tone = "Solid pass"; msg = "Strong recall. One more pass on the misses."; }
+  else if (pct >= 60) { tone = "Close"; msg = "Review the explanations, then shuffle and retry."; }
+  document.getElementById("r-tone").textContent = tone;
+  document.getElementById("r-msg").textContent = msg;
+  const skipped = BANK.length - attempts;
+  document.getElementById("r-skip").textContent = skipped
+    ? skipped + " question" + (skipped === 1 ? "" : "s") + " left unanswered."
+    : "";
+  window.scrollTo(0, 0);
+}
+
+function buildSheet() {
+  const grid = document.getElementById("answer-grid");
+  grid.innerHTML = BANK.map((q, i) =>
+    '<div class="answer-mini"><div class="q-num">Q' + (i + 1) + " · " + esc(q.tag) +
+    "</div><div>" + esc(q.q) + '</div><div class="q-ans">' + LETTERS[q.ans] + ") " +
+    esc(q.opts[q.ans]) + "</div></div>"
+  ).join("");
+}
+
+document.getElementById("btn-prev").onclick = () => { if (idx > 0) { idx--; render(); } };
+document.getElementById("btn-next").onclick = () => {
+  if (idx < order.length - 1) { idx++; render(); }
+  else showResults();
+};
+document.getElementById("btn-shuffle").onclick = () => reset(true);
+document.getElementById("btn-restart").onclick = () => reset(false);
+document.getElementById("btn-again").onclick = () => reset(false);
+document.getElementById("btn-shuffle-again").onclick = () => reset(true);
+document.getElementById("btn-sheet").onclick = () => {
+  const list = document.getElementById("answer-list");
+  list.classList.toggle("show");
+  document.getElementById("btn-sheet").textContent = list.classList.contains("show")
+    ? "Hide answer sheet" : "Show answer sheet";
+};
+document.addEventListener("keydown", (event) => {
+  if (document.getElementById("screen-results").style.display === "block") return;
+  const key = event.key.toLowerCase();
+  let option = LETTERS.indexOf(key.toUpperCase());
+  if (key >= "1" && key <= "5") option = Number(key) - 1;
+  if (option >= 0 && option < 5) { event.preventDefault(); choose(option); return; }
+  if (event.key === "ArrowRight") {
+    event.preventDefault();
+    if (idx < order.length - 1) { idx++; render(); } else showResults();
+  } else if (event.key === "ArrowLeft" && idx > 0) {
+    event.preventDefault();
+    idx--;
+    render();
+  }
+});
+
+renderCounts();
+buildSheet();
+render();
+</script>
+</body>
+</html>
